@@ -4,19 +4,30 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # ===========================================  Path ==============================================
+export JAVA_HOME="/usr/lib/jvm"
+export JAVA_11="$JAVA_HOME/java-11-openjdk-amd64"
+export JAVA_17="$JAVA_HOME/java-17-openjdk-amd64"
+# export PATH="$JAVA_11/bin:$PATH"
+export PATH="$JAVA_17/bin:$PATH"
 
-# export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64/bin":$PATH
-#export PATH:"$JAVA_HOME/bin:$PATH"
-export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
-export PATH="$JAVA_HOME/bin:$PATH"
+export CMAKE_PATH="$HOME/Downloads/cmake-3.29.2-linux-x86_64"
+export PATH="$CMAKE_PATH/bin:$PATH"
+
 export PATH=$PATH:/usr/local/go/bin
+export GOPATH="$HOME/go"
+export GOBIN="$GOPATH"/bin/
+export PATH=$GOBIN:$PATH
 
-# export SCRIPT_PATH=$PATH:$HOME/Coding/script
-export PATH="$PATH:${HOME}/Coding/script"
+export SCRIPT_PATH=$HOME/Coding/script
+export PATH=$SCRIPT_PATH:$PATH
 
 export ZSH="$HOME/.oh-my-zsh"
+
 export XDG_CONFIG_HOME=$HOME/.config
 export TMUX_PLUGIN_MANAGER_PATH=$XDG_CONFIG_HOME/tmux/plugins
+
+export EDITOR="$HOME/.config/nvim"
+
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
@@ -120,6 +131,3 @@ alias config='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
