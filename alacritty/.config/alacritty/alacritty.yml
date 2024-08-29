@@ -1,7 +1,4 @@
 window:
-  # dimensions:
-  #   columns: 113
-  #   lines: 29
   startup_mode: Maximized
   class:
     instance: Alacritty
