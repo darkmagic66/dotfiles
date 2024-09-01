@@ -1,3 +1,0 @@
-stow
-alacritty
-tmux

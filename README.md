@@ -1,7 +1,16 @@
-#### 
+#### Info
 * editor: NVChad
 * shell: zsh
-* shell styling: oh-my-zsh
+* shell styling: manual
 * terminal emulator: alacritty
-* terminal emulator: tmux
+* terminal multiplexer: tmux
 * dotfile: stow
+
+
+
+
+
+#### Honorable Mention Dotfile Manager
+* yadm
+* chezmoi
+
