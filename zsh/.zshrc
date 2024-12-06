@@ -15,6 +15,8 @@ export XDG_CACHE_HOME="$XDG_CONFIG_HOME/.cache"
 export TMUX_PLUGIN_MANAGER_PATH=$XDG_CONFIG_HOME/tmux/plugins
 export PATH="$HOME/local/nvim-linux64/bin:$PATH"
 
+ export TERMINAL=alacritty
+
 # java
 export JAVA_PATH="/usr/lib/jvm"
 export JAVA_HOME="$JAVA_PATH/java-1.17.0-openjdk-amd64"
@@ -61,7 +63,22 @@ autoload -U compinit; compinit
 
 
 # load file
-if command -v ng &> /dev/null; then
-  source <(ng completion script)
-fi
+#if command -v ng &> /dev/null; then
+ # source <(ng completion script)
+#fi
 
+
+# bun completions
+[ -s "/home/pongsatorn66/.bun/_bun" ] && source "/home/pongsatorn66/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+#export NVM_DIR="$HOME/.nvm"
+#[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+#[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
