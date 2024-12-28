@@ -10,7 +10,8 @@ history = 100000
 # Uncomment to adjust size
 # size = 14.0
 size = 9.0
-normal = { family = "MesloLGS NF" }
+ normal = { family = "MesloLGS NF" }
+# normal = { family = "Hack" }
 
 [colors]
 
