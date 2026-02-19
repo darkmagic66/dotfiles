@@ -1,3 +1,8 @@
+#### How to Use 
+1. install essntial package
+2. stow zsh tmux alacritty nvim
+
+
 #### Info
 * editor: NVChad
 * shell: zsh - vim style
