@@ -1,18 +1,5 @@
 #!/bin/bash
 
-#plugins=(
-#    "https://github.com/romkatv/powerlevel10k
-#    https://github.com/zsh-users/zsh-autosuggestions
-#    https://github.com/zsh-users/zsh-completions
-#    https://github.com/zsh-users/zsh-syntax-highlighting"
-#    ) 
-
-#plugins=(
-#    https://github.com/romkatv/powerlevel10k
-#    https://github.com/zsh-users/zsh-autosuggestions
-#    https://github.com/zsh-users/zsh-completions
-#    https://github.com/zsh-users/zsh-syntax-highlighting
-#    ) 
 
 plugins=(
     "https://github.com/romkatv/powerlevel10k"
@@ -27,3 +14,5 @@ for url in "${plugins[@]}"; do
     plug_dir=$(basename "$url" .git)
     git clone "$url" ~/zsh/plugins/"$plug_dir"
 done
+
+git clone https://github.com/tmux-plugins/tpm ~/.conf/tmux/plugins

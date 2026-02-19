@@ -29,6 +29,10 @@ export GOBIN="$GOPATH"/bin/
 export PATH=$GOBIN:$PATH
 export PATH=$PATH:/usr/local/go/bin
 
+# build
+export BUILD="$HOME/build-source" 
+export PATH="$BUILD/idea-IC-243.23654.117/bin:$PATH"
+export PATH="$BUILD/open-shift:$PATH"
 # alias
 alias vim=nvim
 alias vimdiff="nvim -d"
