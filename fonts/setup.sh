@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cp ~/dotfiles/fonts/*  /usr/share/fonts/
-fc-cache -f -v 
+sudo cp ~/dotfiles/fonts/*  /usr/share/fonts/
+sudo fc-cache -f -v 
 
