@@ -15,4 +15,4 @@ for url in "${plugins[@]}"; do
     git clone "$url" ~/zsh/plugins/"$plug_dir"
 done
 
-git clone https://github.com/tmux-plugins/tpm ~/.conf/tmux/plugins
+git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
