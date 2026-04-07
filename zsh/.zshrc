@@ -8,9 +8,9 @@ fi
 # To customize prompt, run `p10k configure` or edit ~/dotfiles/zsh/.p10k.zsh.
 [[ ! -f ~/dotfiles/zsh/.p10k.zsh ]] || source ~/dotfiles/zsh/.p10k.zsh
 
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_DATA_HOME="$XDG_CONFIG_HOME/.local/share"
-export XDG_CACHE_HOME="$XDG_CONFIG_HOME/.cache"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
 export TMUX_PLUGIN_MANAGER_PATH=$XDG_CONFIG_HOME/tmux/plugins
 export PATH="$HOME/local/nvim-linux64/bin:$PATH"
@@ -63,11 +63,12 @@ source $HOME/zsh/plugins/zsh-nvm/zsh-nvm.plugin.zsh
 fpath=($HOME/zsh/plugins/zsh-completions/src $fpath)
 autoload -U compinit; compinit
 
-
 # bun completions
-[ -s "/home/pongsatorn66/.bun/_bun" ] && source "/home/pongsatorn66/.bun/_bun"
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
+# opencode
+export PATH=$HOME/.opencode/bin:$PATH
