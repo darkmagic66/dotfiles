@@ -7,11 +7,25 @@ opacity = 0.9
 history = 100000
 
 [font]
-# Uncomment to adjust size
 # size = 14.0
 size = 9.0
- normal = { family = "MesloLGS NF" }
+# normal = { family = "MesloLGS NF" }
 # normal = { family = "Hack" }
+[font.normal]
+family = "SFmono Nerd Font"
+style = "Regular"
+
+[font.bold]
+family = "SFmono Nerd Font"
+style = "Bold"
+
+[font.italic]
+family = "SFmono Nerd Font"
+style = "Italic"
+
+[font.bold_italic]
+family = "SFmono Nerd Font"
+style = "Bold Italic"
 
 [colors]
 
