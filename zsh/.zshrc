@@ -18,9 +18,7 @@ export PATH="$HOME/local/nvim-linux64/bin:$PATH"
 # java
 export JAVA_PATH="/usr/lib/jvm"
 export JAVA_HOME="$JAVA_PATH/java-1.17.0-openjdk-amd64"
-export JAVA_11="$JAVA_PATH/java-11-openjdk-amd64"
 export JAVA_17="$JAVA_PATH/java-17-openjdk-amd64"
-# export PATH="$JAVA_11/bin:$PATH"
 export PATH="$JAVA_17/bin:$PATH"
 
 # go
@@ -31,8 +29,10 @@ export PATH=$PATH:/usr/local/go/bin
 
 # build
 export BUILD="$HOME/build-source" 
+export PATH="$HOME/script:$PATH"
 export PATH="$BUILD/idea-IC-243.23654.117/bin:$PATH"
 export PATH="$BUILD/open-shift:$PATH"
+
 # alias
 alias vim=nvim
 alias vimdiff="nvim -d"
@@ -55,12 +55,12 @@ setopt hist_save_no_dups
 setopt hist_ignore_dups
 setopt hist_find_no_dups
 
-source $HOME/zsh/plugins/powerlevel10k/powerlevel10k.zsh-theme
-source $HOME/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source $HOME/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source $HOME/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh
-source $HOME/zsh/plugins/zsh-nvm/zsh-nvm.plugin.zsh
-fpath=($HOME/zsh/plugins/zsh-completions/src $fpath)
+source $XDG_CONFIG_HOME/zsh/plugins/powerlevel10k/powerlevel10k.zsh-theme
+source $XDG_CONFIG_HOME/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $XDG_CONFIG_HOME/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $XDG_CONFIG_HOME/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh
+source $XDG_CONFIG_HOME/zsh/plugins/zsh-nvm/zsh-nvm.plugin.zsh
+fpath=($XDG_CONFIG_HOME/zsh/plugins/zsh-completions/src $fpath)
 autoload -U compinit; compinit
 
 # bun completions

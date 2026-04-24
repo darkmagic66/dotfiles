@@ -12,7 +12,7 @@ plugins=(
 
 for url in "${plugins[@]}"; do
     plug_dir=$(basename "$url" .git)
-    git clone "$url" ~/zsh/plugins/"$plug_dir"
+    git clone "$url" ~/.config/zsh/plugins/"$plug_dir"
 done
 
 git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
