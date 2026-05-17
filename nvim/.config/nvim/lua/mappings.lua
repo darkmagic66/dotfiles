@@ -18,6 +18,14 @@ map("n", "<C-l>", "<cmd> TmuxNavigateRight<CR>")
 map("n", "<C-j>", "<cmd> TmuxNavigateDown<CR>")
 map("n", "<C-k>", "<cmd> TmuxNavigateUp<CR>")
 
+map("n", "H", function()
+  require("nvchad.tabufline").prev()
+end, { desc = "buffer prev" })
+
+map("n", "L", function()
+  require("nvchad.tabufline").next()
+end, { desc = "buffer next" })
+
 map("n", "<leader>db", "<cmd> DapToggleBreakpoint <CR>")
 
 map("n", "<leader>dus", function()
