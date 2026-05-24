@@ -31,6 +31,19 @@ for component in "${COMPONENTS[@]}"; do
     done
 done
 
+# Link global AI configuration file
+if [ -f "$AI_DOTFILES/GEMINI.md" ]; then
+    ln -sf "$AI_DOTFILES/GEMINI.md" "$GEMINI_DIR/GEMINI.md"
+fi
+
+if [ -f "$AI_DOTFILES/gemini-settings.json" ]; then
+    ln -sf "$AI_DOTFILES/gemini-settings.json" "$GEMINI_DIR/settings.json"
+fi
+
+if [ -f "$AI_DOTFILES/trustedFolders.json" ]; then
+    ln -sf "$AI_DOTFILES/trustedFolders.json" "$GEMINI_DIR/trustedFolders.json"
+fi
+
 # 4. Install AI Tools
 echo "Installing AI Tools..."
 
