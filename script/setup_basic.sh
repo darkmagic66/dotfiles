@@ -3,7 +3,7 @@
 DISTRO="$1"
 
 if [ -z "$DISTRO" ]; then
-  echo "Usage: ./install.sh [mac|debian|arch|fedora]"
+  echo "Usage: ./setup_basic.sh [mac|debian|arch|fedora]"
   exit 1
 fi
 
@@ -30,6 +30,11 @@ install_mac() {
 
   brew update
   brew install "${COMMON_PACKAGES[@]}"
+  
+  if [ -f "$HOME/dotfiles/Brewfile" ]; then
+    echo "Running brew bundle..."
+    brew bundle --file="$HOME/dotfiles/Brewfile"
+  fi
 }
 
 install_debian() {
@@ -59,11 +64,9 @@ case "$DISTRO" in
     install_fedora
     ;;
   *)
-    echo "not support $DISTRO"
+    echo "Unsupported OS/Distro: $DISTRO"
     exit 1
     ;;
 esac
 
-
-
-echo "Finished !!!"
+echo "Base packages installed successfully."

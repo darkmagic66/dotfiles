@@ -1,7 +1,12 @@
 .git
-
-fonts 
-
+fonts
+script
+ai-env
+dog
+Brewfile
+README.md
+ZSH.md
 ^/README.*
 ^/LICENSE.*
 ^/COPYING
+.stow-local-ignore

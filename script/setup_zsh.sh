@@ -10,9 +10,20 @@ plugins=(
     "https://github.com/lukechilds/zsh-nvm.git"
      ) 
 
+mkdir -p ~/.config/zsh/plugins
+mkdir -p ~/.config/tmux/plugins
+
 for url in "${plugins[@]}"; do
     plug_dir=$(basename "$url" .git)
-    git clone "$url" ~/.config/zsh/plugins/"$plug_dir"
+    if [ ! -d ~/.config/zsh/plugins/"$plug_dir" ]; then
+        git clone "$url" ~/.config/zsh/plugins/"$plug_dir"
+    else
+        echo "Plugin $plug_dir already installed."
+    fi
 done
 
-git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
+if [ ! -d ~/.config/tmux/plugins/tpm ]; then
+    git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
+else
+    echo "TPM already installed."
+fi
