@@ -15,12 +15,6 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export TMUX_PLUGIN_MANAGER_PATH=$XDG_CONFIG_HOME/tmux/plugins
 export PATH="$HOME/local/nvim-linux64/bin:$PATH"
 
-# java
-export JAVA_PATH="/usr/lib/jvm"
-export JAVA_HOME="$JAVA_PATH/java-1.17.0-openjdk-amd64"
-export JAVA_17="$JAVA_PATH/java-17-openjdk-amd64"
-export PATH="$JAVA_17/bin:$PATH"
-
 # go
 export GOPATH="$HOME/go"
 export GOBIN="$GOPATH"/bin/
@@ -71,4 +65,8 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 # opencode
-export PATH=$HOME/.opencode/bin:$PATH
+export PATH=$XDG_CONFIG_HOME/opencode/bin:$PATH
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
