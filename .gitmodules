@@ -1,18 +1,24 @@
 [submodule "ai-env/ai-env/skills/skill-tissue"]
 	path = ai-env/skills/skill-tissue
 	url = https://github.com/skill-tissue/skills.git
+	ignore = untracked
 [submodule "ai-env/ai-env/skills/caveman"]
 	path = ai-env/skills/caveman
 	url = https://github.com/juliusbrussee/caveman.git
+	ignore = untracked
 [submodule "ai-env/ai-env/skills/karpathy-skills"]
 	path = ai-env/skills/karpathy-skills
 	url = https://github.com/multica-ai/andrej-karpathy-skills.git
+	ignore = untracked
 [submodule "ai-env/ai-env/skills/superpowers"]
 	path = ai-env/skills/superpowers
 	url = https://github.com/obra/superpowers.git
+	ignore = untracked
 [submodule "ai-env/tools/rtk"]
 	path = ai-env/tools/rtk
 	url = https://github.com/rtk-ai/rtk
+	ignore = untracked
 [submodule "ai-env/tools/GitNexus"]
 	path = ai-env/tools/GitNexus
 	url = https://github.com/abhigyanpatwari/GitNexus
+	ignore = untracked
