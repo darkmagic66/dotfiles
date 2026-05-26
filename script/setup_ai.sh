@@ -101,4 +101,24 @@ else
     echo "GitNexus is already installed."
 fi
 
+# 5. Install & Configure Antigravity CLI (agy)
+if ! command -v agy &> /dev/null; then
+    echo "Installing Antigravity CLI..."
+    curl -fsSL https://antigravity.google/cli/install.sh | bash
+fi
+
+if command -v agy &> /dev/null; then
+    echo "Configuring Antigravity CLI..."
+    # Ensure active PATH and shell profile configurations are verified/appended
+    agy install --skip-aliases
+    
+    # Install skills as global plugins
+    for skill in "$AI_DOTFILES/skills"/*; do
+        if [ -d "$skill" ]; then
+            echo "Installing Antigravity plugin: $(basename "$skill")..."
+            agy plugin install "$skill"
+        fi
+    done
+fi
+
 echo "AI Environment linked and tools installed successfully."
