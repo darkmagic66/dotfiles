@@ -70,3 +70,7 @@ export PATH=$XDG_CONFIG_HOME/opencode/bin:$PATH
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/pongsatorn66/.local/bin:$PATH"

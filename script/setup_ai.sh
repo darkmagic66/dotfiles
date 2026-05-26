@@ -19,17 +19,45 @@ for component in "${COMPONENTS[@]}"; do
     mkdir -p "$OPENCODE_DIR/$component"
     mkdir -p "$GEMINI_DIR/$component"
 
-    # Link everything from your dotfiles into OpenCode
-    # (Using find to link contents rather than the parent folder allows 
-    # both tools to have their own default files alongside your dotfiles)
+    # Link everything from your dotfiles into OpenCode and Gemini
     for item in "$AI_DOTFILES/$component"/*; do
         if [ -e "$item" ]; then
             base_name=$(basename "$item")
             ln -sf "$item" "$OPENCODE_DIR/$component/$base_name"
-            ln -sf "$item" "$GEMINI_DIR/$component/$base_name"
+            
+            # For Gemini, skills go into extensions/ for auto-discovery
+            if [ "$component" == "skills" ]; then
+                mkdir -p "$GEMINI_DIR/extensions"
+                ln -sf "$item" "$GEMINI_DIR/extensions/$base_name"
+            else
+                ln -sf "$item" "$GEMINI_DIR/$component/$base_name"
+            fi
         fi
     done
 done
+
+# Create extension-enablement.json for Gemini
+if [ -d "$AI_DOTFILES/skills" ]; then
+    ENABLEMENT_FILE="$GEMINI_DIR/extensions/extension-enablement.json"
+    echo "{" > "$ENABLEMENT_FILE"
+    first=true
+    for skill in "$AI_DOTFILES/skills"/*; do
+        if [ -d "$skill" ]; then
+            # Only enable folders that look like valid extensions
+            if [ -f "$skill/gemini-extension.json" ] || [ -f "$skill/GEMINI.md" ]; then
+                skill_name=$(basename "$skill")
+                if [ "$first" = true ]; then
+                    first=false
+                else
+                    echo "," >> "$ENABLEMENT_FILE"
+                fi
+                echo "  \"$skill_name\": { \"overrides\": [\"$HOME/*\"] }" >> "$ENABLEMENT_FILE"
+            fi
+        fi
+    done
+    echo "" >> "$ENABLEMENT_FILE"
+    echo "}" >> "$ENABLEMENT_FILE"
+fi
 
 # Link global AI configuration file
 if [ -f "$AI_DOTFILES/GEMINI.md" ]; then
