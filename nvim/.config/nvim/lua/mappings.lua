@@ -46,3 +46,5 @@ map("n", "<leader>dgl", function()
   require("dap-go").debug_test()
 end, { desc = "debug-go-last" })
 
+map("n", "<leader>z", "<cmd>ZenMode<CR>", { desc = "Toggle Zen Mode (Centered)" })
+

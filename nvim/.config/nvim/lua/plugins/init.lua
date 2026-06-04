@@ -95,7 +95,40 @@ return {
         -- Configuration here, or leave empty to use defaults
       }
     end,
+
   },
+
+  {
+    "hrsh7th/nvim-cmp",
+    opts = function(_, opts)
+      local cmp = require("cmp")
+      
+      -- Map Ctrl+j to move down the list
+      opts.mapping["<C-j>"] = cmp.mapping.select_next_item()
+      
+      -- Map Ctrl+k to move up the list
+      opts.mapping["<C-k>"] = cmp.mapping.select_prev_item()
+    end,
+  },
+
+  {
+    "folke/zen-mode.nvim",
+    cmd = "ZenMode",
+    config = function()
+      require("zen-mode").setup({
+        window = {
+          width = 100, 
+          options = {
+            number = true, 
+            relativenumber = true,
+          }
+        },
+      })
+    end
+  },
+  build = function()
+    vim.cmd [[silent! GoInstallDeps]]
+  end,
   ------------------ Debugger ------------------------
   {
     "mfussenegger/nvim-dap",
@@ -160,8 +193,5 @@ return {
       require("dap-go").setup(opts)
     end,
   },
-  build = function()
-    vim.cmd [[silent! GoInstallDeps]]
-  end,
   -- GoTagAdd {json,yaml} GoMod tidy Goget {} GoTestAll
 }
