@@ -1,4 +1,5 @@
-#!/bin/bash -e
+#!/bin/bash
+set -euo pipefail
 
 OS_TYPE=$(uname)
 DISTRO=""

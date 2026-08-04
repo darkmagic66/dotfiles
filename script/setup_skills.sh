@@ -9,6 +9,7 @@
 
 set -euo pipefail
 
+
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
 SKILLS_DIR="$DOTFILES_DIR/skills"
 
@@ -69,14 +70,14 @@ link_skill() {
 # --- Update submodules if requested ----------------------------------------
 if [[ "${1:-}" == "--update" ]]; then
   echo "Updating skill submodules to latest upstream..."
-  rtk git -C "$DOTFILES_DIR" submodule update --remote --merge
+  git -C "$DOTFILES_DIR" submodule update --remote --merge
   echo "Submodules updated. Remember to commit + push the new pinned commits."
   echo
 fi
 
 # --- Init submodules (idempotent) ------------------------------------------
 echo "Initializing skill submodules..."
-rtk git -C "$DOTFILES_DIR" submodule update --init --recursive
+git -C "$DOTFILES_DIR" submodule update --init --recursive
 
 # --- Collect skill paths to install ----------------------------------------
 declare -a SKILL_PATHS=()
