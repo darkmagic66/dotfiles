@@ -5,35 +5,53 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# To customize prompt, run `p10k configure` or edit ~/dotfiles/zsh/.p10k.zsh.
+# Powerlevel10k config
 [[ ! -f ~/dotfiles/zsh/.p10k.zsh ]] || source ~/dotfiles/zsh/.p10k.zsh
 
+# --- XDG dirs ---------------------------------------------------------------
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
-
 export TMUX_PLUGIN_MANAGER_PATH=$XDG_CONFIG_HOME/tmux/plugins
-export PATH="$HOME/local/nvim-linux64/bin:$PATH"
 
-# go
+# --- PATH (idempotent, no duplicates) ---------------------------------------
+typeset -U path
+path=(
+  $HOME/.local/bin
+  $XDG_CONFIG_HOME/opencode/bin
+  $HOME/go/bin
+  /usr/local/go/bin
+  $path
+)
+
+# --- Go ---------------------------------------------------------------------
 export GOPATH="$HOME/go"
-export GOBIN="$GOPATH"/bin/
-export PATH=$GOBIN:$PATH
-export PATH=$PATH:/usr/local/go/bin
+export GOBIN="$GOPATH/bin"
 
-# build
-export BUILD="$HOME/build-source" 
-export PATH="$HOME/script:$PATH"
-export PATH="$BUILD/idea-IC-243.23654.117/bin:$PATH"
-export PATH="$BUILD/open-shift:$PATH"
+# --- fnm (replaces deprecated zsh-nvm) --------------------------------------
+if command -v fnm >/dev/null 2>&1; then
+  eval "$(fnm env --use-on-cd --shell zsh)"
+fi
 
-# alias
+# --- bun --------------------------------------------------------------------
+export BUN_INSTALL="$HOME/.bun"
+[[ -s "$BUN_INSTALL/_bun" ]] && source "$BUN_INSTALL/_bun"
+path=($BUN_INSTALL/bin $path)
+
+# --- SDKMAN (conditional - keep on all OSes, error-free when absent) --------
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
+
+# --- Aliases ----------------------------------------------------------------
 alias vim=nvim
 alias vimdiff="nvim -d"
-alias ls=exa
-alias "ls -ltr"="exa -l --sort=modified"
+alias ls="eza"
+alias ll="eza -l --git --group-directories-first"
+alias la="eza -la --git --group-directories-first"
+alias lt="eza --tree --level=2"
+alias lr="eza -l --sort=modified"
 
-#zsh
+# --- zsh options ------------------------------------------------------------
 ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
@@ -49,28 +67,16 @@ setopt hist_save_no_dups
 setopt hist_ignore_dups
 setopt hist_find_no_dups
 
+# --- Plugins ----------------------------------------------------------------
+# fpath MUST come before compinit so zsh-completions are picked up.
+fpath=($XDG_CONFIG_HOME/zsh/plugins/zsh-completions/src $fpath)
+
 source $XDG_CONFIG_HOME/zsh/plugins/powerlevel10k/powerlevel10k.zsh-theme
 source $XDG_CONFIG_HOME/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $XDG_CONFIG_HOME/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $XDG_CONFIG_HOME/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh
-source $XDG_CONFIG_HOME/zsh/plugins/zsh-nvm/zsh-nvm.plugin.zsh
-fpath=($XDG_CONFIG_HOME/zsh/plugins/zsh-completions/src $fpath)
-autoload -U compinit; compinit
 
-# bun completions
-[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+autoload -U compinit && compinit
 
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-
-# opencode
-export PATH=$XDG_CONFIG_HOME/opencode/bin:$PATH
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
-
-
-# Added by Antigravity CLI installer
-export PATH="/home/pongsatorn66/.local/bin:$PATH"
+# --- Machine-specific overrides (not tracked in dotfiles) -------------------
+[[ -r $XDG_CONFIG_HOME/zsh/.zshrc.local ]] && source $XDG_CONFIG_HOME/zsh/.zshrc.local

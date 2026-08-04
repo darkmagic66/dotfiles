@@ -2,35 +2,28 @@
 startup_mode = "Maximized"
 class = { instance = "Alacritty" }
 opacity = 0.9
-#padding = { x = 200, y = 50 } 
-#dynamic_padding = true
-
 
 [scrolling]
 history = 100000
 
 [font]
-# size = 14.0
 size = 9.0
-# normal = { family = "MesloLGS NF" }
-# normal = { family = "Hack" }
+
 [font.normal]
-family = "SFmono Nerd Font"
+family = "JetBrainsMono Nerd Font"
 style = "Regular"
 
 [font.bold]
-family = "SFmono Nerd Font"
+family = "JetBrainsMono Nerd Font"
 style = "Bold"
 
 [font.italic]
-family = "SFmono Nerd Font"
+family = "JetBrainsMono Nerd Font"
 style = "Italic"
 
 [font.bold_italic]
-family = "SFmono Nerd Font"
+family = "JetBrainsMono Nerd Font"
 style = "Bold Italic"
-
-[colors]
 
 [colors.primary]
 background = "#1d2021"
@@ -56,17 +49,18 @@ magenta = "#d3869b"
 cyan = "#8ec07c"
 white = "#ebdbb2"
 
-[terminal]
-shell = { program = "/bin/zsh", args = ["-l", "-c", "tmux attach || tmux"] }
+[selection]
+save_to_clipboard = true
+
+# Uncomment to auto-attach tmux on launch:
+# [terminal]
+# shell = { program = "/bin/zsh", args = ["-l", "-c", "tmux attach || tmux"] }
 
 [keyboard]
 bindings = [
-# Page Up and Down
-     { key= "PageUp",   mods= "Shift", "action"= "ScrollPageUp"},
-     { key= "PageDown", mods= "Shift", "action"= "ScrollPageDown" },
-# Scroll to Top and Bottom
-     { key= "End",      mods= "Shift", "action"= "ScrollToBottom" },
-     { key= "Home",     mods= "Shift", "action"= "ScrollToTop" },
-# Quit Alacritty
-     { key= "Q",        mods="Control", "action"= "Quit" },
+  { key = "PageUp",   mods = "Shift", action = "ScrollPageUp" },
+  { key = "PageDown", mods = "Shift", action = "ScrollPageDown" },
+  { key = "End",      mods = "Shift", action = "ScrollToBottom" },
+  { key = "Home",     mods = "Shift", action = "ScrollToTop" },
+  { key = "Q",        mods = "Control", action = "Quit" },
 ]

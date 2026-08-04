@@ -3,7 +3,7 @@
 DISTRO="$1"
 
 if [ -z "$DISTRO" ]; then
-  echo "Usage: ./setup_basic.sh [mac|debian|arch|fedora]"
+  echo "Usage: ./setup_basic.sh [mac|debian|arch|cachyos|fedora]"
   exit 1
 fi
 
@@ -14,23 +14,42 @@ COMMON_PACKAGES=(
   bat
   eza
   ripgrep
-  tldr
   jq
   ncdu
-  asciinema
   neovim
   git
+  stow
 )
 
-install_mac() {
-  command -v brew >/dev/null 2>&1 || {
-    echo "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  }
+ARCH_PACKAGES=(
+  fd
+  zsh
+  kitty
+  ttf-jetbrains-mono-nerd
+  noto-fonts-thai
+)
+
+AUR_PACKAGES=(
+  fnm
+)
+
+install_arch() {
+  sudo pacman -Syu --noconfirm "${COMMON_PACKAGES[@]}" "${ARCH_PACKAGES[@]}"
+  # AUR packages (fnm is in Chaotic-AUR on CachyOS or plain AUR elsewhere)
+  if ! pacman -Q fnm >/dev/null 2>&1; then
+    if command -v paru >/dev/null 2>&1; then
+      paru -S --needed --noconfirm "${AUR_PACKAGES[@]}"
+    elif command -v yay >/dev/null 2>&1; then
+      yay -S --needed --noconfirm "${AUR_PACKAGES[@]}"
+    else
+      echo "Warning: AUR helper (paru/yay) not found. Install manually: ${AUR_PACKAGES[*]}"
+    fi
+  fi
+}
 
   brew update
-  brew install "${COMMON_PACKAGES[@]}"
-  
+  brew install "${COMMON_PACKAGES[@]}" tldr asciinema fnm
+
   if [ -f "$HOME/dotfiles/Brewfile" ]; then
     echo "Running brew bundle..."
     brew bundle --file="$HOME/dotfiles/Brewfile"
@@ -39,15 +58,15 @@ install_mac() {
 
 install_debian() {
   sudo apt update
-  sudo apt install -y "${COMMON_PACKAGES[@]}"
+  sudo apt install -y "${COMMON_PACKAGES[@]}" tldr asciinema python3 build-essential
 }
 
 install_arch() {
-  sudo pacman -Syu --noconfirm "${COMMON_PACKAGES[@]}"
+  sudo pacman -Syu --noconfirm "${COMMON_PACKAGES[@]}" "${ARCH_PACKAGES[@]}"
 }
 
 install_fedora() {
-  sudo dnf install -y "${COMMON_PACKAGES[@]}"
+  sudo dnf install -y "${COMMON_PACKAGES[@]}" tldr asciinema
 }
 
 case "$DISTRO" in
@@ -57,7 +76,7 @@ case "$DISTRO" in
   debian|pop|ubuntu)
     install_debian
     ;;
-  arch)
+  arch|cachyos|archlabs|endeavouros|manjaro)
     install_arch
     ;;
   fedora)

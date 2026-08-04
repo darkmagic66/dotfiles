@@ -1,24 +1,37 @@
-#!/bin/bash
+#!/bin/bash -e
 
-# Programs to install via apt
-progs=(
-    build-essential
-    python3
-)
+OS_TYPE=$(uname)
+DISTRO=""
+if [ -f /etc/os-release ]; then
+  . /etc/os-release
+  DISTRO=$ID
+fi
 
-# Installation commands via curl
-echo "Installing core programming tools..."
-curl -s "https://get.sdkman.io" | bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+echo "Detected: $OS_TYPE / $DISTRO"
 
-# Download tools via wget
-mkdir -p "$HOME/.local/bin"
-wget "https://github.com/srevinsaju/zap/releases/download/continuous/zap-amd64" -O "$HOME/.local/bin/zap"
-chmod +x "$HOME/.local/bin/zap"
-
-# Install apt packages
-for prog in "${progs[@]}"; do
-    sudo apt install -y "$prog"
-done
+case "$DISTRO" in
+  mac)
+    # SDKMAN (kept on all OSes per user preference)
+    curl -s "https://get.sdkman.io" | bash
+    # Rust via rustup script
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    ;;
+  arch|cachyos|archlabs|endeavouros|manjaro)
+    sudo pacman -S --needed --noconfirm base-devel python rustup
+    # Rust via pacman-provided rustup
+    rustup default stable
+    # SDKMAN (kept on all OSes per user preference)
+    curl -s "https://get.sdkman.io" | bash
+    ;;
+  debian|pop|ubuntu)
+    sudo apt install -y build-essential python3
+    curl -s "https://get.sdkman.io" | bash
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    ;;
+  *)
+    echo "Unsupported distro: $DISTRO (manual setup required)"
+    echo "  - install rustup + SDKMAN manually"
+    ;;
+esac
 
 echo "Programming environment setup complete."
