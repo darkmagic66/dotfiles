@@ -70,8 +70,8 @@ chmod +x "$DOTFILES_DIR/script/setup_zsh.sh"
 chmod +x "$DOTFILES_DIR/script/setup_programing.sh"
 "$DOTFILES_DIR/script/setup_programing.sh"
 
-chmod +x "$DOTFILES_DIR/script/setup_ai.sh"
-"$DOTFILES_DIR/script/setup_ai.sh"
+chmod +x "$DOTFILES_DIR/script/setup_skills.sh"
+"$DOTFILES_DIR/script/setup_skills.sh"
 
 echo "==================================="
 echo "   Installation Complete!          "
