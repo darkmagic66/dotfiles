@@ -18,7 +18,6 @@ export TMUX_PLUGIN_MANAGER_PATH=$XDG_CONFIG_HOME/tmux/plugins
 typeset -U path
 path=(
   $HOME/.local/bin
-  $XDG_CONFIG_HOME/opencode/bin
   $HOME/go/bin
   /usr/local/go/bin
   $path
