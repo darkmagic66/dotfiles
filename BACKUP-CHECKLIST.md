@@ -10,11 +10,10 @@ Run before any disk wipe / reinstall. Data lives on `/home/pongsatorn66` (477GB 
 | `~/.ssh/gitlab_linux` (+ `.pub`) | 1.8K | GitLab private key |
 | `~/.ssh/podman-machine-default` (+ `.pub`) | 411B | podman key |
 | `~/ssh-key/gitlab_linux` (+ `.pub`) | 1.8K | Duplicate of GitLab key (same as `~/.ssh/`) |
+| `~/.ssh/darkmagic66-github` (+ `.pub`) | 4.0K | GitHub key for dotfiles repo (`darkmagic66/dotfiles`) |
 | `~/.gitconfig` | 217B | name=pongsatorn, email=owlee.666666@gmail.com |
 
-⚠️ **`~/.ssh/darkmagic66-github` is MISSING.** Your dotfiles remote (`git@github.com:darkmagic66/dotfiles.git`) needs this key to push/clone. Regenerate + add pubkey to GitHub before wipe, OR you'll lose repo access.
-
-Already backed up: `~/migration-backup.tar.gz` (2.1K) contains SSH config, GitLab+podman keys, `.gitconfig`.
+Already backed up: `~/migration-backup.tar.gz` (5.9K) contains SSH config, GitLab+podman+github keys, `.gitconfig`, `ssh-key/`. Verified on flash drive `CCCOMA_X64F/migration-backup.tar.gz`. `ssh -T git@github.com` confirmed working.
 
 ## Personal data (large — copy to external drive)
 
