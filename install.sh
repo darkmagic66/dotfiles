@@ -52,7 +52,7 @@ if ! command -v stow >/dev/null 2>&1; then
   echo "Error: GNU Stow is not installed. Please install it first."
   exit 1
 fi
-stow alacritty ideavim kitty nvim opencode tmux zsh
+stow alacritty hypr hyprshell ideavim kitty nvim opencode tmux zsh
 
 # 5. OS-Specific Setup
 if [ "$DISTRO" == "mac" ]; then
@@ -67,6 +67,11 @@ echo "Running post-install scripts..."
 "$DOTFILES_DIR/script/setup_zsh.sh"
 "$DOTFILES_DIR/script/setup_programing.sh"
 "$DOTFILES_DIR/script/setup_skills.sh"
+
+if [ "$DISTRO" == "cachyos" ] || [ "$DISTRO" == "arch" ]; then
+  echo "Running hyprshell setup (Hyprland window switcher)..."
+  "$DOTFILES_DIR/script/setup_hyprshell.sh"
+fi
 
 echo "==================================="
 echo "   Installation Complete!          "

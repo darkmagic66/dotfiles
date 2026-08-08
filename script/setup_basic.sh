@@ -21,6 +21,13 @@ COMMON_PACKAGES=(
   git
   stow
   zsh
+  zip
+  unzip
+  curl
+  wget
+  git-delta
+  zoxide
+  starship
 )
 
 # Packages only in arch repos (not apt/brew)
@@ -29,7 +36,22 @@ ARCH_PACKAGES=(
   eza
   kitty
   ttf-jetbrains-mono-nerd
-  noto-fonts-thai
+  noto-fonts
+  powerline-fonts
+  gtk4-layer-shell
+  # Wayland / Hyprland audio + input stack
+  wl-clipboard
+  pipewire
+  pipewire-pulse
+  pipewire-alsa
+  wireplumber
+  brightnessctl
+  playerctl
+  hyprpaper
+  hypridle
+  hyprlock
+  swww
+  network-manager-applet
 )
 
 # AUR packages (installed via paru/yay, or pre-installed via Chaotic-AUR on CachyOS)
@@ -69,14 +91,19 @@ install_debian() {
 
 install_arch() {
   sudo pacman -Syu --noconfirm "${COMMON_PACKAGES[@]}" "${ARCH_PACKAGES[@]}"
-  # Install AUR helper if not present (paru preferred, falls back to yay)
+  # Install paru AUR helper if neither paru nor yay is present.
+  # CachyOS ships paru in the [cachyos] repo, so pacman will find it there first.
   if ! command -v paru >/dev/null 2>&1 && ! command -v yay >/dev/null 2>&1; then
-    echo "Installing paru (AUR helper)..."
-    sudo pacman -S --needed --noconfirm base-devel git
-    tmpdir=$(mktemp -d)
-    git clone https://aur.archlinux.org/paru.git "$tmpdir/paru"
-    (cd "$tmpdir/paru" && makepkg -si --noconfirm)
-    rm -rf "$tmpdir"
+    if sudo pacman -S --needed --noconfirm paru 2>/dev/null; then
+      echo "paru installed from distro repo."
+    else
+      echo "Building paru from AUR..."
+      sudo pacman -S --needed --noconfirm base-devel git
+      tmpdir=$(mktemp -d)
+      git clone https://aur.archlinux.org/paru.git "$tmpdir/paru"
+      (cd "$tmpdir/paru" && makepkg -si --noconfirm)
+      rm -rf "$tmpdir"
+    fi
   fi
   # AUR packages (fnm is in Chaotic-AUR on CachyOS or plain AUR elsewhere)
   if ! pacman -Q fnm >/dev/null 2>&1; then
@@ -87,6 +114,16 @@ install_arch() {
     else
       echo "Warning: AUR helper (paru/yay) not found. Install manually: ${AUR_PACKAGES[*]}"
     fi
+  fi
+
+  # Enable services for Hyprland session (no-op if already running)
+  echo "Enabling system services..."
+  sudo systemctl enable --now NetworkManager bluetooth cups fstrim.timer 2>/dev/null || true
+  if systemctl list-unit-files snapper-timeline.timer >/dev/null 2>&1; then
+    sudo systemctl enable --now snapper-timeline.timer snapper-cleanup.timer 2>/dev/null || true
+  fi
+  if command -v cachyos-rate-mirrors >/dev/null 2>&1; then
+    sudo cachyos-rate-mirrors 2>/dev/null || true
   fi
 }
 
