@@ -281,6 +281,20 @@ hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle only
 -- in `hyprshell config edit` -> Switch keybindings). Default Switch modifier is ALT.
 -- No Hyprland bind here — hyprshell grabs the key combo itself when daemon is running.
 
+-- Overview mode (Super alone) — opened and closed from Hyprland side because
+-- hyprshell has no CloseOverview socat command (see ExternalTransferType in
+-- crates/core-lib/src/transfer/structs.rs: only OpenOverview / CloseSwitch).
+-- Also: hyprshell unbinds then re-binds its keys on every config reload,
+-- which would wipe our release bind. So we set `overview.modifier: "none"`
+-- and `overview.key: ""` in config.json5 (harmless no-op bind attempt) and
+-- drive both press + release from hyprland.lua:
+hl.bind("SUPER + Super_L",
+    hl.dsp.exec_cmd("/home/shiro/.local/bin/hyprshell socat '\"OpenOverview\"'"),
+    { description = "Open hyprshell Overview on Super press" })
+hl.bind("SUPER + Super_L",
+    hl.dsp.exec_cmd("/home/shiro/.local/bin/hypr-close-overview.sh"),
+    { release = true, transparent = true, description = "Close hyprshell Overview on Super release" })
+
 -- Layout: explicit split (dwindle) vs. default maximized (monocle).
 hl.bind(mainMod .. " + D",       hl.dsp.exec_cmd("hyprctl eval 'hl.config({general={layout=\"dwindle\"}})'"))  -- split mode
 hl.bind(mainMod .. " + SHIFT + D", hl.dsp.exec_cmd("hyprctl eval 'hl.config({general={layout=\"monocle\"}})'")) -- maximized mode

@@ -35,9 +35,9 @@
           }
         }
       },
-      "key": "Super_L",
+      "key": "",
       "top_offset": 430,
-      "modifier": "super",
+      "modifier": "none",
       "filter_by": [],
       "exclude_workspaces": "special:.*"
     },

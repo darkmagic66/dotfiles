@@ -52,6 +52,7 @@ ARCH_PACKAGES=(
   hyprlock
   swww
   network-manager-applet
+  wtype
 )
 
 # AUR packages (installed via paru/yay, or pre-installed via Chaotic-AUR on CachyOS)
