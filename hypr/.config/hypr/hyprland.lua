@@ -388,6 +388,7 @@ hl.bind(
 hl.on("hyprland.start", function()
     hl.exec_cmd("hyprsunset -t 3000")
     hl.exec_cmd("waybar")
-    hl.exec_cmd("/home/shiro/.local/bin/hyprshell -c /home/shiro/.config/hyprshell/config.json5 run")
+    local home = os.getenv("HOME")
+hl.exec_cmd(home .. "/.local/bin/hyprshell -c " .. home .. "/.config/hyprshell/config.json5 run")
 end)
 
