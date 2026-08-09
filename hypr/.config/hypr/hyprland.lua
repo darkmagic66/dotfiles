@@ -387,6 +387,9 @@ hl.bind(
 )
 
 hl.on("hyprland.start", function()
+    -- Kill leftover daemons from a previous session so the socket isn't held.
+    hl.exec_cmd("pkill -f 'hyprshell-watchdog.sh'")
+    hl.exec_cmd("pkill -f 'hyprshell.*run'")
     hl.exec_cmd("hyprsunset -t 3000")
     hl.exec_cmd("waybar")
     hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
