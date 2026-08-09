@@ -274,6 +274,7 @@ hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle only
+hl.bind(mainMod .. " + comma", hl.dsp.exec_cmd("bash ~/dotfiles/script/settings-menu.sh"))  -- Super+, settings
 
 -- Alt+Tab window switcher handled by hyprshell daemon (GTK4 GUI with app icons
 -- + previews, like macOS). Hold ALT + tap TAB to cycle; release ALT to commit.

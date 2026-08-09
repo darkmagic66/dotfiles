@@ -54,11 +54,16 @@ ARCH_PACKAGES=(
   network-manager-applet
   udisks2
   polkit-gnome
+  # Lightweight settings GUIs (display, bluetooth, wallpaper)
+  nwg-displays
+  blueman
+  waypaper
 )
 
 # AUR packages (installed via paru/yay, or pre-installed via Chaotic-AUR on CachyOS)
 AUR_PACKAGES=(
   fnm
+  nwg-look
 )
 
 install_mac() {
