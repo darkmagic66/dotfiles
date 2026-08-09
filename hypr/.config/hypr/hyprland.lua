@@ -391,5 +391,8 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
     local home = os.getenv("HOME")
     hl.exec_cmd(home .. "/.local/bin/hyprshell -c " .. home .. "/.config/hyprshell/config.json5 run")
+    -- Watchdog: auto-recover from hyprshell freeze bug (Alt+Tab+Q on last window
+    -- leaves the switcher layer open with 0 clients, holding the keyboard grab).
+    hl.exec_cmd(home .. "/dotfiles/script/hyprshell-watchdog.sh")
 end)
 
