@@ -50,6 +50,23 @@ alias la="eza -la --git --group-directories-first"
 alias lt="eza --tree --level=2"
 alias lr="eza -l --sort=modified"
 
+# macOS-like `open` — opens files/urls in the default app
+# On Linux: directories open in yazi (TUI) via kitty; files/urls use xdg-open
+if [[ "$(uname)" == "Darwin" ]]; then
+  :  # macOS has `open` built-in
+else
+  function open() {
+    if [[ $# -eq 1 && -d "$1" ]] && command -v yazi >/dev/null 2>&1 && command -v kitty >/dev/null 2>&1; then
+      kitty --working-directory "$1" -e yazi
+    elif command -v xdg-open >/dev/null 2>&1; then
+      xdg-open "$@"
+    else
+      echo "open: no handler available (install yazi+kitty or xdg-open)" >&2
+      return 1
+    fi
+  }
+fi
+
 # --- zsh options ------------------------------------------------------------
 ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'

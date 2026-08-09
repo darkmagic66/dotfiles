@@ -52,6 +52,8 @@ ARCH_PACKAGES=(
   hyprlock
   swww
   network-manager-applet
+  udisks2
+  polkit-gnome
 )
 
 # AUR packages (installed via paru/yay, or pre-installed via Chaotic-AUR on CachyOS)
@@ -118,7 +120,7 @@ install_arch() {
 
   # Enable services for Hyprland session (no-op if already running)
   echo "Enabling system services..."
-  sudo systemctl enable --now NetworkManager bluetooth cups fstrim.timer 2>/dev/null || true
+  sudo systemctl enable --now NetworkManager bluetooth cups fstrim.timer udisks2 2>/dev/null || true
   if systemctl list-unit-files snapper-timeline.timer >/dev/null 2>&1; then
     sudo systemctl enable --now snapper-timeline.timer snapper-cleanup.timer 2>/dev/null || true
   fi
