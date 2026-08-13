@@ -96,3 +96,6 @@ autoload -U compinit && compinit
 
 # --- Machine-specific overrides (not tracked in dotfiles) -------------------
 [[ -r $XDG_CONFIG_HOME/zsh/.zshrc.local ]] && source $XDG_CONFIG_HOME/zsh/.zshrc.local
+
+# bun completions
+[ -s "/home/shiro/.bun/_bun" ] && source "/home/shiro/.bun/_bun"
