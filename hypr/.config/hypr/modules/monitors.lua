@@ -1,7 +1,12 @@
+------------------
+---- MONITORS ----
+------------------
+
 -- See https://wiki.hypr.land/Configuring/Basics/Monitors/
 hl.monitor({
-    output   = "",
-    mode     = "preferred",
-    position = "auto",
-    scale    = 1.0,
+    output   = "",  -- port : DP1
+    mode     = "preferred",  -- reolustion@hz : 1920*1080@144
+    --position = "auto", -- extenstion mondior
+    position = "auto-up", -- extenstion mondior
+    scale    = 1, -- current * scale
 })

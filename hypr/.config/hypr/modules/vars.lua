@@ -1,3 +1,4 @@
+---- Set programs that you use
 local M = {
     terminal    = "kitty",
     fileManager = "yazi",
@@ -6,3 +7,8 @@ local M = {
 }
 package.loaded["modules.vars"] = M
 return M
+
+
+--local terminal    = "kitty"
+--local fileManager = "dolphin"
+--local menu = "fuzzel"

@@ -52,7 +52,7 @@ if ! command -v stow >/dev/null 2>&1; then
   echo "Error: GNU Stow is not installed. Please install it first."
   exit 1
 fi
-stow alacritty hypr hyprshell ideavim kitty nvim opencode tmux zsh
+stow alacritty hypr hyprshell ideavim kitty nvim opencode tmux waybar zsh
 
 # 5. OS-Specific Setup
 if [ "$DISTRO" == "mac" ]; then

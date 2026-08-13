@@ -1,18 +1,22 @@
+---------------
+---- INPUT ----
+---------------
 hl.config({
     input = {
-        kb_layout  = "us, th",
-        kb_variant = ",",
+        kb_layout  = "us",
+        kb_variant = "",
         kb_model   = "",
         kb_options = "",
         kb_rules   = "",
-        repeat_delay = 150,
-        repeat_rate = 60,
+        repeat_delay = 180,
+        repeat_rate = 30,
+
         follow_mouse = 1,
 
-        sensitivity = 0, -- -1.0 - 1.0, 0 means no modification.
+        sensitivity = 0.8, -- -1.0 - 1.0, 0 means no modification.
 
         touchpad = {
-            natural_scroll = false,
+            natural_scroll = true,
         },
     },
 })
@@ -29,3 +33,4 @@ hl.device({
     name        = "epic-mouse-v1",
     sensitivity = -0.5,
 })
+
