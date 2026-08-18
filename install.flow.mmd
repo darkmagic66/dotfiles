@@ -1,0 +1,70 @@
+%%{init: {'flowchart': {'curve': 'elk'}, 'theme': 'base'}}%%
+flowchart TD
+    Start([./install.sh<br/>or ./install.sh --update]) --> Parse{--update flag?}
+    Parse -- yes --> SetUpdate[UPDATE=true]
+    Parse -- no --> SetUpdate2[UPDATE=false]
+    SetUpdate --> Net
+    SetUpdate2 --> Net
+
+    Net[Check internet:<br/>curl github.com] --> NetOK{Reachable?}
+    NetOK -- no --> Die1([exit 1])
+    NetOK -- yes --> Detect[Detect OS/Distro<br/>uname + /etc/os-release]
+
+    Detect --> Export[export DOTFILES_DIR DISTRO OS_TYPE]
+    Export --> Chmod[chmod +x script/*.sh]
+    Chmod --> S1{UPDATE?}
+
+    %% Phase 3: setup_basic
+    S1 -- yes --> S1Skip[skip setup_basic]
+    S1 -- no --> Basic["<b>setup_basic.sh</b><br/>COMMON_PACKAGES via:<br/>mac→brew / debian→apt / arch→pacman / fedora→dnf"]
+    Basic --> OsDir["<b>source setup_os/*.sh</b><br/>(self-guarded extensions)"]
+
+    %% setup_os branch by distro
+    OsDir --> OsMatch{DISTRO?}
+    OsMatch -- mac --> MacSh["<b>setup_os/mac.sh</b><br/>brew bundle Brewfile<br/>casks: vscode, zed, firefox,<br/>alacritty, kitty, aldente"]
+    OsMatch -- debian/pop/ubuntu --> DebSh["<b>setup_os/debian.sh</b><br/>fd-find→fd symlink<br/>zed installer<br/>vscode MS apt repo"]
+    OsMatch -- "arch family" --> ArchSh["<b>setup_os/arch.sh</b><br/>pacman extras: waybar/yazi/awww/<br/>brightnessctl/wl-clipboard/zed/...<br/>yay auto-build if no helper<br/>yay/paru -S vscode-bin (AUR)<br/>systemctl enable services<br/>cachyos-rate-mirrors"]
+    OsMatch -- fedora --> FedSh["<b>setup_os/fedora.sh</b><br/>zed installer<br/>vscode MS dnf repo"]
+
+    MacSh --> S2
+    DebSh --> S2
+    ArchSh --> S2
+    FedSh --> S2
+    S1Skip --> S2
+
+    %% Phase 4: stow
+    S2{UPDATE?} -- yes --> S2Skip[skip stow]
+    S2 -- no --> StowCheck{stow installed?}
+    StowCheck -- no --> Die2([exit 1])
+    StowCheck -- yes --> Stow["<b>stow</b> alacritty hypr ideavim<br/>kitty nvim opencode tmux waybar zsh"]
+    Stow --> S3
+    S2Skip --> S3
+
+    %% Phase 5: mac defaults
+    S3{UPDATE AND<br/>DISTRO==mac?} -- yes --> MacDefaults["<b>setup_mac.sh</b><br/>Finder/trackpad/keyboard defaults"]
+    S3 -- no --> S4
+    MacDefaults --> S4
+
+    %% Phase 6: post-install scripts
+    S4{UPDATE?} -- yes --> S4Skip[skip setup_fonts]
+    S4 -- no --> Fonts["<b>setup_fonts.sh</b><br/>symlink fonts/<br/>Linux→~/.local/share/fonts<br/>mac→~/Library/Fonts"]
+    Fonts --> Zsh
+    S4Skip --> Zsh
+
+    Zsh["<b>setup_zsh.sh</b><br/>+ --update if set<br/>clone p10k/autosuggestions/<br/>syntax-hi/vi-mode + tpm<br/>chsh -s zsh"]
+    Zsh --> Prog["<b>setup_programing.sh</b><br/>install_fnm (pacman/brew/curl)<br/>rustup + SDKMAN curl scripts<br/>install_gitnexus (npm -g)<br/>install_rtk (paru/yay/brew/curl)"]
+    Prog --> Skills["<b>setup_skills.sh</b><br/>+ --update if set<br/>git submodule update --init<br/>symlink skills into<br/>opencode/claude/codex/.agents"]
+    Skills --> Done([Installation Complete!])
+
+    %% styling
+    classDef skipNode fill:#3a3a3a,color:#aaa,stroke:#555,stroke-dasharray:3 3
+    classDef dieNode fill:#5a1d1d,color:#fdd,stroke:#c44
+    classDef basicNode fill:#1d3a5a,color:#ddf,stroke:#448
+    classDef osNode fill:#5a3a1d,color:#ffe,stroke:#a74
+    classDef postNode fill:#1d5a3a,color:#dfd,stroke:#4a4
+
+    class S1Skip,S2Skip,S4Skip skipNode
+    class Die1,Die2 dieNode
+    class Basic,OsDir basicNode
+    class MacSh,DebSh,ArchSh,FedSh,MacDefaults osNode
+    class Stow,Fonts,Zsh,Prog,Skills postNode

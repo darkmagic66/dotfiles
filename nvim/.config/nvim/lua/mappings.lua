@@ -48,3 +48,10 @@ end, { desc = "debug-go-last" })
 
 map("n", "<leader>z", "<cmd>ZenMode<CR>", { desc = "Toggle Zen Mode (Centered)" })
 
+-------------------- Markdown --------------------
+map("n", "<leader>mt", "<cmd>Markview toggle<CR>", { desc = "Markview toggle buffer" })
+map("n", "<leader>mT", "<cmd>Markview Toggle<CR>", { desc = "Markview toggle global" })
+map("n", "<leader>ms", "<cmd>Markview splitToggle<CR>", { desc = "Markview splitview" })
+map("n", "<leader>mh", "<cmd>Markview HybridToggle<CR>", { desc = "Markview hybrid mode" })
+map("n", "<leader>mp", "<cmd>MarkdownPreviewToggle<CR>", { desc = "Browser preview toggle" })
+

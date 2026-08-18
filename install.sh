@@ -16,8 +16,8 @@ else
   exit 1
 fi
 
-# 2. Detect OS / Distro
-OS_TYPE=$(uname)
+# 2. Detect OS / Distro (export so child scripts read via ${VAR:-fallback})
+OS_TYPE="$(uname)"
 DISTRO=""
 
 if [ "$OS_TYPE" == "Darwin" ]; then
@@ -26,7 +26,7 @@ if [ "$OS_TYPE" == "Darwin" ]; then
 elif [ "$OS_TYPE" == "Linux" ]; then
   if [ -f /etc/os-release ]; then
     . /etc/os-release
-    DISTRO=$ID
+    DISTRO="$ID"
   elif [ -f /etc/debian_version ]; then
     DISTRO="debian"
   else
@@ -38,40 +38,53 @@ else
   exit 1
 fi
 
-# Make all scripts executable at once
+echo "==================================="
+echo "       $OS_TYPE $DISTRO            "
+echo "==================================="
+
+
+export DOTFILES_DIR DISTRO OS_TYPE
+
+# Make top-level setup scripts executable at once (setup_os/ files are sourced)
 chmod +x "$DOTFILES_DIR"/script/*.sh
 
-# 3. Install Basic Packages
-echo "Installing base packages..."
-"$DOTFILES_DIR/script/setup_basic.sh" "$DISTRO"
+# 3. Install Basic Packages + distro-specific extras (sourced from setup_os/)
+echo "==================================="
+echo "   Installing base packages...     "
+echo "==================================="
+"$DOTFILES_DIR/script/setup_basic.sh"
 
 # 4. GNU Stow
-echo "Stowing dotfiles..."
-cd "$DOTFILES_DIR"
-if ! command -v stow >/dev/null 2>&1; then
-  echo "Error: GNU Stow is not installed. Please install it first."
-  exit 1
+if ! $UPDATE; then
+  echo "Stowing dotfiles..."
+  command -v stow >/dev/null 2>&1 || {
+    echo "Error: GNU Stow is not installed. Please install it first."
+    exit 1
+  }
+  (
+    cd "$DOTFILES_DIR"
+    echo "==================================="
+    echo "      Running Stow Process         "
+    echo "==================================="
+    stow alacritty hypr ideavim kitty nvim opencode tmux waybar zsh
+  )
 fi
-stow alacritty hypr hyprshell ideavim kitty nvim opencode tmux waybar zsh
 
-# 5. OS-Specific Setup
 if [ "$DISTRO" == "mac" ]; then
   echo "Running macOS specific setup..."
   "$DOTFILES_DIR/script/setup_mac.sh"
 fi
 
 # 6. Post-install Scripts
-echo "Running post-install scripts..."
+echo "==================================="
+echo "   Running post-install scripts   "
+echo "==================================="
 
-"$DOTFILES_DIR/script/setup_fonts.sh" "$OS_TYPE"
-"$DOTFILES_DIR/script/setup_zsh.sh"
+
+"$DOTFILES_DIR/script/setup_fonts.sh"
+"$DOTFILES_DIR/script/setup_zsh.sh" 
 "$DOTFILES_DIR/script/setup_programing.sh"
-"$DOTFILES_DIR/script/setup_skills.sh"
-
-if [ "$DISTRO" == "cachyos" ] || [ "$DISTRO" == "arch" ]; then
-  echo "Running hyprshell setup (Hyprland window switcher)..."
-  "$DOTFILES_DIR/script/setup_hyprshell.sh"
-fi
+"$DOTFILES_DIR/script/setup_skills.sh" 
 
 echo "==================================="
 echo "   Installation Complete!          "

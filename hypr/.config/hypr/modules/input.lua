@@ -3,11 +3,11 @@
 ---------------
 hl.config({
     input = {
-        kb_layout  = "us",
-        kb_variant = "",
-        kb_model   = "",
-        kb_options = "",
-        kb_rules   = "",
+        kb_layout  = "us, th",
+        kb_variant = "", -- define langauge layout, path: /usr/share/X11/xkb/symbols/
+        kb_model   = "", -- define keyboard layout
+        kb_options = "grp:win_space_toggle",
+        kb_rules   = "", 
         repeat_delay = 180,
         repeat_rate = 30,
 

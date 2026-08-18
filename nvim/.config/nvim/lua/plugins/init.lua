@@ -1,5 +1,7 @@
 local lazy = require "lazy"
 return {
+  { "luarocks/hererocks", build = "rockspec", lazy = true },
+
   -- {
   --   "stevearc/conform.nvim",
   --   -- event = 'BufWritePre', -- uncomment for format on save
@@ -27,7 +29,7 @@ return {
         "typescript-language-server",
         "html-lsp",
         "css-lsp",
-        "prettier",
+        "prettierd",
         -- python
         "pyright",
         "mypy",
@@ -36,6 +38,9 @@ return {
         "debugpy",
         -- go
         "gopls",
+        "gofumpt",
+        "goimports",
+        "golines",
         -- c-fmailiy
         "clangd",
       },
@@ -66,6 +71,13 @@ return {
         "javascript",
         "typescript",
         "tsx",
+        -- markdown rendering (markview.nvim)
+        "markdown",
+        "markdown_inline",
+        "latex",
+        "typst",
+        "yaml",
+        "comment",
       },
     },
   },
@@ -134,9 +146,6 @@ return {
       })
     end
   },
-  build = function()
-    vim.cmd [[silent! GoInstallDeps]]
-  end,
   ------------------ Debugger ------------------------
   {
     "mfussenegger/nvim-dap",
@@ -202,4 +211,27 @@ return {
     end,
   },
   -- GoTagAdd {json,yaml} GoMod tidy Goget {} GoTestAll
+
+  ---------------- Markdown rendering ----------------
+  -- Inline markdown/typst/latex/html previewer.
+  -- Author explicitly warns: do NOT lazy-load (causes startup lag for previews).
+  {
+    "OXY2DEV/markview.nvim",
+    lazy = false,
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+  },
+
+  -- Browser-based markdown preview (synchronized scrolling, KaTeX, mermaid, etc.).
+  -- Uses pre-built binary via mkdp#util#install() so yarn/npm is not required.
+  -- lazy = false: plugin/mkdp.vim registers a FileType autocmd that creates the
+  -- buffer-local :MarkdownPreviewToggle command. Lazy-loading on ft/cmd fires
+  -- AFTER the FileType event, so the first markdown buffer never gets the command.
+  {
+    "iamcco/markdown-preview.nvim",
+    lazy = false,
+    build = ":call mkdp#util#install()",
+    init = function()
+      vim.g.mkdp_filetypes = { "markdown" }
+    end,
+  },
 }

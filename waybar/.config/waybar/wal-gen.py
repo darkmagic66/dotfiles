@@ -136,7 +136,7 @@ def main():
 
     css = f"""/* Auto-generated from {WALL} */
 * {{
-    font-family: "MesloLGMDZ Nerd Font", "Symbols Nerd Font";
+    font-family: "SFMono Nerd Font", "Symbols Nerd Font";
     font-size: 14px;
 }}
 
