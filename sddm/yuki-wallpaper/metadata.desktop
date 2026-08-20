@@ -1,0 +1,9 @@
+[SddmGreeterTheme]
+Name=Yuki Wallpaper
+Description=Wallpaper-based SDDM theme
+Author=Yuki
+License=MIT
+Type=sddm-theme
+Version=1.0
+MainScript=Main.qml
+ConfigFile=theme.conf
