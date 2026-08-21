@@ -59,6 +59,11 @@ if ! $UPDATE; then
   "$DOTFILES_DIR/script/setup_basic.sh"
 fi
 
+# 3.5 Git identity (interactive; skipped in --update)
+if ! $UPDATE; then
+  "$DOTFILES_DIR/script/setup_git.sh"
+fi
+
 # 4. GNU Stow
 if ! $UPDATE; then
   echo "Stowing dotfiles..."
