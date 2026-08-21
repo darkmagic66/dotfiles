@@ -1,4 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# setup_programing.sh - install language toolchains via mise + utilities.
+#
+# mise manages all language runtimes (go, java, node, rust) from mise.toml.
+# This replaces the old approach of separate fnm/rustup/SDKMAN installers.
+#
+# Usage:
+#   bash setup_programing.sh            # install everything (idempotent)
+#
+# Requires: mise in PATH (arch: pacman, mac: brew, other: installed below).
+
 set -euo pipefail
 
 # DISTRO is normally exported by install.sh; fall back to local detect when
@@ -14,31 +24,45 @@ fi
 
 echo "Detected: $(uname) / ${DISTRO:-unknown}"
 
-install_fnm() {
-  if command -v fnm >/dev/null 2>&1; then
-    echo "fnm already installed."
+DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
+
+# --- mise (language runtime manager) ----------------------------------------
+install_mise() {
+  if command -v mise >/dev/null 2>&1; then
+    echo "mise already installed."
     return
   fi
-  echo "Installing fnm..."
+  echo "Installing mise..."
   case "${DISTRO:-}" in
     mac)
-      brew install fnm
+      brew install mise
       ;;
     arch|cachyos|archlabs|endeavouros|manjaro)
-      sudo pacman -S --needed --noconfirm fnm
+      sudo pacman -S --needed --noconfirm mise
       ;;
     *)
-      curl -fsSL https://fnm.vercel.app/install | bash
+      curl -fsSL https://mise.run | sh
       ;;
   esac
-  # Best-effort: provision a default Node so `npm` (for gitnexus) is on PATH.
-  if command -v fnm >/dev/null 2>&1; then
-    fnm install --latest 2>/dev/null || true
-    # eval the env so subsequent commands in this script see node/npm
-    eval "$(fnm env 2>/dev/null)" || true
-  fi
 }
 
+# --- language toolchains (go, java, node, rust) via mise.toml ---------------
+install_toolchains() {
+  echo "Installing language toolchains via mise..."
+  mise install
+}
+
+# --- gitnexus (npm global, needs node from mise) ----------------------------
+install_gitnexus() {
+  if mise exec -- gitnexus --version >/dev/null 2>&1; then
+    echo "GitNexus already installed."
+    return
+  fi
+  echo "Installing GitNexus..."
+  mise exec -- npm install -g gitnexus
+}
+
+# --- rtk (CLI proxy, not a language runtime) --------------------------------
 install_rtk() {
   if command -v rtk >/dev/null 2>&1; then
     echo "rtk already installed."
@@ -67,51 +91,9 @@ install_rtk() {
   esac
 }
 
-install_gitnexus() {
-  if command -v gitnexus >/dev/null 2>&1; then
-    echo "GitNexus already installed."
-    return
-  fi
-  if command -v npm >/dev/null 2>&1; then
-    echo "Installing GitNexus..."
-    npm install -g gitnexus
-  else
-    echo "npm not found, skipping GitNexus. Install Node first (fnm runs in setup_programing.sh)."
-  fi
-}
-
-case "${DISTRO:-}" in
-  mac)
-    install_fnm
-    curl -s "https://get.sdkman.io" | bash
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    install_gitnexus
-    install_rtk
-    ;;
-  arch|cachyos|archlabs|endeavouros|manjaro)
-    sudo pacman -S --needed --noconfirm base-devel python rustup
-    rustup default stable
-    install_fnm
-    curl -s "https://get.sdkman.io" | bash
-    install_gitnexus
-    install_rtk
-    ;;
-  debian|pop|ubuntu)
-    sudo apt install -y build-essential python3
-    install_fnm
-    curl -s "https://get.sdkman.io" | bash
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    install_gitnexus
-    install_rtk
-    ;;
-  *)
-    # fallback: try curl installers (no distro packages)
-    install_fnm
-    curl -s "https://get.sdkman.io" | bash || true
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y || true
-    install_gitnexus
-    install_rtk
-    ;;
-esac
+install_mise
+install_toolchains
+install_gitnexus
+install_rtk
 
 echo "Programming environment setup complete."

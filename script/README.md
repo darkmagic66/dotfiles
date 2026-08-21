@@ -11,13 +11,15 @@ install.sh
 │       ├── mac.sh             #   brew bundle (casks: vscode, zed, …)
 │       ├── debian.sh          #   fd-find→fd symlink; zed installer; vscode MS apt repo
 │       ├── arch.sh            #   pacman extras (waybar/yazi/awww/zed); yay auto-build; vscode-bin (AUR); services
-│       └── fedora.sh          #   zed installer; vscode MS dnf repo
+│       └── fedora.sh            #   zed installer; vscode MS dnf repo
 ├── 2. stow                    # symlink dotfiles (alacritty hypr ideavim kitty nvim opencode tmux waybar zsh)
+├── 3. setup_git.sh            # interactive git user.name/user.email (skipped in --update)
 ├── 3. setup_mac.sh            # macOS-only: Finder/trackpad/keyboard defaults (config, not packages)
 ├── 4. setup_fonts.sh         # symlink fonts into OS font dir
 ├── 5. setup_zsh.sh           # clone zsh plugins + tpm + chsh -s zsh
-├── 6. setup_programing.sh    # rustup, SDKMAN, GitNexus, rtk, fnm (OS-aware)
+├── 6. setup_programing.sh    # mise (go/java/node/rust), GitNexus, rtk (OS-aware)
 └── 7. setup_skills.sh        # init skill submodules + symlink skills into agent dirs
+└── 8. setup_rtk.sh           # activate rtk for opencode (installs opencode plugin)
 ```
 
 ## `setup_os/` vs top-level `setup_*.sh`
@@ -53,6 +55,9 @@ Installs `COMMON_PACKAGES` via the distro's package manager, then `source`s ever
 - **arch/cachyos**: pacman install (extras + services go in `setup_os/arch.sh`)
 - **fedora**: dnf install
 
+### `setup_git.sh`
+Prompts interactively for `user.name` and `user.email` if not already set in global git config. Idempotent — skips a key when already configured or when given empty input.
+
 ### `setup_os/arch.sh`
 Pacman extras for the Arch family: `waybar yazi awww brightnessctl wl-clipboard powerline-fonts ncdu playerctl udisks2 blueman zed` (all in official `extra` repo). Auto-builds **yay** from AUR if no AUR helper is present (CachyOS skips this — paru ships in its `[cachyos]` repo). Installs `visual-studio-code-bin` (MS binary) via the available helper. Enables system services (NetworkManager/bluetooth/cups/fstrim/udisks2 + conditional snapper). Runs `cachyos-rate-mirrors` on CachyOS. Optional commented Hyprland GUI packages (`waypaper nwg-look nwg-displays gtk4-layer-shell`).
 
@@ -79,11 +84,9 @@ Clones zsh plugins into `~/.config/zsh/plugins/` and tpm into `~/.config/tmux/pl
 - `--update`: `git pull --ff-only` in each plugin dir to get latest
 
 ### `setup_programing.sh`
-Installs dev toolchains (OS-aware):
-- **fnm** (Node version manager, in every branch, with best-effort default Node provisioning)
-- **rustup**: pacman on arch, curl script on mac/debian
-- **SDKMAN**: curl script on all OSes
-- **GitNexus**: `npm install -g gitnexus` (graceful skip if no npm yet)
+Installs dev toolchains via **mise** (single runtime manager, replaces fnm/rustup/SDKMAN):
+- **mise** manages go, java, node, rust from `~/dotfiles/mise.toml` — `mise install` provisions all
+- **GitNexus**: `mise exec -- npm install -g gitnexus` (uses mise's node)
 - **rtk**: paru/yay on arch, brew on mac, curl script as fallback
 
 ### `setup_skills.sh [--update]`
@@ -91,6 +94,9 @@ Inits skill submodules in `dotfiles/skills/` and symlinks each skill into agent 
 - `--update`: `git submodule update --remote --merge` first, then re-symlink
 
 See `../skills/README.md` for adding/removing/pinning skills.
+
+### `setup_rtk.sh`
+Activates rtk for opencode by running `rtk init -g --opencode --no-patch`, which installs the opencode plugin at `~/.config/opencode/plugins/rtk.ts`. The plugin auto-rewrites bash commands to their rtk equivalents for token savings. Idempotent — skips if the plugin is already up to date. Requires the rtk binary in PATH (installed by `setup_programing.sh`).
 
 ## Flags
 

@@ -6,6 +6,7 @@ brew 'tmux'
 brew 'jq'
 brew 'eza'
 brew 'gnupg'
+brew 'mise'
 
 # cask
 cask 'aldente'

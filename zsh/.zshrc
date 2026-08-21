@@ -15,31 +15,23 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export TMUX_PLUGIN_MANAGER_PATH=$XDG_CONFIG_HOME/tmux/plugins
 
 # --- PATH (idempotent, no duplicates) ---------------------------------------
+# Note: ~/go/bin and /usr/local/go/bin are added automatically by mise when go
+# is active, so they don't need to be listed here.
 typeset -U path
 path=(
   $HOME/.local/bin
-  $HOME/go/bin
-  /usr/local/go/bin
   $path
 )
 
-# --- Go ---------------------------------------------------------------------
-export GOPATH="$HOME/go"
-export GOBIN="$GOPATH/bin"
-
-# --- fnm (replaces deprecated zsh-nvm) --------------------------------------
-if command -v fnm >/dev/null 2>&1; then
-  eval "$(fnm env --use-on-cd --shell zsh)"
+# --- mise (manages go, java, node, rust via mise.toml) ----------------------
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
 fi
 
 # --- bun --------------------------------------------------------------------
 export BUN_INSTALL="$HOME/.bun"
 [[ -s "$BUN_INSTALL/_bun" ]] && source "$BUN_INSTALL/_bun"
 path=($BUN_INSTALL/bin $path)
-
-# --- SDKMAN (conditional - keep on all OSes, error-free when absent) --------
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
 
 # --- Aliases ----------------------------------------------------------------
 alias vim=nvim
@@ -49,23 +41,6 @@ alias ll="eza -l --git --group-directories-first"
 alias la="eza -la --git --group-directories-first"
 alias lt="eza --tree --level=2"
 alias lr="eza -l --sort=modified"
-
-# macOS-like `open` — opens files/urls in the default app
-# On Linux: directories open in yazi (TUI) via kitty; files/urls use xdg-open
-if [[ "$(uname)" == "Darwin" ]]; then
-  :  # macOS has `open` built-in
-else
-  function open() {
-    if [[ $# -eq 1 && -d "$1" ]] && command -v yazi >/dev/null 2>&1 && command -v kitty >/dev/null 2>&1; then
-      kitty --working-directory "$1" -e yazi
-    elif command -v xdg-open >/dev/null 2>&1; then
-      xdg-open "$@"
-    else
-      echo "open: no handler available (install yazi+kitty or xdg-open)" >&2
-      return 1
-    fi
-  }
-fi
 
 # --- zsh options ------------------------------------------------------------
 ZVM_VI_INSERT_ESCAPE_BINDKEY=jk
@@ -97,5 +72,3 @@ autoload -U compinit && compinit
 # --- Machine-specific overrides (not tracked in dotfiles) -------------------
 [[ -r $XDG_CONFIG_HOME/zsh/.zshrc.local ]] && source $XDG_CONFIG_HOME/zsh/.zshrc.local
 
-# bun completions
-[ -s "/home/shiro/.bun/_bun" ] && source "/home/shiro/.bun/_bun"

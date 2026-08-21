@@ -39,6 +39,7 @@ COMMON_PACKAGES=(
   eza
   kitty
   tree-sitter-cli
+  mise
 )
 
 install_mac() {

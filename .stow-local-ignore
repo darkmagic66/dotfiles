@@ -6,6 +6,7 @@ dog
 Brewfile
 README.md
 ZSH.md
+HYPRSUNSET-MIRROR-CTM.md
 ^/README.*
 ^/LICENSE.*
 ^/COPYING

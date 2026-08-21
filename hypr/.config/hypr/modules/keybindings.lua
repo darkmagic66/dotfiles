@@ -4,7 +4,7 @@
 local v = require("modules.vars")
 
 -- Example binds, see https://wiki.hypr.land/Configuring/Basics/Binds/ for more
-hl.bind(v.mainMod .. " + Q", hl.dsp.exec_cmd(v.terminal))
+hl.bind(v.mainMod .. " + T", hl.dsp.exec_cmd(v.terminal))
 local closeWindowBind = hl.bind(v.mainMod .. " + C", hl.dsp.window.close())
 -- closeWindowBind:set_enabled(false)
 hl.bind(v.mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))

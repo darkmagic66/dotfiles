@@ -30,7 +30,7 @@ cd ~/dotfiles
 - **zsh** (vim style): plugins (powerlevel10k, autosuggestions, completions, syntax-highlighting, vi-mode) + tmux plugin manager + `chsh -s zsh`
 - **Fonts** from `fonts/` symlinked into the OS font directory
 - **macOS defaults** (Finder/trackpad/keyboard/screenshots) on mac only
-- Programming toolchains via `setup_programing.sh`: rustup, SDKMAN, GitNexus, rtk, fnm
+- Programming toolchains via `setup_programing.sh`: mise (go/java/node/rust), GitNexus, rtk
 - Agent skills via `setup_skills.sh`: skills submodules symlinked into `~/.config/opencode/skills/`, `~/.claude/skills/`, `~/.codex/skills/`, `~/.agents/skills/`
 
 ## Layout
@@ -45,7 +45,7 @@ cd ~/dotfiles
 │   │   ├── mac.sh         #   brew bundle
 │   │   ├── debian.sh      #   fd symlink + zed installer + vscode MS apt repo
 │   │   └── fedora.sh      #   zed installer + vscode MS dnf repo
-│   ├── setup_programing.sh # rustup, SDKMAN, gitnexus, rtk, fnm
+│   ├── setup_programing.sh # mise (go/java/node/rust), GitNexus, rtk
 │   ├── setup_zsh.sh        # zsh plugins + tpm + chsh
 │   ├── setup_fonts.sh     # symlink fonts
 │   ├── setup_skills.sh    # skill submodules + symlinks

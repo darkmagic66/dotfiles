@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
+UPDATE=false
+[[ "${1:-}" == "--update" ]] && UPDATE=true
+
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
 
 echo "==================================="
@@ -52,7 +55,9 @@ chmod +x "$DOTFILES_DIR"/script/*.sh
 echo "==================================="
 echo "   Installing base packages...     "
 echo "==================================="
-"$DOTFILES_DIR/script/setup_basic.sh"
+if ! $UPDATE; then
+  "$DOTFILES_DIR/script/setup_basic.sh"
+fi
 
 # 4. GNU Stow
 if ! $UPDATE; then
@@ -70,7 +75,7 @@ if ! $UPDATE; then
   )
 fi
 
-if [ "$DISTRO" == "mac" ]; then
+if ! $UPDATE && [ "$DISTRO" == "mac" ]; then
   echo "Running macOS specific setup..."
   "$DOTFILES_DIR/script/setup_mac.sh"
 fi
@@ -81,10 +86,21 @@ echo "   Running post-install scripts   "
 echo "==================================="
 
 
-"$DOTFILES_DIR/script/setup_fonts.sh"
-"$DOTFILES_DIR/script/setup_zsh.sh" 
+if ! $UPDATE; then
+  "$DOTFILES_DIR/script/setup_fonts.sh"
+fi
+if $UPDATE; then
+  "$DOTFILES_DIR/script/setup_zsh.sh" --update
+else
+  "$DOTFILES_DIR/script/setup_zsh.sh"
+fi
 "$DOTFILES_DIR/script/setup_programing.sh"
-"$DOTFILES_DIR/script/setup_skills.sh" 
+if $UPDATE; then
+  "$DOTFILES_DIR/script/setup_skills.sh" --update
+else
+  "$DOTFILES_DIR/script/setup_skills.sh"
+fi
+"$DOTFILES_DIR/script/setup_rtk.sh"
 
 echo "==================================="
 echo "   Installation Complete!          "

@@ -23,6 +23,7 @@ ARCH_PACKAGES=(
   udisks2
   blueman
   zed
+  fuzzel
 )
 
 echo "Installing Arch extra packages (official repo)..."
