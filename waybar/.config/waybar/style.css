@@ -1,4 +1,4 @@
-/* Auto-generated from /home/shiro/dotfiles/wallpaper/nagato.jpg */
+/* Auto-generated from /home/yuki/dotfiles/wallpaper/background-nagato.jpg */
 * {
     font-family: "SFMono Nerd Font", "Symbols Nerd Font";
     font-size: 14px;
@@ -26,6 +26,7 @@ window#waybar {
 
 /* ---- Battery ---- */
 #battery          { padding: 0 10px; color: #FDFDFD; }
+#battery.full     { color: #a6e3a1; }
 #battery.charging { color: #a6e3a1; }
 #battery.plugged  { color: #f9e2af; }
 #battery.warning  { color: #fab387; }
@@ -36,6 +37,17 @@ window#waybar {
     animation-iteration-count: infinite;
 }
 
+/* ---- Network ---- */
+#network              { padding: 0 10px; color: #FDFDFD; }
+#network.disconnected { color: #989999; }
+#network.linked       { color: #234283; }
+
+/* ---- Bluetooth ---- */
+#bluetooth            { padding: 0 10px; color: #989999; }
+#bluetooth.on         { color: #FDFDFD; }
+#bluetooth.connected  { color: #234283; }
+#bluetooth.off        { color: #989999; }
+
 @keyframes blink {
     50% { color: rgba(1, 1, 2, 1); }
 }
@@ -44,4 +56,5 @@ window#waybar {
    base     #010102     mantle #04060A   text #FDFDFD     subtext #989999
    active #234283  urgent #f38ba8   hover #BBD1ED
    charge #a6e3a1 plug #f9e2af     warn #fab387  crit #f38ba8
+   net/bt states: normal=fg, dim=fg_dim, linked/connected=active
 */

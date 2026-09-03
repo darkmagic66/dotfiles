@@ -10,7 +10,7 @@ Slots produced (Catppuccin Mocha-compatible names):
 """
 import subprocess, sys, colorsys, os, json
 
-WALL = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser("~/dotfiles/wallpaper/nagato.jpg")
+WALL = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser("~/dotfiles/wallpaper/background-nagato.jpg")
 OUT  = sys.argv[2] if len(sys.argv) > 2 else os.path.expanduser("~/.config/waybar/style.css")
 
 def magick_colors(path, n=256, resize=256):
@@ -162,6 +162,7 @@ window#waybar {{
 
 /* ---- Battery ---- */
 #battery          {{ padding: 0 10px; color: #{fg}; }}
+#battery.full     {{ color: #{charging}; }}
 #battery.charging {{ color: #{charging}; }}
 #battery.plugged  {{ color: #{plugged}; }}
 #battery.warning  {{ color: #{warning}; }}
@@ -172,6 +173,17 @@ window#waybar {{
     animation-iteration-count: infinite;
 }}
 
+/* ---- Network ---- */
+#network              {{ padding: 0 10px; color: #{fg}; }}
+#network.disconnected {{ color: #{fg_dim}; }}
+#network.linked       {{ color: #{active}; }}
+
+/* ---- Bluetooth ---- */
+#bluetooth            {{ padding: 0 10px; color: #{fg_dim}; }}
+#bluetooth.on         {{ color: #{fg}; }}
+#bluetooth.connected  {{ color: #{active}; }}
+#bluetooth.off        {{ color: #{fg_dim}; }}
+
 @keyframes blink {{
     50% {{ color: {rgba(bg, 1)}; }}
 }}
@@ -180,6 +192,7 @@ window#waybar {{
    base     #{bg}     mantle #{bg_dim}   text #{fg}     subtext #{fg_dim}
    active #{active}  urgent #{urgent}   hover #{hover}
    charge #{charging} plug #{plugged}     warn #{warning}  crit #{critical}
+   net/bt states: normal=fg, dim=fg_dim, linked/connected=active
 */
 """
 

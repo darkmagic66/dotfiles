@@ -3,24 +3,54 @@
     "position": "top",
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["clock"],
-    "modules-right": ["battery"],
+    "modules-right": [
+        "bluetooth", 
+        "network", 
+        "hyprland/language",
+        "battery"
+    ],
 
+    "bluetooth": {
+        "format": "\uf293",
+        "format-on": "\uf293",
+        "format-off": "\uf293",
+        "format-connected": "\uf293  {device_alias}",
+        "tooltip-format": "{controller_alias}\t{status}",
+        "tooltip-format-connected": "{controller_alias}\n{num_connections} connected",
+        "on-click": "~/.config/waybar/scripts/bt-menu.sh",
+        "on-click-right": "~/.config/waybar/scripts/bt-menu.sh toggle"
+    },
 
+    "network": {
+        "format-wifi": "\uf1eb  {essid}",
+        "format-ethernet": "\uf1eb  {ipaddr}/{cidr}",
+        "format-linked": "\uf1eb  {ifname}",
+        "format-disconnected": "\uf1eb  Offline",
+        "tooltip-format-wifi": "{essid}  {signalStrength}%\n{ipaddr}/{cidr}",
+        "tooltip-format-ethernet": "{ifname}  {ipaddr}/{cidr}",
+        "on-click": "~/.config/waybar/scripts/wifi-menu.sh",
+        "on-click-right": "nmcli radio wifi toggle"
+    },
 
     "battery": {
         "format":         "{icon}  {capacity}%",
-        "format-charging": " {capacity}%",
-        "format-plugged":  " {capacity}%",
-        "format-full":     "  100%",
+        "format-charging": "\uf0e7 {icon}  {capacity}%",
+        "format-plugged":  "\uf0e7 {icon}  {capacity}%",
+        "format-full":     "\uf240  100%",
         "format-icons": {
-            "default":  ["", "", "", "", ""],
-            "charging": ["", "", "", "", ""]
+            "default":  ["\uf244", "\uf243", "\uf242", "\uf241", "\uf240"],
+            "charging": ["\uf244", "\uf243", "\uf242", "\uf241", "\uf240"]
         },
         "states": {
             "warning":  30,
             "critical": 15
         },
-        "tooltip-format": "{capacity}%"
+        "full-at": 95,
+        "interval": 5,
+        "tooltip-format":          "Discharging  {capacity}%\n{time} left",
+        "tooltip-format-charging": "Charging  {capacity}%\n{time} to full",
+        "tooltip-format-plugged":  "Plugged in  {capacity}%",
+        "tooltip-format-full":     "Full  {capacity}%"
     },
 
 
@@ -36,5 +66,11 @@
         "persistent-workspaces": {
             "*": 5
         }
+    },
+
+    "hyprland/language": {
+        "format": "{}",
+        "format-en": "EN",
+        "format-th": "TH"
     }
 }
