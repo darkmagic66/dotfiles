@@ -40,7 +40,7 @@ CavEMAN_SKILLS=(all)                     # juliusbrussee/caveman — take all (c
 SKILL_TISSUE_SKILLS=(backseat cvmn)      # skill-tissue/skills — pick backseat + cvmn (skip artai)
 
 # Plain folders (always installed, no submodule)
-CUSTOM_SKILLS=(karpathy-guidelines)
+CUSTOM_SKILLS=(karpathy-guidelines writing-process-reports)
 
 # --- Agent skill discovery dirs --------------------------------------------
 # Edit this list to add/remove agents. Each agent will get symlinks to every skill.
