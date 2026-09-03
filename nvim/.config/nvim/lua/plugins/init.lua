@@ -219,6 +219,14 @@ return {
     "OXY2DEV/markview.nvim",
     lazy = false,
     dependencies = { "nvim-treesitter/nvim-treesitter" },
+    -- Auto-render disabled; toggle manually with <leader>mt / <leader>mT
+    opts = {
+      preview = {
+        enable = false,
+        -- Default filetypes + html (html renderer = tag conceal + decoration, not full page render)
+        filetypes = { "markdown", "quarto", "rmd", "typst", "asciidoc", "html" },
+      },
+    },
   },
 
   -- Browser-based markdown preview (synchronized scrolling, KaTeX, mermaid, etc.).

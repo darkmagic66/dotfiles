@@ -48,6 +48,10 @@ end, { desc = "debug-go-last" })
 
 map("n", "<leader>z", "<cmd>ZenMode<CR>", { desc = "Toggle Zen Mode (Centered)" })
 
+map("n", "<leader>ob", function()
+  vim.fn.jobstart { "xdg-open", vim.fn.expand "%:p" }
+end, { desc = "Open file in browser" })
+
 -------------------- Markdown --------------------
 map("n", "<leader>mt", "<cmd>Markview toggle<CR>", { desc = "Markview toggle buffer" })
 map("n", "<leader>mT", "<cmd>Markview Toggle<CR>", { desc = "Markview toggle global" })
