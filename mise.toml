@@ -3,3 +3,7 @@ go = "latest"
 java = "latest"
 node = "latest"
 rust = "latest"
+
+# nvim LSP (vscode-html/css/json-language-server) — installed via npm backend
+"npm:vscode-langservers-extracted" = "latest"
+npm = "latest"
