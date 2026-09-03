@@ -23,6 +23,9 @@ path=(
   $path
 )
 
+# zoxide
+eval "$(zoxide init zsh)"
+
 # --- mise (manages go, java, node, rust via mise.toml) ----------------------
 if command -v mise >/dev/null 2>&1; then
   eval "$(mise activate zsh)"
@@ -33,7 +36,14 @@ export BUN_INSTALL="$HOME/.bun"
 [[ -s "$BUN_INSTALL/_bun" ]] && source "$BUN_INSTALL/_bun"
 path=($BUN_INSTALL/bin $path)
 
+# --- Editor -----------------------------------------------------------------
+export EDITOR=nvim
+export VISUAL=nvim
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+
 # --- Aliases ----------------------------------------------------------------
+alias vi=nvim
 alias vim=nvim
 alias vimdiff="nvim -d"
 alias ls="eza"
@@ -68,6 +78,12 @@ source $XDG_CONFIG_HOME/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $XDG_CONFIG_HOME/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 
 autoload -U compinit && compinit
+
+# --- Plugins ----------------------------------------------------------------
+# buffer editor 
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey '^x^e' edit-command-line
 
 # --- Machine-specific overrides (not tracked in dotfiles) -------------------
 [[ -r $XDG_CONFIG_HOME/zsh/.zshrc.local ]] && source $XDG_CONFIG_HOME/zsh/.zshrc.local
