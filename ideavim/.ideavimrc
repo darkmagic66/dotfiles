@@ -1,49 +1,63 @@
-" .ideavimrc is a configuration file for IdeaVim plugin. It uses
-"   the same commands as the original .vimrc configuration.
-" You can find a list of commands here: https://jb.gg/h38q75
-" Find more examples here: https://jb.gg/share-ideavimrc
+" IdeaVim config — NvChad style
+" Command list: https://jb.gg/h38q75  |  Examples: https://jb.gg/share-ideavimrc
 
-" Source your .vimrc
-source ~/.vimrc
-
+" ---- base ----
 set clipboard+=unnamed
 set clipboard+=ideaput
-
 set scrolloff=5
-
 set number
 set relativenumber
 set incsearch
 set ignorecase
-
-
+set smartcase
+set hlsearch
+set nowrap
 set visualbell
 set timeoutlen=100
-set wrap
 
-" deafualt remap
+" ---- leader / insert ----
 let mapleader=" "
-inoremap  jk <Esc>
-nmap <leader>f <Action>(GotoFile)
-nnoremap <leader>gd <Action>(GotoDeclaration)
+inoremap jk <Esc>
 
-"plug remap
+" ---- save / search ----
+nnoremap <silent> <C-s> <Action>(SaveAll)
+inoremap <C-s> <Esc><Action>(SaveAll)
+nnoremap <silent> <Esc> :noh<CR>
+
+" ---- files ----
+nnoremap <leader>ff <Action>(GotoFile)
+nnoremap <leader>fw <Action>(FindInPath)
+nnoremap <leader>fs <Action>(FileStructurePopup)
+nnoremap <leader>e  :NERDTreeToggle<CR>
+
+" ---- tabs / buffers ----
+nnoremap <Tab>     <C-^>
+nnoremap <S-l>     <Action>(NextTab)
+nnoremap <S-h>     <Action>(PreviousTab)
+nnoremap <leader>x <Action>(CloseEditor)
+
+" ---- windows ----
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" ---- LSP-like IDE actions ----
+nnoremap <leader>gd <Action>(GotoDeclaration)
+nnoremap <leader>gi <Action>(GotoImplementation)
+nnoremap <leader>gt <Action>(GotoTypeDeclaration)
+nnoremap <leader>gr <Action>(FindUsages)
+nnoremap <leader>rn <Action>(RenameElement)
+nnoremap <leader>ca <Action>(ShowIntentionActions)
+nnoremap <leader>fm <Action>(ReformatCode)
+nnoremap ]d         <Action>(GotoNextError)
+nnoremap [d         <Action>(GotoPrevError)
+
+" ---- plugins ----
 set commentary
 set sneak
 set highlightedyank
 set nerdtree
 set surround
 
-nmap <leader>fe :NERDTreeToggle<CR>
-
-" --- Enable IdeaVim plugins https://jb.gg/ideavim-plugins
-
-"" -- Map IDE actions to IdeaVim -- https://jb.gg/abva4t
-"" Map \r to the Reformat Code action
-"map \r <Action>(ReformatCode)
-
-"" Map <leader>d to start debug
-"map <leader>d <Action>(Debug)
-
-"" Map \b to toggle the breakpoint on the current line
-"map \b <Action>(ToggleLineBreakpoint)
+nmap <leader>/ <Plug>Commentary
