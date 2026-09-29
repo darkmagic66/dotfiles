@@ -16,8 +16,8 @@ cd ~/dotfiles
 
 ### Packages (per OS)
 - **All OSes (COMMON)**: tmux, htop, fd, fzf, bat, ripgrep, jq, neovim, git, stow, zsh, zip, unzip, curl, wget, git-delta, zoxide, eza, kitty
-- **Arch family**: waybar, yazi, awww, brightnessctl, wl-clipboard, powerline-fonts, ncdu, playerctl, udisks2, blueman, zed + services (NetworkManager/bluetooth/cups/fstrim/udisks2)
-- **macOS**: the Brewfile (aldente, alacritty, kitty, firefox, vscode, zed)
+- **Arch family**: waybar, yazi, awww, brightnessctl, wl-clipboard, powerline-fonts, ncdu, playerctl, udisks2, blueman, zed, xxh (AUR) + services (NetworkManager/bluetooth/cups/fstrim/udisks2)
+- **macOS**: the Brewfile (aldente, alacritty, kitty, firefox, vscode, zed, xxh)
 - **Debian/Fedora**: zed installer + Microsoft's apt/dnf repo for vscode
 
 ### Editors
@@ -26,8 +26,9 @@ cd ~/dotfiles
 - **vscode** (Visual Studio Code)
 
 ### Other setup
-- **Stow** symlinks the config dirs into `$HOME`: `alacritty hypr ideavim kitty nvim opencode tmux waybar zsh`
+- **Stow** symlinks the config dirs into `$HOME`: `alacritty hypr ideavim kitty nvim opencode tmux waybar xxh zsh`
 - **zsh** (vim style): plugins (powerlevel10k, autosuggestions, completions, syntax-highlighting, vi-mode) + tmux plugin manager + `chsh -s zsh`
+- **xxh**: portable shell over ssh — `~/.config/xxh/config.xxhc` pins `+s zsh`, powerlevel10k + zoxide plugins; use `xxh <host>` instead of `ssh <host>` (target hosts: Linux x86_64)
 - **Fonts** from `fonts/` symlinked into the OS font directory
 - **macOS defaults** (Finder/trackpad/keyboard/screenshots) on mac only
 - Programming toolchains via `setup_programing.sh`: mise (go/java/node/rust), GitNexus, rtk

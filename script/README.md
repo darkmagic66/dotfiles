@@ -10,9 +10,9 @@ install.sh
 │   └── setup_os/<distro>.sh   # distro-specific extras (self-guarded extensions)
 │       ├── mac.sh             #   brew bundle (casks: vscode, zed, …)
 │       ├── debian.sh          #   fd-find→fd symlink; zed installer; vscode MS apt repo
-│       ├── arch.sh            #   pacman extras (waybar/yazi/awww/zed); yay auto-build; vscode-bin (AUR); services
+│       ├── arch.sh            #   pacman extras (waybar/yazi/awww/zed); yay auto-build; vscode-bin + python-xxh (AUR); services
 │       └── fedora.sh            #   zed installer; vscode MS dnf repo
-├── 2. stow                    # symlink dotfiles (alacritty hypr ideavim kitty nvim opencode tmux waybar zsh)
+├── 2. stow                    # symlink dotfiles (alacritty hypr ideavim kitty nvim opencode tmux waybar xxh zsh)
 ├── 3. setup_git.sh            # interactive git user.name/user.email (skipped in --update)
 ├── 3. setup_mac.sh            # macOS-only: Finder/trackpad/keyboard defaults (config, not packages)
 ├── 4. setup_fonts.sh         # symlink fonts into OS font dir
