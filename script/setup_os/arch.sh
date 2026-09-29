@@ -55,6 +55,22 @@ else
   echo "Warning: no AUR helper (yay/paru) found. Install manually: yay -S visual-studio-code-bin"
 fi
 
+# --- xxh (portable shell over ssh, AUR) --------------------------------------
+# NOTE: xxh-git AUR pkg is broken — its PKGBUILD calls setup.py which upstream
+# removed. python-xxh builds correctly via python-build (PEP 517), but its
+# makedepends miss python-setuptools (--no-isolation needs the build backend
+# in system python), so it's installed explicitly above.
+if ! pacman -Q python-setuptools >/dev/null 2>&1; then
+  sudo pacman -S --needed --noconfirm python-setuptools
+fi
+if command -v paru >/dev/null 2>&1; then
+  paru -S --needed --noconfirm python-xxh
+elif command -v yay >/dev/null 2>&1; then
+  yay -S --needed --noconfirm python-xxh
+else
+  echo "Warning: no AUR helper (yay/paru) found. Install manually: yay -S python-xxh"
+fi
+
 # --- Enable system services for Hyprland session (best-effort) -------------
 echo "Enabling system services..."
 sudo systemctl enable --now \

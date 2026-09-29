@@ -76,7 +76,7 @@ if ! $UPDATE; then
     echo "==================================="
     echo "      Running Stow Process         "
     echo "==================================="
-    stow alacritty gtk hypr ideavim kitty nvim opencode qt tmux waybar zsh
+    stow alacritty gtk hypr ideavim kitty nvim opencode qt tmux waybar xxh zsh
   )
 fi
 

@@ -1,0 +1,12 @@
+# xxh config file — https://github.com/xxh/xxh/wiki#config-file
+# Lets you run `xxh <host>` with these args pre-applied.
+# `hosts` keys are hostnames or regex patterns; all matching sections merge,
+# later sections overwrite earlier options.
+
+hosts:
+  ".*":
+    +s: zsh               # portable zsh shell on the host
+    +i:                   # install xxh on first connect without yes/no question
+    +I:                   # packages installed locally and uploaded on connect
+      - xxh-plugin-zsh-powerlevel10k
+      - xxh-plugin-prerun-zoxide

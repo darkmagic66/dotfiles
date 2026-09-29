@@ -7,6 +7,7 @@ brew 'jq'
 brew 'eza'
 brew 'gnupg'
 brew 'mise'
+brew 'xxh'
 
 # cask
 cask 'aldente'
