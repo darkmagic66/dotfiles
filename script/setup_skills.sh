@@ -32,6 +32,7 @@ MATTP0COCK_SKILLS=(
   engineering/implement
   engineering/to-spec
   engineering/to-tickets
+  engineering/wayfinder
   engineering/setup-matt-pocock-skills
 )
 
