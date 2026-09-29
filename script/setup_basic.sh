@@ -38,6 +38,7 @@ COMMON_PACKAGES=(
   git-delta
   eza
   kitty
+  lazygit
   tree-sitter-cli
   mise
 )
