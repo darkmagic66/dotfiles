@@ -28,6 +28,19 @@ Every explained thing — tool, pattern, feature, concept — gets all five sect
 4. **Minimal example** — smallest real snippet or sketch showing it in use.
 5. **Alternatives** — other things solving the same problem, one line each on how they differ.
 
+### Example rule — every concept gets runnable code
+
+Every section-4 example must be real, runnable code in the user's stack — not pseudocode, not `/* ... */` ellipses, not a prose description of what code would look like. A snippet the reader cannot paste in and run has failed.
+
+When the explained thing has distinct variants or kinds (e.g. test doubles → dummy/stub/spy/mock/fake; design patterns → their implementations), give **each variant its own example**, and where feasible:
+
+- Use **one shared scenario across all variants** (same domain objects, same function under test) so the examples differ only in the concept being shown — this makes the variant differences visible by contrast.
+- Show the code under test **and** the test/assertion or usage, so the reader sees both the setup and what it buys.
+- After the variants, include a **summary table** mapping each variant to the concrete need it serves ("use X when the test asserts on returned state, Y when the outcome is a side effect").
+- Follow with one or two sentences on where the taxonomy blurs in real libraries (e.g. `vi.fn()` is a spy you promote to a mock), so the theory maps onto the tools the reader actually has.
+
+Keep each variant example self-contained: a reader landing on just the stub section should understand it without scrolling up.
+
 For comparisons ("X vs Y"), also end with a **Verdict**: "Choose X when [condition]. Choose Y when [condition]." Concrete conditions, both sides stated. Never "both are great" or a bare "it depends".
 
 ## Rules
