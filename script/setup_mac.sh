@@ -63,9 +63,8 @@ defaults -currentHost write NSGlobalDomain com.apple.scrollwheel.scaling -float 
 
 # Dock icon size, pixels (default 48; 36 and below shrink dock a lot)
 defaults write com.apple.dock tilesize -int 36
-# Dock magnification (cursor-hover zoom) — on with max size 64
-defaults write com.apple.dock magnification -bool true
-defaults write com.apple.dock largesize -int 64
+# Dock magnification (cursor-hover zoom) — off; static icons only
+defaults write com.apple.dock magnification -bool false
 
 # Display scaling ("More Space") can NOT be set with `defaults` on Apple
 # Silicon. Either pick it manually once (System Settings → Displays), or:
