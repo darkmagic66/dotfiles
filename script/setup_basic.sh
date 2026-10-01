@@ -25,8 +25,14 @@ _PRESET_DISTRO="${DISTRO:-}"
 source "${SCRIPT_DIR}/../bootstrap.d/lib/common.sh"
 # shellcheck source=/dev/null
 source "${SCRIPT_DIR}/../bootstrap.d/lib/manifest.sh"
+# shellcheck source=/dev/null
+source "${SCRIPT_DIR}/../bootstrap.d/lib/hosts.sh"
 DISTRO="${_PRESET_DISTRO}"
 export DISTRO
+
+# Resolve ROLE before any adapter runs; brew's role gating depends on it.
+# A pre-set ROLE env is honored by resolve_role (skips prompt/table lookup).
+resolve_role
 
 # --- Package adapters (self-guarded) ------------------------------------------
 # Packages live in packages/manifest.yaml; per-OS adapters live in
@@ -44,23 +50,17 @@ case "$DISTRO" in
   arch|cachyos|archlabs|endeavouros|manjaro)
     run_arch_install
     ;;
-  debian|pop|ubuntu|fedora|mac|windows)
-    # TEMP shim while adapters land wave-by-wave; warn (not die) and skip.
-    case "$DISTRO" in
-      mac) f="run_mac_install"         ;;
-      fedora) f="run_fedora_install"   ;;
-      windows) f="run_windows_install" ;;
-      *) f="run_debian_install"        ;;
-    esac
-    if declare -F "$f" >/dev/null 2>&1; then
-      "$f"
-    elif [[ "$DISTRO" == "mac" ]]; then
-      warn "brew adapter not ready (bootstrap.d/lib/adapters/brew.sh pending); skipping package install"
-      exit 0
-    else
-      warn "$f not ready (adapter pending); skipping package install"
-      exit 0
-    fi
+  debian|pop|ubuntu)
+    run_debian_install
+    ;;
+  fedora)
+    run_fedora_install
+    ;;
+  mac)
+    run_mac_install
+    ;;
+  windows)
+    run_windows_install
     ;;
   *)
     echo "Unsupported OS/Distro: $DISTRO"

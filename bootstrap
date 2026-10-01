@@ -11,6 +11,10 @@ UPDATE="false"
 
 case "${1:-}" in
   packages)
+    if [ -n "${2:-}" ]; then
+      echo "Usage: bootstrap packages" >&2
+      exit 1
+    fi
     echo "==================================="
     echo "   Installing base packages...     "
     echo "==================================="

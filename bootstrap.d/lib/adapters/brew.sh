@@ -45,7 +45,14 @@ run_mac_install() {
   local role_groups=""
   [[ "${ROLE:-}" == "personal" ]] && role_groups="role_personal"
   for group in macos_casks $role_groups; do
-    group_names="$(manifest_packages "$group")" || true
+    # CORE group: real resolution failure must not silently skip the cask
+    # install. ROLE groups stay tolerant (legitimately absent/empty by role).
+    if [[ "$group" == "macos_casks" ]]; then
+      group_names="$(manifest_packages "$group")" \
+        || die "manifest: cannot resolve cask group '$group'; no packages installed"
+    else
+      group_names="$(manifest_packages "$group")" || true
+    fi
     [ -z "$group_names" ] && continue
     for name in $group_names; do
       casks+="${casks:+ }${name}"

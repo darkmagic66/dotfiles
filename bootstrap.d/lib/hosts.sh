@@ -26,18 +26,22 @@ declare -A HOST_ROLE=(
   ["windows-pc"]=personal
 )
 
-ROLE=""
 _dotf_role_valid() {
   [[ "$1" == "personal" || "$1" == "company" ]]
 }
 
-_dotf_role_persist() {
-  mkdir -p "$(dirname -- "$_dotf_role_persist_file")"
-  printf '%s\n' "$ROLE" >"$_dotf_role_persist_file"
-}
-
 # resolve_role → sets global ROLE=personal|company.
 resolve_role() {
+  local role_file
+  role_file="$(_dotf_role_persist_file)"
+
+  # 0. pre-set ROLE env is honored (skips prompt/table; caller knows the role)
+  if [[ -n "${ROLE:-}" ]]; then
+    if _dotf_role_valid "$ROLE"; then
+      return 0
+    fi
+    warn "ignoring invalid ROLE env '$ROLE'"
+  fi
   ROLE=""
   local role_file
   role_file="$(_dotf_role_persist_file)"
