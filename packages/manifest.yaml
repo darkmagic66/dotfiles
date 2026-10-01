@@ -57,7 +57,6 @@ macos_extra:    # brew formulas beyond common
   - tldr
   - asciinema
   - anomalyco/tap/opencode-v2   # opencode v2 (tap formula; mac only)
-  - smudge/smudge/nightlight    # Night Shift CLI (no native defaults key; mac only)
 
 # (curl_scripts group retired — every supported OS now has a package-manager
 # route: arch = AUR opencode2-bin, mac = brew tap formula)

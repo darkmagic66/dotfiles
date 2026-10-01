@@ -88,16 +88,12 @@ dflt com.apple.dock tilesize -int 36
 # Dock magnification (cursor-hover zoom) — off; static icons only
 dflt com.apple.dock magnification -bool false
 
-# Night Shift: sunset → sunrise every night. There is NO native `defaults`
-# key for this (the CoreBrightness daemon ignores direct plist writes), so
-# this goes through the `nightlight` CLI (manifest macos_extra).
-# Want the screen warm 24/7 instead? Run once:
-#   nightlight schedule 0:00 23:59
-if command -v nightlight >/dev/null 2>&1; then
-  nightlight schedule start || echo "warning: nightlight schedule failed"
-else
-  echo "warning: nightlight not installed; skipping Night Shift schedule"
-fi
+# Night Shift (always on): intentionally NOT scripted. Apple exposes no
+# `defaults` key for it — the CoreBrightness daemon ignores direct plist
+# writes, so a script can only drive it via a third-party CLI. Manual steps
+# (once, persists across installs):
+#   System Settings → Displays → Night Shift → Schedule: Custom,
+#   From 12:00 AM To 11:59 PM (≈ always on), plus color-temperature slider.
 
 # Display scaling ("More Space") can NOT be set with `defaults` on Apple
 # Silicon. Either pick it manually once (System Settings → Displays), or:
