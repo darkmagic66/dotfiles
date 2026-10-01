@@ -12,14 +12,14 @@ install.sh
 │       ├── debian.sh          #   fd-find→fd symlink; zed installer; vscode MS apt repo
 │       ├── arch.sh            #   pacman extras (waybar/yazi/awww/zed); yay auto-build; vscode-bin + python-xxh (AUR); services
 │       └── fedora.sh            #   zed installer; vscode MS dnf repo
-├── 2. stow                    # symlink dotfiles (alacritty hypr ideavim kitty nvim opencode tmux waybar xxh zsh)
-├── 3. setup_git.sh            # interactive git user.name/user.email (skipped in --update)
-├── 3. setup_mac.sh            # macOS-only: Finder/trackpad/keyboard defaults (config, not packages)
-├── 4. setup_fonts.sh         # symlink fonts into OS font dir
-├── 5. setup_zsh.sh           # clone zsh plugins + tpm + chsh -s zsh
-├── 6. setup_programing.sh    # mise (go/java/node/rust), GitNexus, rtk (OS-aware)
-└── 7. setup_skills.sh        # init skill submodules + symlink skills into agent dirs
-└── 8. setup_rtk.sh           # activate rtk for opencode (installs opencode plugin)
+├── 2. setup_git.sh             # interactive git user.name/user.email (skipped in --update)
+├── 3. stow                     # common pkgs everywhere (zsh tmux nvim kitty alacritty ideavim opencode xxh); mac skips, non-mac also stows linux/: hypr waybar gtk qt fontconfig
+├── 4. setup_mac.sh             # macOS-only: Finder/trackpad/keyboard defaults (config, not packages)
+├── 5. setup_fonts.sh         # symlink fonts into OS font dir
+├── 6. setup_zsh.sh           # clone zsh plugins + tpm + chsh -s zsh
+├── 7. setup_programing.sh    # mise (go/java/node/rust), GitNexus, rtk (OS-aware)
+├── 8. setup_skills.sh        # init skill submodules + symlink skills into agent dirs
+└── 9. setup_rtk.sh           # activate rtk for opencode (installs opencode plugin)
 ```
 
 ## `setup_os/` vs top-level `setup_*.sh`
@@ -68,7 +68,7 @@ Creates the `fd` symlink, installs Zed via the official installer, and installs 
 Installs Zed via the official installer and VS Code (MS binary) from Microsoft's dnf repo.
 
 ### `setup_os/mac.sh`
-Runs `brew bundle --file="$DOTFILES_DIR/Brewfile"` — casks (vscode, zed, firefox, alacritty, kitty, aldente) and brews (git, zsh, stow, tmux, jq, eza, gnupg). `fnm` is intentionally not in the Brewfile — installed by `setup_programing.sh`.
+Runs `brew bundle --file="$DOTFILES_DIR/Brewfile"` — casks (vscode, zed, firefox, alacritty, kitty, aldente) and brews (git, zsh, stow, tmux, jq, eza, gnupg). Brewfile is the single source of mac packages — `setup_basic.sh`'s mac branch only bootstraps brew.
 
 ### `setup_mac.sh`
 macOS system **defaults** (Finder, trackpad, keyboard, screenshots). Only called on macOS. Distinct from `setup_os/mac.sh` which installs packages.

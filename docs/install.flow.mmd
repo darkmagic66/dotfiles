@@ -26,17 +26,19 @@ flowchart TD
     OsMatch -- "arch family" --> ArchSh["<b>setup_os/arch.sh</b><br/>pacman extras: waybar/yazi/awww/<br/>brightnessctl/wl-clipboard/zed/...<br/>yay auto-build if no helper<br/>yay/paru -S vscode-bin (AUR)<br/>systemctl enable services<br/>cachyos-rate-mirrors"]
     OsMatch -- fedora --> FedSh["<b>setup_os/fedora.sh</b><br/>zed installer<br/>vscode MS dnf repo"]
 
-    MacSh --> S2
-    DebSh --> S2
-    ArchSh --> S2
-    FedSh --> S2
-    S1Skip --> S2
+    MacSh --> GitID
+    DebSh --> GitID
+    ArchSh --> GitID
+    FedSh --> GitID
+    S1Skip --> GitID
+    GitID["<b>setup_git.sh</b><br/>interactive user.name/email<br/>(skipped in --update)"]
+    GitID --> S2
 
     %% Phase 4: stow
     S2{UPDATE?} -- yes --> S2Skip[skip stow]
     S2 -- no --> StowCheck{stow installed?}
     StowCheck -- no --> Die2([exit 1])
-    StowCheck -- yes --> Stow["<b>stow</b> alacritty hypr ideavim<br/>kitty nvim opencode tmux waybar zsh"]
+    StowCheck -- yes --> Stow["<b>stow</b> zsh tmux nvim kitty alacritty ideavim opencode xxh<br/>+ stow -d linux: hypr waybar gtk qt fontconfig (non-mac)"]
     Stow --> S3
     S2Skip --> S3
 
@@ -52,9 +54,12 @@ flowchart TD
     S4Skip --> Zsh
 
     Zsh["<b>setup_zsh.sh</b><br/>+ --update if set<br/>clone p10k/autosuggestions/<br/>syntax-hi/vi-mode + tpm<br/>chsh -s zsh"]
-    Zsh --> Prog["<b>setup_programing.sh</b><br/>install_fnm (pacman/brew/curl)<br/>rustup + SDKMAN curl scripts<br/>install_gitnexus (npm -g)<br/>install_rtk (paru/yay/brew/curl)"]
+    Zsh --> Prog["<b>setup_programing.sh</b><br/>mise: go/java/node/rust from mise.toml<br/>install_gitnexus (npm -g)<br/>install_rtk (paru/yay/brew/curl)"]
     Prog --> Skills["<b>setup_skills.sh</b><br/>+ --update if set<br/>git submodule update --init<br/>symlink skills into<br/>opencode/claude/codex/.agents"]
-    Skills --> Done([Installation Complete!])
+    Skills --> Done
+
+    Skills --> RTK["<b>setup_rtk.sh</b><br/>rtk init -g --opencode"]
+    RTK --> Done([Installation Complete!])
 
     %% styling
     classDef skipNode fill:#3a3a3a,color:#aaa,stroke:#555,stroke-dasharray:3 3
@@ -67,4 +72,4 @@ flowchart TD
     class Die1,Die2 dieNode
     class Basic,OsDir basicNode
     class MacSh,DebSh,ArchSh,FedSh,MacDefaults osNode
-    class Stow,Fonts,Zsh,Prog,Skills postNode
+    class Stow,Fonts,Zsh,Prog,Skills,RTK postNode
