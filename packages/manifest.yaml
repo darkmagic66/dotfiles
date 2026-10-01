@@ -42,6 +42,7 @@ linux:     # pacman; arch-family only
   - notion-app-electron
   - firefox
   - brave-bin
+  - opencode2-bin
 
 macos_casks:    # brew --cask
   - alacritty
@@ -55,6 +56,10 @@ macos_extra:    # brew formulas beyond common
   - xxh
   - tldr
   - asciinema
+  - anomalyco/tap/opencode-v2   # opencode v2 (tap formula; mac only)
+
+# (curl_scripts group retired — every supported OS now has a package-manager
+# route: arch = AUR opencode2-bin, mac = brew tap formula)
 
 role_personal:  # aldente moved out of macos_casks: personal only
   - aldente
