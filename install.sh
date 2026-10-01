@@ -76,7 +76,13 @@ if ! $UPDATE; then
     echo "==================================="
     echo "      Running Stow Process         "
     echo "==================================="
-    stow alacritty gtk hypr ideavim kitty nvim opencode qt tmux waybar xxh zsh
+    # Common packages: stowed on every platform
+    stow zsh tmux nvim kitty alacritty ideavim opencode xxh
+    # Linux/Wayland-only packages; mac skips them
+    if [ "$DISTRO" != "mac" ]; then
+      stow -d linux hypr waybar gtk qt fontconfig
+    fi
+    # mac-specific packages: none yet — add `stow -d mac <pkg>` here
   )
 fi
 
