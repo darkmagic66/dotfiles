@@ -1,41 +1,62 @@
 # Scripts
 
-Called by `../install.sh` in order. Each script is standalone and idempotent (safe to re-run).
+Called by `./bootstrap` (full flow) in order. Each script is standalone and idempotent (safe to re-run).
 
 ## Execution order
 
+`bootstrap` → full flow lives in `bootstrap.d/lib/full.sh` (packages & steps) and `bootstrap.d/lib/config.sh` (stow stage).
+
 ```
-install.sh
-├── 1. setup_basic.sh          # COMMON packages (all OS) + source setup_os/*.sh
-│   └── setup_os/<distro>.sh   # distro-specific extras (self-guarded extensions)
-│       ├── mac.sh             #   brew bundle (casks: vscode, zed, …)
-│       ├── debian.sh          #   fd-find→fd symlink; zed installer; vscode MS apt repo
-│       ├── arch.sh            #   pacman extras (waybar/yazi/awww/zed); yay auto-build; vscode-bin + python-xxh (AUR); services
-│       └── fedora.sh            #   zed installer; vscode MS dnf repo
-├── 2. setup_git.sh             # interactive git user.name/user.email (skipped in --update)
-├── 3. stow                     # common pkgs stowed on EVERY platform (zsh tmux nvim kitty alacritty ideavim opencode xxh); on non-mac additionally: stow -d linux hypr waybar gtk qt fontconfig; on mac: none extra yet
-├── 4. setup_mac.sh             # macOS-only: Finder/trackpad/keyboard defaults (config, not packages)
-├── 5. setup_fonts.sh         # symlink fonts into OS font dir
-├── 6. setup_zsh.sh           # clone zsh plugins + tpm + chsh -s zsh
-├── 7. setup_programing.sh    # mise (go/java/node/rust), GitNexus, rtk (OS-aware)
-├── 8. setup_skills.sh        # init skill submodules + symlink skills into agent dirs
-└── 9. setup_rtk.sh           # activate rtk for opencode (installs opencode plugin)
+bootstrap / bootstrap --update
+├── 0. lib bootstrap            # common.sh: OS/DISTRO detect, exports
+├── 1. internet check           # curl github.com (exit 1 if unreachable)
+├── 2. setup_basic.sh           # manifest → distro adapter  (skipped in --update)
+│   └── adapters/<os>.sh        # pacman | brew | debian | fedora | win(sketch)
+│       (brew: brew bootstrap → shellenv eval → update → formulas → casks,
+│        formulas = manifest common + macos_extra minus curl;
+│        casks = manifest macos_casks + role_personal/aldente when ROLE=personal)
+├── 3. setup_git.sh             # interactive git user.name/user.email (skipped in --update)
+├── 4. config.sh (stow)         # stow common pkgs on EVERY platform
+│   │                           #   (zsh tmux nvim kitty alacritty ideavim opencode xxh);
+│   │                           #   non-mac: stow -d linux hypr waybar gtk qt fontconfig;
+│   │                           #   roles/<role> stow only when it holds real content
+│   │                           #   (gitkeep-only dir is skipped — never plants .gitkeep in $HOME)
+│   └── resolve_role            # hosts.sh: ~/.config/dotfiles/role → HOST_ROLE lookup → prompt
+│                               # (config.sh resolves the role BEFORE stowing, via hosts.sh)
+├── 5. setup_mac.sh             # macOS-only: Finder/trackpad/keyboard defaults (skipped in --update)
+├── 6. setup_fonts.sh           # symlink fonts into OS font dir (skipped in --update)
+│                               #   fonts run AFTER stow, BEFORE zsh
+├── 7. setup_zsh.sh             # clone zsh plugins + tpm + chsh -s zsh (--update mode in --update)
+├── 8. setup_programing.sh      # mise (go/java/node/rust), GitNexus, rtk — RTK LAST
+├── 9. setup_skills.sh          # init skill submodules + symlink skills into agent dirs
+└── 10. setup_rtk.sh            # activate rtk for opencode (installs opencode plugin)
 ```
 
-## `setup_os/` vs top-level `setup_*.sh`
+Exact step order is the code of `bootstrap.d/lib/full.sh` + `bootstrap.d/lib/config.sh`.
 
-- **`setup_os/<distro>.sh`** = installs **packages** for that distro family (pacman / brew / apt / dnf / AUR helper / curl installer). Sourced by `setup_basic.sh` via `source setup_os/*.sh` — one file per distro family, each self-guarded.
-- **Top-level `setup_*.sh`** = other concerns: `setup_zsh.sh` (plugins + chsh), `setup_fonts.sh` (fonts), `setup_skills.sh` (agent skill submodules), `setup_programing.sh` (toolchains), `setup_mac.sh` (macOS system **defaults** — config, not packages).
+## Adapters (`bootstrap.d/lib/adapters/`)
 
-So on mac: `setup_os/mac.sh` runs `brew bundle` (packages), and `setup_mac.sh` runs `defaults write …` (Finder/trackpad config). Two distinct jobs → two files.
+- **`bootstrap.d/lib/adapters/<os>.sh`** = installs **packages** for that OS family, reading `packages/manifest.yaml` (single source of truth — no package lists in scripts):
 
-## Self-guard pattern (Go-tag style)
+| Adapter | OS family | What it installs |
+|---|---|---|
+| `pacman.sh` | arch/cachyos/eos/… | pacman (manifest `common` + `linux`); paru AUR helper bootstrap; VS Code (`visual-studio-code-bin`) + `python-xxh` from AUR; systemctl services; `cachyos-rate-mirrors` on CachyOS |
+| `brew.sh` | macOS | brew if missing → `shellenv` eval → `brew update` → formulas (`common` + `macos_extra`, skip `curl`) → casks (`macos_casks` + `role_personal` Aldente when personal) |
+| `debian.sh` | Debian/Ubuntu | fd-find→fd symlink, zed installer, VS Code MS apt repo |
+| `fedora.sh` | Fedora | zed installer, VS Code MS dnf repo |
+| `win.sh` | Windows | winget sketch — prints only, not wired up yet |
 
-Each `setup_os/<distro>.sh` begins with a "build tag" — it's a no-op when sourced for the wrong distro:
+- **Top-level `script/setup_*.sh`** = other concerns: `setup_zsh.sh` (plugins + chsh), `setup_fonts.sh` (fonts), `setup_skills.sh` (agent skill submodules), `setup_programing.sh` (toolchains), `setup_mac.sh` (macOS system **defaults** — config, not packages).
+
+So on mac: the brew adapter installs packages (formulas + casks), while `setup_mac.sh` runs `defaults write …` (Finder/trackpad config). Two distinct jobs → two files.
+
+## Self-guard pattern
+
+Each `bootstrap.d/lib/adapters/<os>.sh` begins with a "build tag" — it defines nothing when sourced for the wrong OS:
 
 ```bash
 case "${DISTRO:-}" in
-  arch|cachyos|archlabs|endeavouros|manjaro) ;;
+  mac) ;;
   *)
     [[ "${BASH_SOURCE[0]:-${0}}" == "${0}" ]] && exit 0 || return 0 ;;
 esac
@@ -43,36 +64,24 @@ esac
 
 The `BASH_SOURCE[0] == $0` test distinguishes "executed directly" (exit) from "sourced" (return), so each file is also runnable standalone for testing.
 
-**Adding a new distro family** = drop a new `bootstrap.d/lib/adapters/<family>.sh` with its own `${DISTRO}` guard. No central `case` to update — `setup_basic.sh`'s `source bootstrap.d/lib/adapters/*.sh` glob picks it up automatically.
+**Adding a new OS family** = drop a new `bootstrap.d/lib/adapters/<family>.sh` with its own `${DISTRO}` guard. No central `case` to update — `script/setup_basic.sh`'s `source bootstrap.d/lib/adapters/*.sh` glob picks it up automatically.
 
 ## Scripts
 
 ### `setup_basic.sh`
-Thin dispatcher: detects the distro, `source`s every `bootstrap.d/lib/adapters/*.sh` (self-guarded) and calls the matching `run_<distro>_install`. Package names come from `packages/manifest.yaml`.
-
-- **arch/cachyos**: pacman adapter (packages via manifest; AUR/vscode/xxh/services stay in the adapter; `PKG_DRY_RUN=1` previews the plan)
-- **mac / debian / fedora**: adapters land in later tasks; until then the dispatch warns and skips
-
-### `setup_git.sh`
-Prompts interactively for `user.name` and `user.email` if not already set in global git config. Idempotent — skips a key when already configured or when given empty input.
-
-### `setup_os/arch.sh`
-Pacman extras for the Arch family: `waybar yazi awww brightnessctl wl-clipboard powerline-fonts ncdu playerctl udisks2 blueman zed` (all in official `extra` repo). Auto-builds **yay** from AUR if no AUR helper is present (CachyOS skips this — paru ships in its `[cachyos]` repo). Installs `visual-studio-code-bin` (MS binary) via the available helper. Enables system services (NetworkManager/bluetooth/cups/fstrim/udisks2 + conditional snapper). Runs `cachyos-rate-mirrors` on CachyOS. Optional commented Hyprland GUI packages (`waypaper nwg-look nwg-displays gtk4-layer-shell`).
-
-### `setup_os/debian.sh`
-Creates the `fd` symlink, installs Zed via the official installer, and installs VS Code (MS binary) from Microsoft's apt repo.
-
-### `setup_os/fedora.sh`
-Installs Zed via the official installer and VS Code (MS binary) from Microsoft's dnf repo.
+Thin dispatcher: sources `bootstrap.d/lib/{common,manifest,hosts}.sh`, sources every matching `bootstrap.d/lib/adapters/*.sh` (self-guarded, resolves `ROLE`), and calls the matching `run_*_install`. Package names come from `packages/manifest.yaml`. `PKG_DRY_RUN=1` previews the plan.
 
 ### macOS packages
-`bootstrap.d/lib/adapters/brew.sh` installs brew formulas (manifest `common` + `macos_extra`) and casks (`macos_casks`, plus `role_personal`/aldente when `ROLE=personal`). `brew bundle` is retired — `packages/manifest.yaml` is the single source of truth.
+`bootstrap.d/lib/adapters/brew.sh` installs brew formulas (manifest `common` + `macos_extra`; system `curl` is kept and skipped) and casks (`macos_casks`, plus `role_personal`/aldente when `ROLE=personal`). `brew bundle` is retired — `packages/manifest.yaml` is the single source of truth.
+
+### `setup_git.sh`
+Prompts interactively for `user.name` and `user.email` if not already set in global git config. Idempotent — skips a key when already configured or when given empty input. (skipped in `--update`)
 
 ### `setup_mac.sh`
-macOS system **defaults** (Finder, trackpad, keyboard, screenshots). Only called on macOS. Package installs live in the brew adapter (`bootstrap.d/lib/adapters/brew.sh`), not here.
+macOS system **defaults** (Finder, trackpad, keyboard, screenshots). Only called on macOS. Package installs live in the brew adapter (`bootstrap.d/lib/adapters/brew.sh`), not here. (skipped in `--update`)
 
 ### `setup_fonts.sh`
-Symlinks font files from `dotfiles/fonts/` into the OS font directory.
+Symlinks font files from `dotfiles/fonts/` into the OS font directory. (skipped in `--update`)
 - **Linux**: `~/.local/share/fonts/` + `fc-cache -f`
 - **macOS**: `~/Library/Fonts/`
 - **Windows**: copies (symlinks not reliable for Windows font dir)
@@ -96,14 +105,17 @@ See `../skills/README.md` for adding/removing/pinning skills.
 ### `setup_rtk.sh`
 Activates rtk for opencode by running `rtk init -g --opencode --no-patch`, which installs the opencode plugin at `~/.config/opencode/plugins/rtk.ts`. The plugin auto-rewrites bash commands to their rtk equivalents for token savings. Idempotent — skips if the plugin is already up to date. Requires the rtk binary in PATH (installed by `setup_programing.sh`).
 
+Note: `setup_programing.sh` (which installs rtk itself) runs BEFORE `setup_rtk.sh` — keep `RTK last` when adding steps.
+
 ## Flags
 
 | Caller | Flag | Effect |
 |---|---|---|
-| `install.sh` | `--update` | Forward `--update` to `setup_zsh.sh` + `setup_skills.sh`; skip the slow idempotent steps (base packages, stow, mac defaults, fonts) — designed for re-syncing plugins/skills without reinstalling the world |
+| `bootstrap` | `--update` | Full flow in update mode: forward `--update` to `setup_zsh.sh` + `setup_skills.sh`; skip the slow idempotent steps (base packages, git identity, stow, mac defaults, fonts) — designed for re-syncing plugins/skills without reinstalling the world |
 | `setup_zsh.sh` | `--update` | Pull latest plugin versions |
 | `setup_skills.sh` | `--update` | Pull latest skill submodule commits |
+| `setup_basic.sh` (env) | `PKG_DRY_RUN=1` | Preview what the adapter would install (nothing actually installed) |
 
 ## Re-running
 
-All scripts are idempotent — safe to re-run anytime. They skip already-installed items and only create/update what's missing. `./install.sh` runs the whole thing; `./install.sh --update` is a faster re-sync that skips package managers/stow/fonts and just refreshes plugins + skills.
+All steps are idempotent — safe to re-run anytime. They skip already-installed items and only create/update what's missing. `./bootstrap` runs the whole thing; `./bootstrap --update` is a faster re-sync that skips package managers/git/stow/fonts and just refreshes plugins + skills.
