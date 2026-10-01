@@ -10,6 +10,22 @@ brew 'mise'
 brew 'xxh'
 brew 'nvim'
 
+# bin — COMMON_PACKAGES additions (single mac source; setup_basic.sh mac branch no longer brew-installs)
+brew 'htop'
+brew 'fd'
+brew 'fzf'
+brew 'bat'
+brew 'ripgrep'
+brew 'zoxide'
+brew 'git-delta'
+brew 'lazygit'
+brew 'tree-sitter-cli'
+brew 'tldr'
+brew 'asciinema'
+brew 'zip'
+brew 'unzip'
+brew 'wget'
+
 # cask
 cask 'aldente'
 cask 'alacritty'

@@ -43,13 +43,13 @@ COMMON_PACKAGES=(
   mise
 )
 
+# Packages installed via Brewfile (see setup_os/mac.sh) — single source of truth on mac.
 install_mac() {
   command -v brew >/dev/null 2>&1 || {
     echo "Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   }
   brew update
-  brew install "${COMMON_PACKAGES[@]}" tldr asciinema
 }
 
 install_debian() {
