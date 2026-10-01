@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # zsh plugins cloned into ~/.config/zsh/plugins/ (sourced by .zshrc)
-# NOTE: zsh-nvm removed — replaced by fnm (installed via setup_basic.sh)
+# NOTE: zsh-nvm removed — node managed by mise (setup_programing.sh)
 PLUGINS=(
   "https://github.com/romkatv/powerlevel10k"
   "https://github.com/zsh-users/zsh-autosuggestions"

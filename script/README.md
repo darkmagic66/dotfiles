@@ -13,7 +13,7 @@ install.sh
 │       ├── arch.sh            #   pacman extras (waybar/yazi/awww/zed); yay auto-build; vscode-bin + python-xxh (AUR); services
 │       └── fedora.sh            #   zed installer; vscode MS dnf repo
 ├── 2. setup_git.sh             # interactive git user.name/user.email (skipped in --update)
-├── 3. stow                     # common pkgs everywhere (zsh tmux nvim kitty alacritty ideavim opencode xxh); mac skips, non-mac also stows linux/: hypr waybar gtk qt fontconfig
+├── 3. stow                     # common pkgs stowed on EVERY platform (zsh tmux nvim kitty alacritty ideavim opencode xxh); on non-mac additionally: stow -d linux hypr waybar gtk qt fontconfig; on mac: none extra yet
 ├── 4. setup_mac.sh             # macOS-only: Finder/trackpad/keyboard defaults (config, not packages)
 ├── 5. setup_fonts.sh         # symlink fonts into OS font dir
 ├── 6. setup_zsh.sh           # clone zsh plugins + tpm + chsh -s zsh
@@ -84,7 +84,7 @@ Clones zsh plugins into `~/.config/zsh/plugins/` and tpm into `~/.config/tmux/pl
 - `--update`: `git pull --ff-only` in each plugin dir to get latest
 
 ### `setup_programing.sh`
-Installs dev toolchains via **mise** (single runtime manager, replaces fnm/rustup/SDKMAN):
+Installs dev toolchains via **mise** (single runtime manager, replaces rustup/SDKMAN):
 - **mise** manages go, java, node, rust from `~/dotfiles/mise.toml` — `mise install` provisions all
 - **GitNexus**: `mise exec -- npm install -g gitnexus` (uses mise's node)
 - **rtk**: paru/yay on arch, brew on mac, curl script as fallback

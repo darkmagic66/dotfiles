@@ -56,8 +56,6 @@ flowchart TD
     Zsh["<b>setup_zsh.sh</b><br/>+ --update if set<br/>clone p10k/autosuggestions/<br/>syntax-hi/vi-mode + tpm<br/>chsh -s zsh"]
     Zsh --> Prog["<b>setup_programing.sh</b><br/>mise: go/java/node/rust from mise.toml<br/>install_gitnexus (npm -g)<br/>install_rtk (paru/yay/brew/curl)"]
     Prog --> Skills["<b>setup_skills.sh</b><br/>+ --update if set<br/>git submodule update --init<br/>symlink skills into<br/>opencode/claude/codex/.agents"]
-    Skills --> Done
-
     Skills --> RTK["<b>setup_rtk.sh</b><br/>rtk init -g --opencode"]
     RTK --> Done([Installation Complete!])
 

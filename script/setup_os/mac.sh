@@ -10,8 +10,9 @@ case "${DISTRO:-}" in
 esac
 
 # Brewfile carries casks/brews incl. zed, visual-studio-code, firefox,
-# alacritty, kitty, aldente, gnupg. fnm is intentionally not in Brewfile —
-# it's installed by setup_programing.sh.
+# alacritty, kitty, aldente, gnupg.
+# Brewfile is the single source of mac packages — setup_basic.sh's mac branch
+# only bootstraps brew. Toolchains (go/java/node/rust) come from mise.
 DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
 BREWFILE="$DOTFILES_DIR/Brewfile"
 if [ -f "$BREWFILE" ]; then

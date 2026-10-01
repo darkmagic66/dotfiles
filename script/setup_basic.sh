@@ -45,10 +45,16 @@ COMMON_PACKAGES=(
 
 # Packages installed via Brewfile (see setup_os/mac.sh) — single source of truth on mac.
 install_mac() {
-  command -v brew >/dev/null 2>&1 || {
+  if ! command -v brew >/dev/null 2>&1; then
     echo "Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  }
+    # Add brew to PATH in-process (fresh machines have stock PATH in this shell)
+    if [ -x /opt/homebrew/bin/brew ]; then
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [ -x /usr/local/bin/brew ]; then
+      eval "$(/usr/local/bin/brew shellenv)"
+    fi
+  fi
   brew update
 }
 
