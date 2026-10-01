@@ -91,9 +91,20 @@ install_rtk() {
   esac
 }
 
+# --- opencode v2 (beta, installs binary `opencode2` side-by-side with v1) ---
+install_opencode_v2() {
+  if command -v opencode2 >/dev/null 2>&1; then
+    echo "opencode v2 already installed."
+    return
+  fi
+  echo "Installing opencode v2 (beta)..."
+  curl -fsSL https://opencode.ai/v2/install | bash
+}
+
 install_mise
 install_toolchains
 install_gitnexus
 install_rtk
+install_opencode_v2
 
 echo "Programming environment setup complete."
