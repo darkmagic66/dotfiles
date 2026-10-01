@@ -44,8 +44,7 @@ linux:     # pacman; arch-family only
   - brave-bin
   - opencode2-bin
 
-macos_casks:    # brew --cask
-  - alacritty
+macos_casks:    # brew --cask (alacritty excluded: Gatekeeper-blocked; kitty is the mac terminal)
   - kitty
   - firefox
   - visual-studio-code
