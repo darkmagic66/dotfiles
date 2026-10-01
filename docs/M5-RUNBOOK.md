@@ -2,7 +2,7 @@
 
 Exact steps for the **personal M5 mac**, step by step. Architecture v2 (manifest + bootstrap + adapters) with `ROLE=personal`.
 
-> **Caveat:** the mac run is **NOT yet tested live** — this runbook documents the expected flow derived from the code (`bootstrap.d/lib/{full,config}.sh`, `bootstrap.d/lib/adapters/brew.sh`, `script/setup_*.sh`). Windows install is a separate sketch (`bootstrap.d/lib/adapters/win.sh` only prints); company machines just resolve to a different role.
+> **Status 2026-10-01 evening:** mac run has started live on the M5 — several fresh-mac failures found and fixed (CLT first, bash-3.2 `case` hosts table, alacritty cask dropped, stow self-install, defaults warn-and-continue, per-package brew installs). Windows install is a separate sketch (`bootstrap.d/lib/adapters/win.sh` only prints); company machines just resolve to a different role.
 
 ## 0. Prereqs
 - macOS on the M5, network reachable.
@@ -29,16 +29,20 @@ cd ~/dotfiles
 
 ## 2. Edit `bootstrap.d/lib/hosts.sh` FIRST
 
-The `HOST_ROLE` table ships with **placeholder** rows (`macbook-m3` / `macbook-m5` / `windows-pc`). Replace the `macbook-m5` row with the M5's **real hostname** (`scutil --get ComputerName` or `hostname`) and keep `personal`:
+The `_host_role_for` case table ships with **placeholder** rows (`macbook-m3` / `macbook-m5` / `windows-pc`). Replace the `macbook-m5` row with the M5's **real hostname** (`scutil --get ComputerName` or `hostname`) and keep `personal`:
 
 ```bash
-declare -A HOST_ROLE=(
-  ["thinkpad-p14s"]=personal   # verified: real hostname
-  ["macbook-m3"]=company
-  ["<real-m5-hostname>"]=personal
-  ["windows-pc"]=personal
-)
+_host_role_for() {
+  case "$1" in
+    thinkpad-p14s) printf 'personal\n' ;;   # verified: real hostname
+    macbook-m3)    printf 'company\n' ;;
+    <real-m5-hostname>) printf 'personal\n' ;;
+    windows-pc)    printf 'personal\n' ;;
+  esac
+}
 ```
+
+NOTE: plain `case`, NOT `declare -A` — macOS ships bash 3.2, which has no associative arrays.
 
 Why here and not later: role resolution falls back to an interactive prompt (fine), but editing the table keeps it deterministic — role filtering (brew casks, `roles/<role>` stow) uses it before anything installs.
 
@@ -56,8 +60,8 @@ Why here and not later: role resolution falls back to an interactive prompt (fin
    - **brew bootstrap**: brew install script runs only when `brew` is missing; otherwise skipped.
    - **shellenv eval**: `/opt/homebrew/bin/brew shellenv` (fallback `/usr/local`) is eval'd.
    - **update** runs.
-   - **Formulas** (`brew install`) from manifest `common` + `macos_extra`, **skip list `curl` explicitly** (system curl is kept): `git`/`zsh`/`stow`/`tmux`/`jq`/`eza`/`gnupg`/`neovim`/`mise`/`atuin`/`htop`/`fd`/`fzf`/`zoxide`/`bat`/`ripgrep`/`zip`/`unzip`/`wget`/`git-delta`/`tree-sitter-cli`/`lazygit`/`xxh`/`tldr`/`asciinema` (all "install if missing").
-   - **Casks** (`brew install --cask`) from manifest `macos_casks` + `role_personal` since `ROLE=personal`: `alacritty`, `kitty`, `firefox`, `visual-studio-code`, `zed`, **+ `aldente` (personal role only — this is where Aldente shows up; a company machine would NOT get it)**.
+   - **Formulas** (per-package `brew install`, one failure warns and continues) from manifest `common` + `macos_extra`, **skip list `curl` explicitly** (system curl is kept): `git`/`zsh`/`stow`/`tmux`/`jq`/`eza`/`gnupg`/`neovim`/`mise`/`atuin`/`htop`/`fd`/`fzf`/`zoxide`/`bat`/`ripgrep`/`zip`/`unzip`/`wget`/`git-delta`/`tree-sitter-cli`/`lazygit`/`xxh`/`tldr`/`asciinema`/`anomalyco/tap/opencode-v2`.
+   - **Casks** (per-cask `brew install --cask`, one failure warns and continues) from manifest `macos_casks` + `role_personal` since `ROLE=personal`: `kitty`, `firefox`, `visual-studio-code`, `zed`, `notion`, `raycast`, **+ `aldente` (personal role only — this is where Aldente shows up; a company machine would NOT get it)**. `alacritty` is intentionally NOT a cask (Gatekeeper-blocked; kitty is the mac terminal — alacritty config still stows).
 4. **git identity** (`setup_git.sh`): interactive `user.name`/`user.email` prompts if unset.
 5. **Stow** (`bootstrap.d/lib/config.sh`): `resolve_role` prints `Resolved role: personal (host: …)` (or prompts once; answer persists to `~/.config/dotfiles/role`), then `stow -t "$HOME" zsh tmux nvim kitty alacritty ideavim opencode xxh`. On mac the `linux` packages (`hypr/waybar/…`) are skipped. This machine's `roles/` dirs are gitkeep-only today, so the stow step skips `roles/personal` until real content lands there.
 6. **mac defaults** (`setup_mac.sh`): Finder/trackpad/keyboard/screenshots `defaults write …`.
@@ -91,9 +95,9 @@ No `plan.md` and no Brewfile step here — brew pulls everything from `packages/
 - put machine-local secrets in untracked `~/.config/zsh/.zshrc.local` (sourced by `zsh/.zshrc`), not in any tracked file.
 - `~/.config/dotfiles/role` is **also untracked** (machine-local cache, not config).
 
-## 7. Known sketchy bits (mac run untested)
+## 7. Known sketchy bits (mac run live since 2026-10-01 evening)
 
-- **brew adapter on M5** has never executed for real — the shellenv path (`/opt/homebrew`) and non-cask/cask split are per the old installer's flow but not validated here.
+- **brew adapter on M5** has now executed for real (fresh-mac failures found: alacritty cask Gatekeeper-block, single-line abort skipping stow — both fixed with per-package warn-and-continue) — the shellenv path (`/opt/homebrew`) and non-cask/cask split are per the old installer's flow but the live run confirms the split works; per-package resilience now covers single bad formulas/casks.
 - **zed + vsCode casks and config linking** — kitty/alacritty/ideavim storages are stowed; **vscode settings were never previously stowed on mac** — likely needs verification.
 - **mac `roles/personal`** still empty (gitkeep-only) — the stow step will skip it silently this round; brew `role_personal` group is the only personal signal that fires today.
-- repo assumption: `git clone --recursive` upstream URL is `<you>/dotfiles` placeholder; substitute your fork's URL at clone time.
+- repo assumption: `git clone --recursive` clone URL is the real https://github.com/darkmagic66/dotfiles.git (fixed 2026-10-01; no placeholder substitution needed).

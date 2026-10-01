@@ -5,7 +5,15 @@ echo "Applying macOS defaults..."
 
 # Warn-and-continue wrapper: one unwritable domain (locked plist, fresh
 # machine, cfprefsd hiccup) must not abort the entire stage under set -e.
-dflt() { defaults "$@" || echo "warning: defaults write failed: $*"; }
+# Inserts the `write` verb (call sites pass domain + key + value only).
+dflt() {
+  if [ "${1:-}" = "-currentHost" ]; then
+    local flag="$1"; shift
+    defaults "$flag" write "$@" || echo "warning: defaults write failed: $flag $*"
+  else
+    defaults write "$@" || echo "warning: defaults write failed: $*"
+  fi
+}
 
 # Show hidden files in Finder
 dflt com.apple.finder AppleShowAllFiles -bool true
@@ -57,7 +65,7 @@ dflt com.apple.desktopservices DSDontWriteNetworkStores -bool true
 
 # Enable tap-to-click on trackpad
 dflt com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
-dflt -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+dflt -currentHost NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 
 # Three-finger drag (accessibility)
 dflt com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true
@@ -68,12 +76,12 @@ dflt com.apple.universalaccess reduceTransparency -bool true
 # Trackpad tracking speed (System Settings slider: 0.0 slow → 3.0 fastest).
 # 2.4 = 80% of maximum. Logout/login once if a fresh install ignores it.
 dflt NSGlobalDomain com.apple.trackpad.scaling -float 2.4
-dflt -currentHost write NSGlobalDomain com.apple.trackpad.scaling -float 2.4
+dflt -currentHost NSGlobalDomain com.apple.trackpad.scaling -float 2.4
 
 # Trackpad scroll speed: maximum (Accessibility → Pointer Control → Trackpad
 # Options slider). Logout/login once if a fresh install ignores the value.
 dflt NSGlobalDomain com.apple.scrollwheel.scaling -float 7
-dflt -currentHost write NSGlobalDomain com.apple.scrollwheel.scaling -float 7
+dflt -currentHost NSGlobalDomain com.apple.scrollwheel.scaling -float 7
 
 # Dock icon size, pixels (default 48; 36 and below shrink dock a lot)
 dflt com.apple.dock tilesize -int 36

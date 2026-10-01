@@ -88,14 +88,23 @@ run_mac_install() {
   fi
 
   echo "Updating brew..."
-  brew update
+  brew update || echo "warning: brew update failed; continuing with installs"
 
+  # Per-package installs: one bad formula must not abort the whole line
+  # (under set -e a single failed `brew install a b c` skips everything
+  # after it — e.g. stow — and kills the stage). Warn-and-continue instead.
+  local pkg
   # shellcheck disable=SC2086  # word-split manifest names on purpose
-  brew install $names
+  for pkg in $names; do
+    brew install "$pkg" || echo "warning: formula '$pkg' failed; continuing"
+  done
 
   echo "Installing casks..."
-  # shellcheck disable=SC2086  # word-split manifest names on purpose
   if [ -n "$casks" ]; then
-    brew install --cask $casks
+    local cask
+    # shellcheck disable=SC2086  # word-split manifest names on purpose
+    for cask in $casks; do
+      brew install --cask "$cask" || echo "warning: cask '$cask' failed; continuing"
+    done
   fi
 }
