@@ -19,12 +19,17 @@ _dotf_role_persist_file() { printf '%s\n' "${HOME}/.config/dotfiles/role"; }
 # HOST_ROLE: single edit point. macbook-m3 / macbook-m5 / windows-pc rows are
 # PLACEHOLDERS — replace with the real hostnames during each machine's first
 # install. thinkpad row uses the real current hostname (verified machine).
-declare -A HOST_ROLE=(
-  ["thinkpad-p14s"]=personal
-  ["macbook-m3"]=company
-  ["macbook-m5"]=personal
-  ["windows-pc"]=personal
-)
+# NOTE: plain case statement, NOT `declare -A` — macOS ships bash 3.2, which
+# has no associative arrays (`declare -A` aborts the whole install there).
+# Prints the role for a hostname, or nothing when unknown.
+_host_role_for() {
+  case "$1" in
+    thinkpad-p14s) printf 'personal\n' ;;
+    macbook-m3)    printf 'company\n' ;;
+    macbook-m5)    printf 'personal\n' ;;
+    windows-pc)    printf 'personal\n' ;;
+  esac
+}
 
 _dotf_role_valid() {
   [[ "$1" == "personal" || "$1" == "company" ]]
@@ -58,10 +63,11 @@ resolve_role() {
   fi
 
   # 2. table lookup
-  local host
+  local host table_role
   host="$(hostname)"
-  if [[ -n "${HOST_ROLE[$host]:-}" ]] && _dotf_role_valid "${HOST_ROLE[$host]}"; then
-    ROLE="${HOST_ROLE[$host]}"
+  table_role="$(_host_role_for "$host")"
+  if [[ -n "$table_role" ]] && _dotf_role_valid "$table_role"; then
+    ROLE="$table_role"
     return 0
   fi
 
