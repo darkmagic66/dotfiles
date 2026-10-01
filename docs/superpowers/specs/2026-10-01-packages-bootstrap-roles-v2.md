@@ -64,7 +64,8 @@ linux:     # pacman; arch-family only
   - playerctl
   - udisks2
   - blueman
-  - zed      # N1: confirm exact membership against script/setup_os/arch.sh before migrating
+  - zed
+  - fuzzel
 
 macos_casks:    # brew --cask
   - alacritty
@@ -100,7 +101,7 @@ Parser contract (`bootstrap/lib/manifest.sh`):
 - `Brewfile`: DELETED from repo.
 - kitty: pacman formula but brew CASK — lives in `linux` (pacman) and `macos_casks` (brew), NOT in `common`. alacritty: same treatment (pacman formula, brew cask today).
 
-N1 — resolve during implementation by reading script/setup_os/arch.sh: confirm exact zed/xxh/visual-studio-code handling (verify package names and repo sources in the file; don't rely on this doc's memory).
+N1 — verified live against script/setup_os/arch.sh: `ARCH_PACKAGES` = waybar yazi awww brightnessctl wl-clipboard powerline-fonts ncdu playerctl udisks2 blueman zed fuzzel — all move to manifest `linux` (zed IS in pacman extra, no AUR). What stays out of manifest (arch adapter keeps, verbatim): AUR helper bootstrap (paru/yay), `visual-studio-code-bin` AUR install, `python-xxh` AUR install, service enable block, `cachyos-rate-mirrors`.
 
 ### G2. Package adapters — replaces per-OS arrays
 
