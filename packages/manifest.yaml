@@ -39,6 +39,9 @@ linux:     # pacman; arch-family only
   - blueman
   - zed
   - fuzzel
+  - notion-app-electron
+  - firefox
+  - brave-bin
 
 macos_casks:    # brew --cask
   - alacritty
@@ -46,6 +49,7 @@ macos_casks:    # brew --cask
   - firefox
   - visual-studio-code
   - zed
+  - notion
 
 macos_extra:    # brew formulas beyond common
   - xxh
@@ -63,3 +67,4 @@ windows:        # winget ids — sketch
   - BurntSushi.ripgrep.MSVC
   - sharkdp.fd
   - Neovim.Neovim
+  - Notion.Notion

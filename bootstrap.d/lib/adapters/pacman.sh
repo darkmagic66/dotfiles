@@ -22,15 +22,28 @@ run_arch_install() {
   fi
 
   # --- Base packages: manifest common + linux → pacman ------------------------
-  # Packages that used to be AUR-only but are now in the official extra repo.
-  # Plain pacman, no AUR helper needed.
+  # Repo names go through plain pacman. Anything outside the configured repos
+  # (probed read-only with `pacman -Si`, e.g. brave-bin on AUR) is collected
+  # and routed through the AUR helper loop below.
   local group group_names name
   local names=""
+  local aur_names=""
   for group in common linux; do
     group_names="$(manifest_packages "$group")" \
       || die "manifest: cannot resolve package group '$group'; no packages installed"
     for name in $group_names; do
-      names+="${names:+ }${name}"
+      if (( dry_run )); then
+        # Dry-run: app-level heuristic only (no repo probing) so the printed
+        # plan stays fully offline.
+        case "$name" in
+          *-bin|*-git) aur_names+="${aur_names:+ }${name}" ;;
+          *)           names+="${names:+ }${name}" ;;
+        esac
+      elif pacman -Si "$name" >/dev/null 2>&1; then
+        names+="${names:+ }${name}"
+      else
+        aur_names+="${aur_names:+ }${name}"
+      fi
     done
   done
 
@@ -39,6 +52,30 @@ run_arch_install() {
   else
     # shellcheck disable=SC2086  # word-split manifest names on purpose
     sudo pacman -S --needed --noconfirm $names
+  fi
+
+  # --- AUR helper ------------------------------------------------------------
+  # Anything manifest-true AUR (probed in the base pass: e.g. brave-bin) plus
+  # the fixed-only steps below. CachyOS ships paru in the [cachyos] repo;
+  # plain Arch doesn't.
+  if [ -n "$aur_names" ]; then
+    if (( dry_run )); then
+      log "[dry-run] AUR install (paru/yay, --needed --noconfirm): $aur_names"
+    elif command -v paru >/dev/null 2>&1; then
+      # shellcheck disable=SC2086  # word-split on purpose
+      paru -S --needed --noconfirm $aur_names
+    elif command -v yay >/dev/null 2>&1; then
+      # shellcheck disable=SC2086  # word-split on purpose
+      yay -S --needed --noconfirm $aur_names
+    else
+      echo "Warning: no AUR helper (yay/paru) found. Installing 'paru' first..."
+      if sudo pacman -S --needed --noconfirm paru 2>/dev/null; then
+        # shellcheck disable=SC2086  # word-split on purpose
+        paru -S --needed --noconfirm $aur_names
+      else
+        echo "Warning: could not install an AUR helper. Install manually: yay -S $aur_names"
+      fi
+    fi
   fi
 
   # --- AUR helper ------------------------------------------------------------
