@@ -9,6 +9,16 @@ defaults write com.apple.finder AppleShowAllFiles -bool true
 # Disable press-and-hold for keys (enables key repeat instead of accent picker)
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
+# Disable text substitutions (they corrupt code and shell input)
+defaults write NSGlobalDomain NSAutomaticCapitalizationEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticPeriodSubstitutionEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
+defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
+
+# F1–F12 act as function keys without holding Fn
+defaults write NSGlobalDomain com.apple.keyboard.fnState -bool true
+
 # Fast keyboard repeat rate
 defaults write NSGlobalDomain KeyRepeat -int 2
 defaults write NSGlobalDomain InitialKeyRepeat -int 15
