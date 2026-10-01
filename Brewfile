@@ -8,6 +8,7 @@ brew 'eza'
 brew 'gnupg'
 brew 'mise'
 brew 'xxh'
+brew 'nvim'
 
 # cask
 cask 'aldente'
