@@ -1,0 +1,65 @@
+# Package manifest — single source of truth (4 machines, 4 package managers).
+# Machine composition: common + <os> (linux|macos|windows) + optional role (role_personal|role_company)
+common:
+  - git
+  - zsh
+  - stow
+  - tmux
+  - jq
+  - eza
+  - gnupg
+  - neovim
+  - mise
+  - atuin
+  - htop
+  - fd
+  - fzf
+  - zoxide
+  - bat
+  - ripgrep
+  - zip
+  - unzip
+  - curl
+  - wget
+  - git-delta
+  - tree-sitter-cli
+  - lazygit
+
+linux:     # pacman; arch-family only
+  - kitty
+  - waybar
+  - yazi
+  - awww
+  - brightnessctl
+  - wl-clipboard
+  - powerline-fonts
+  - ncdu
+  - playerctl
+  - udisks2
+  - blueman
+  - zed
+  - fuzzel
+
+macos_casks:    # brew --cask
+  - alacritty
+  - kitty
+  - firefox
+  - visual-studio-code
+  - zed
+
+macos_extra:    # brew formulas beyond common
+  - xxh
+  - tldr
+  - asciinema
+
+role_personal:  # aldente moved out of macos_casks: personal only
+  - aldente
+
+role_company: []  # company mac = common + macos only, no personal extras
+
+windows:        # winget ids — sketch
+  - Git.Git
+  - junegunn.fzf
+  - BurntSushi.ripgrep.MSVC
+  - sharkdp.fd
+  - Neovim.Neovim
