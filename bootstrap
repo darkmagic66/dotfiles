@@ -1,6 +1,6 @@
 #!/bin/bash
 # bootstrap — dotfiles entry point (architecture-v2 spec G4).
-# Subcommands: packages | config | ai | (no args: full flow) | --update (full flow, update mode).
+# Subcommands: packages | config | ai | list | (no args: full flow) | --update (full flow, update mode).
 # Shared libs live in bootstrap.d/lib/.
 set -euo pipefail
 
@@ -38,6 +38,64 @@ case "${1:-}" in
         ;;
     esac
     ;;
+  list)
+    if [ -n "${2:-}" ]; then
+      echo "Usage: bootstrap list" >&2
+      exit 1
+    fi
+    # shellcheck source=bootstrap.d/lib/manifest.sh
+    . "$DOTFILES_DIR/bootstrap.d/lib/manifest.sh"
+    # shellcheck source=bootstrap.d/lib/hosts.sh
+    . "$DOTFILES_DIR/bootstrap.d/lib/hosts.sh"
+    resolve_role
+
+    # Mirror the adapter dispatch's group selection (same case as setup_basic.sh)
+    # so the summary shows the same set `bootstrap packages` will install.
+    pkgs=""
+    casks=""
+    role_groups=""
+    if [[ "${ROLE:-}" == "personal" ]]; then
+      role_groups="role_personal"
+    fi
+    case "$DISTRO" in
+      arch|cachyos|archlabs|endeavouros|manjaro)
+        groups="common + linux"
+        for g in common linux; do
+          pkgs+="${pkgs:+ }$(manifest_packages "$g")"
+        done
+        ;;
+      mac)
+        groups="common + macos_casks + macos_extra${role_groups:+ + ${role_groups}}"
+        for g in common macos_extra $role_groups; do
+          pkgs+="${pkgs:+ }$(manifest_packages "$g")"
+        done
+        # brew adapter's explicit SKIP: macOS ships a system curl; keep it
+        pkgs="${pkgs// curl/}"
+        for g in macos_casks $role_groups; do
+          casks+="${casks:+ }$(manifest_packages "$g")"
+        done
+        ;;
+      windows)
+        groups="windows (sketch)"
+        pkgs="$(manifest_packages windows)"
+        log "Windows hint: win adapter sketch — would run winget install -e --id <id> for ${pkgs// /, }"
+        pkgs=""
+        ;;
+      *)
+        groups="common"
+        pkgs="$(manifest_packages common)"
+        ;;
+    esac
+
+    log "OS:            $OS_TYPE/$DISTRO"
+    log "Host:          $(hostname)"
+    log "Role:          ${ROLE:-(unresolved)}"
+    log "Groups:        $groups"
+    log "Formula list:  ${pkgs:-(none)}"
+    if [ -n "$casks" ]; then
+      log "Cask list:     $casks"
+    fi
+    ;;
   "")
     . "$DOTFILES_DIR/bootstrap.d/lib/full.sh"
     ;;
@@ -46,7 +104,7 @@ case "${1:-}" in
     . "$DOTFILES_DIR/bootstrap.d/lib/full.sh"
     ;;
   *)
-    echo "Usage: bootstrap [packages|config|ai|--update]" >&2
+    echo "Usage: bootstrap [packages|config|ai|list|--update]" >&2
     exit 1
     ;;
 esac
