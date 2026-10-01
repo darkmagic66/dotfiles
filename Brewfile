@@ -9,6 +9,7 @@ brew 'gnupg'
 brew 'mise'
 brew 'xxh'
 brew 'nvim'
+brew 'atuin'
 
 # bin — COMMON_PACKAGES additions (single mac source; setup_basic.sh mac branch no longer brew-installs)
 brew 'htop'

@@ -41,6 +41,7 @@ COMMON_PACKAGES=(
   lazygit
   tree-sitter-cli
   mise
+  atuin
 )
 
 # Packages installed via Brewfile (see setup_os/mac.sh) — single source of truth on mac.

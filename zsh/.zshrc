@@ -26,6 +26,11 @@ path=(
 # zoxide
 eval "$(zoxide init zsh)"
 
+# --- atuin (shell history: searchable, syncable) -----------------------------
+if command -v atuin >/dev/null 2>&1; then
+  eval "$(atuin init zsh)"
+fi
+
 # --- mise (manages go, java, node, rust via mise.toml) ----------------------
 if command -v mise >/dev/null 2>&1; then
   eval "$(mise activate zsh)"
