@@ -30,6 +30,8 @@ cd ~/dotfiles
 | `./bootstrap ai status` | Skill submodule status (`git submodule status`) |
 | `./bootstrap list` | Print the manifest groups that apply to this machine + role |
 
+`just` shortcuts (see `justfile`): `just install`, `just update`, `just config`, `just packages`, `just plan`, `just skills-update`, `just upgrade` (pull + re-sync).
+
 ## Where the packages come from
 
 `packages/manifest.yaml` is the **single source of truth** for every package, on every OS. No package lists live in scripts anymore.
