@@ -51,14 +51,15 @@ defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeF
 # Reduce transparency (Accessibility → Display → Reduce transparency)
 defaults write com.apple.universalaccess reduceTransparency -bool true
 
-# Trackpad tracking speed (System Settings slider: 0.0 slow → 3.0 fastest)
-defaults write NSGlobalDomain com.apple.trackpad.scaling -float 2.5
-defaults -currentHost write NSGlobalDomain com.apple.trackpad.scaling -float 2.5
+# Trackpad tracking speed (System Settings slider: 0.0 slow → 3.0 fastest).
+# 2.4 = 80% of maximum. Logout/login once if a fresh install ignores it.
+defaults write NSGlobalDomain com.apple.trackpad.scaling -float 2.4
+defaults -currentHost write NSGlobalDomain com.apple.trackpad.scaling -float 2.4
 
-# Trackpad scroll speed (Accessibility → Pointer Control → Trackpad Options)
-# Higher = faster. Tune to taste after first login.
-defaults write NSGlobalDomain com.apple.scrollwheel.scaling -float 5
-defaults -currentHost write NSGlobalDomain com.apple.scrollwheel.scaling -float 5
+# Trackpad scroll speed: maximum (Accessibility → Pointer Control → Trackpad
+# Options slider). Logout/login once if a fresh install ignores the value.
+defaults write NSGlobalDomain com.apple.scrollwheel.scaling -float 7
+defaults -currentHost write NSGlobalDomain com.apple.scrollwheel.scaling -float 7
 
 # Dock icon size, pixels (default 48; 36 and below shrink dock a lot)
 defaults write com.apple.dock tilesize -int 36
