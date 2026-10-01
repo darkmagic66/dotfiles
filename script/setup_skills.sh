@@ -23,7 +23,7 @@ MATTP0COCK_SKILLS=(
   productivity/grill-me
   productivity/handoff
   productivity/teach
-  productivity/writing-great-skills
+  productivity/writing-for-agents
   engineering/tdd
   engineering/code-review
   engineering/codebase-design
