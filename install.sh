@@ -71,6 +71,19 @@ if ! $UPDATE; then
     echo "Error: GNU Stow is not installed. Please install it first."
     exit 1
   }
+
+  # Resolve machine role (personal/company) via bootstrap/lib/hosts.sh;
+  # unknown host without a tty dies there with a clear message (never guess).
+  if [ -f "$DOTFILES_DIR/bootstrap/lib/hosts.sh" ]; then
+    # shellcheck disable=SC1091
+    . "$DOTFILES_DIR/bootstrap/lib/hosts.sh"
+    resolve_role
+    echo "Resolved role: $ROLE (host: $(hostname))"
+  else
+    echo "Error: $DOTFILES_DIR/bootstrap/lib/hosts.sh not found; cannot resolve machine role."
+    exit 1
+  fi
+
   (
     cd "$DOTFILES_DIR"
     echo "==================================="
@@ -81,6 +94,11 @@ if ! $UPDATE; then
     # Linux/Wayland-only packages; mac skips them
     if [ "$DISTRO" != "mac" ]; then
       stow -t "$HOME" -d linux hypr waybar gtk qt fontconfig
+    fi
+    # Role packages (personal/company), only when the package holds real
+    # content — stowing a gitkeep-only dir would plant a .gitkeep link in $HOME
+    if [ -n "$ROLE" ] && [ -d "roles/$ROLE" ] && [ -n "$(find "roles/$ROLE" -mindepth 1 ! -name '.gitkeep' -print -quit)" ]; then
+      stow -t "$HOME" -d roles "$ROLE"
     fi
     # mac-specific packages: none yet — add `stow -d mac <pkg>` here
   )
