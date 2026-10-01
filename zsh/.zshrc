@@ -24,8 +24,22 @@ path=(
   $path
 )
 
+# --- Homebrew (macOS) -------------------------------------------------------
+# /opt/homebrew/bin is NOT on PATH by default, and our stowed .zshrc
+# bypasses whatever the brew installer added to .zprofile — so eval shellenv
+# here, before any brew-installed tool (zoxide, mise, …) is used below.
+if [[ "$(uname)" == "Darwin" ]]; then
+  if [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [ -x /usr/local/bin/brew ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+fi
+
 # zoxide
-eval "$(zoxide init zsh)"
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+fi
 
 # --- atuin (shell history: searchable, syncable) -----------------------------
 if command -v atuin >/dev/null 2>&1; then
