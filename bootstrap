@@ -28,9 +28,9 @@ case "${1:-}" in
         "$DOTFILES_DIR/script/setup_rtk.sh"
         ;;
       list|update|status)
-        # Extension point: implemented by the Task 7 ai CLI (bootstrap.d/lib/ai.sh).
-        echo "bootstrap ai $2: not implemented yet (task 7 extension point)." >&2
-        exit 1
+        # shellcheck source=bootstrap.d/lib/ai.sh
+        . "$DOTFILES_DIR/bootstrap.d/lib/ai.sh"
+        ai_main "$2"
         ;;
       *)
         echo "Usage: bootstrap ai [list|update|status]" >&2
