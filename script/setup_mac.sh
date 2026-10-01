@@ -95,37 +95,11 @@ dflt com.apple.dock magnification -bool false
 #   System Settings → Displays → Night Shift → Schedule: Custom,
 #   From 12:00 AM To 11:59 PM (≈ always on), plus color-temperature slider.
 
-# Display scaling "More Space": no `defaults` key on Apple Silicon.
-# Set MAC_DISPLAY_ID + MAC_MORE_SPACE_RES (from `displayplacer list`), e.g.
-#   MAC_DISPLAY_ID="<id>" MAC_MORE_SPACE_RES="1800x1169" ./script/setup_mac.sh
-# Unset → silently skipped (comment stays as the recipe).
-if [ -n "${MAC_DISPLAY_ID:-}" ] && [ -n "${MAC_MORE_SPACE_RES:-}" ]; then
-  if command -v displayplacer >/dev/null 2>&1; then
-    displayplacer "id:${MAC_DISPLAY_ID} res:${MAC_MORE_SPACE_RES} scaling:on" \
-      || echo "warning: displayplacer scaling failed"
-  else
-    echo "warning: displayplacer not installed; skipping More Space"
-  fi
-fi
-
-# Automatically adjust brightness: ON. Lives in the root-owned CoreBrightness
-# plist (per-display key), so this needs sudo; without it, toggle manually
-# in System Settings → Displays.
-if sudo -n true 2>/dev/null || { [ -t 0 ] && sudo -v; }; then
-  _cb_plist="/private/var/root/Library/Preferences/com.apple.CoreBrightness.plist"
-  _disp_id="$(sudo /usr/libexec/PlistBuddy -c "Print :DisplayPreferences:" "$_cb_plist" 2>/dev/null | grep "= Dict" | grep -v AutoBrightnessCurve | awk '{print $1}' | head -n 1)"
-  if [ -n "${_disp_id:-}" ]; then
-    sudo /usr/libexec/PlistBuddy -c "Add :DisplayPreferences:$_disp_id:AutoBrightnessEnable bool true" "$_cb_plist" >/dev/null 2>&1 || true
-    sudo /usr/libexec/PlistBuddy -c "Set :DisplayPreferences:$_disp_id:AutoBrightnessEnable true" "$_cb_plist" \
-      || echo "warning: auto-brightness enable failed"
-    sudo killall cfprefsd corebrightnessd 2>/dev/null || true
-  else
-    echo "warning: auto-brightness skipped (no display id found)"
-  fi
-  unset _cb_plist _disp_id
-else
-  echo "warning: auto-brightness skipped (needs sudo; toggle in System Settings → Displays)"
-fi
+# Display scaling "More Space": no `defaults` key on Apple Silicon and no
+# third-party tools wanted — set manually (once, persists):
+#   System Settings → Displays → Display → More Space.
+# Automatically adjust brightness: ON — set manually (once, persists):
+#   System Settings → Displays → Automatically adjust brightness.
 
 killall Finder 2>/dev/null || true
 killall Dock 2>/dev/null || true
