@@ -17,83 +17,50 @@ if [ -z "${DISTRO:-}" ]; then
   fi
 fi
 
-# Packages available on all OSes via their native package managers.
-COMMON_PACKAGES=(
-  tmux
-  htop
-  fd
-  fzf
-  zoxide
-  bat
-  ripgrep
-  jq
-  neovim
-  git
-  stow
-  zsh
-  zip
-  unzip
-  curl
-  wget
-  git-delta
-  eza
-  kitty
-  lazygit
-  tree-sitter-cli
-  mise
-  atuin
-)
+# Shared libs provide DOTFILES_DIR, log/warn/die, manifest_packages. They also
+# run their own OS detect (which would overwrite DISTRO above) — remember the
+# resolved value and restore it after sourcing so the env/standalone detect wins.
+_PRESET_DISTRO="${DISTRO:-}"
+# shellcheck source=/dev/null
+source "${SCRIPT_DIR}/../bootstrap/lib/common.sh"
+# shellcheck source=/dev/null
+source "${SCRIPT_DIR}/../bootstrap/lib/manifest.sh"
+DISTRO="${_PRESET_DISTRO}"
+export DISTRO
 
-# Packages installed via Brewfile (see setup_os/mac.sh) — single source of truth on mac.
-install_mac() {
-  if ! command -v brew >/dev/null 2>&1; then
-    echo "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    # Add brew to PATH in-process (fresh machines have stock PATH in this shell)
-    if [ -x /opt/homebrew/bin/brew ]; then
-      eval "$(/opt/homebrew/bin/brew shellenv)"
-    elif [ -x /usr/local/bin/brew ]; then
-      eval "$(/usr/local/bin/brew shellenv)"
-    fi
-  fi
-  brew update
-}
+# --- Package adapters (self-guarded) ------------------------------------------
+# Packages live in packages/manifest.yaml; per-OS adapters live in
+# bootstrap/lib/adapters/<os>.sh and define run_<distro>_install. Each adapter
+# is a no-op when sourced for another distro, so the glob is safe to source
+# unconditionally.
+for f in "${DOTFILES_DIR}"/bootstrap/lib/adapters/*.sh; do
+  [ -f "$f" ] || continue
+  # shellcheck disable=SC1090
+  source "$f"
+done
 
-install_debian() {
-  sudo apt update
-  # eza is not in older Ubuntu/Pop!_OS repos — install from official deb repo
-  if ! command -v eza >/dev/null 2>&1; then
-    echo "Installing eza from upstream deb repo..."
-    sudo mkdir -p /etc/apt/keyrings
-    sudo wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc \
-      | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
-    echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" \
-      | sudo tee /etc/apt/sources.list.d/gierens.list >/dev/null
-    sudo chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list
-  fi
-  sudo apt install -y "${COMMON_PACKAGES[@]}" eza fd-find tldr asciinema python3 build-essential
-}
-
-install_arch() {
-  sudo pacman -Syu --noconfirm "${COMMON_PACKAGES[@]}"
-}
-
-install_fedora() {
-  sudo dnf install -y "${COMMON_PACKAGES[@]}" tldr asciinema
-}
-
+# --- Dispatch ------------------------------------------------------------------
 case "$DISTRO" in
-  mac)
-    install_mac
-    ;;
-  debian|pop|ubuntu)
-    install_debian
-    ;;
   arch|cachyos|archlabs|endeavouros|manjaro)
-    install_arch
+    run_arch_install
     ;;
-  fedora)
-    install_fedora
+  debian|pop|ubuntu|fedora|mac|windows)
+    # TEMP shim while adapters land wave-by-wave; warn (not die) and skip.
+    case "$DISTRO" in
+      mac) f="run_mac_install"         ;;
+      fedora) f="run_fedora_install"   ;;
+      windows) f="run_windows_install" ;;
+      *) f="run_debian_install"        ;;
+    esac
+    if declare -F "$f" >/dev/null 2>&1; then
+      "$f"
+    elif [[ "$DISTRO" == "mac" ]]; then
+      warn "brew adapter not ready (bootstrap/lib/adapters/brew.sh pending); skipping package install"
+      exit 0
+    else
+      warn "$f not ready (adapter pending); skipping package install"
+      exit 0
+    fi
     ;;
   *)
     echo "Unsupported OS/Distro: $DISTRO"
@@ -101,15 +68,8 @@ case "$DISTRO" in
     ;;
 esac
 
-# --- Distro-specific extras (extensions are self-guarded) -------------------
-# setup_os/<distro>.sh files install distro-only packages (wayne, vscode, etc)
-# and run distro-only service / config steps. Each file is a no-op if $DISTRO
-# doesn't match it, so the glob is safe to source unconditionally.
-echo "Loading distro-specific extensions..."
-for f in "$SCRIPT_DIR"/setup_os/*.sh; do
-  [ -f "$f" ] || continue
-  # shellcheck disable=SC1090
-  source "$f"
-done
-
-echo "Base packages installed successfully."
+if [[ "${PKG_DRY_RUN:-0}" == "1" ]]; then
+  log "[dry-run] base package plan complete; nothing was installed"
+else
+  echo "Base packages installed successfully."
+fi
