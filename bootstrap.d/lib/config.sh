@@ -5,8 +5,34 @@
 # set (sourced via bootstrap entry or full.sh); honors PKG_DRY_RUN=1 by
 # passing stow -n.
 echo "Stowing dotfiles..."
+# Stow is a hard requirement of this stage. If the packages stage died before
+# installing it (e.g. one bad formula aborted the whole brew line), install
+# it here on demand instead of aborting the entire stow run.
+if ! command -v stow >/dev/null 2>&1; then
+  echo "GNU Stow not found — installing it now..."
+  case "${DISTRO:-}" in
+    mac)
+      command -v brew >/dev/null 2>&1 \
+        || { echo "Error: brew not found either; run './bootstrap packages' first."; exit 1; }
+      brew install stow
+      ;;
+    arch|cachyos|archlabs|endeavouros|manjaro)
+      sudo pacman -S --needed --noconfirm stow
+      ;;
+    debian|pop|ubuntu)
+      sudo apt update && sudo apt install -y stow
+      ;;
+    fedora)
+      sudo dnf install -y stow
+      ;;
+    *)
+      echo "Error: GNU Stow is not installed and DISTRO='${DISTRO:-unknown}' has no known installer."
+      exit 1
+      ;;
+  esac
+fi
 command -v stow >/dev/null 2>&1 || {
-  echo "Error: GNU Stow is not installed. Please install it first."
+  echo "Error: GNU Stow install failed. Install it manually, then re-run."
   exit 1
 }
 
