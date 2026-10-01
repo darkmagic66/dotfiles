@@ -10,7 +10,7 @@ Slots produced (Catppuccin Mocha-compatible names):
 """
 import subprocess, sys, colorsys, os, json
 
-WALL = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser("~/dotfiles/linux/wallpaper/background-nagato.jpg")
+WALL = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser("~/dotfiles/wallpaper/background-nagato.jpg")
 OUT  = sys.argv[2] if len(sys.argv) > 2 else os.path.expanduser("~/.config/waybar/style.css")
 
 def magick_colors(path, n=256, resize=256):

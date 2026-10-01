@@ -17,7 +17,7 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("hyprshade on warm-3000")
     hl.exec_cmd("waybar")
     hl.exec_cmd("awww-daemon")
-    hl.exec_cmd("awww img $HOME/dotfiles/linux/wallpaper/background-nagato.jpg")
+    hl.exec_cmd("awww img $HOME/dotfiles/wallpaper/background-nagato.jpg")
     hl.exec_cmd("hypridle")
 end)
 
