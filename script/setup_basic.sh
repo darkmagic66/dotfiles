@@ -22,18 +22,18 @@ fi
 # resolved value and restore it after sourcing so the env/standalone detect wins.
 _PRESET_DISTRO="${DISTRO:-}"
 # shellcheck source=/dev/null
-source "${SCRIPT_DIR}/../bootstrap/lib/common.sh"
+source "${SCRIPT_DIR}/../bootstrap.d/lib/common.sh"
 # shellcheck source=/dev/null
-source "${SCRIPT_DIR}/../bootstrap/lib/manifest.sh"
+source "${SCRIPT_DIR}/../bootstrap.d/lib/manifest.sh"
 DISTRO="${_PRESET_DISTRO}"
 export DISTRO
 
 # --- Package adapters (self-guarded) ------------------------------------------
 # Packages live in packages/manifest.yaml; per-OS adapters live in
-# bootstrap/lib/adapters/<os>.sh and define run_<distro>_install. Each adapter
+# bootstrap.d/lib/adapters/<os>.sh and define run_<distro>_install. Each adapter
 # is a no-op when sourced for another distro, so the glob is safe to source
 # unconditionally.
-for f in "${DOTFILES_DIR}"/bootstrap/lib/adapters/*.sh; do
+for f in "${DOTFILES_DIR}"/bootstrap.d/lib/adapters/*.sh; do
   [ -f "$f" ] || continue
   # shellcheck disable=SC1090
   source "$f"
@@ -55,7 +55,7 @@ case "$DISTRO" in
     if declare -F "$f" >/dev/null 2>&1; then
       "$f"
     elif [[ "$DISTRO" == "mac" ]]; then
-      warn "brew adapter not ready (bootstrap/lib/adapters/brew.sh pending); skipping package install"
+      warn "brew adapter not ready (bootstrap.d/lib/adapters/brew.sh pending); skipping package install"
       exit 0
     else
       warn "$f not ready (adapter pending); skipping package install"

@@ -43,12 +43,12 @@ esac
 
 The `BASH_SOURCE[0] == $0` test distinguishes "executed directly" (exit) from "sourced" (return), so each file is also runnable standalone for testing.
 
-**Adding a new distro family** = drop a new `bootstrap/lib/adapters/<family>.sh` with its own `${DISTRO}` guard. No central `case` to update — `setup_basic.sh`'s `source bootstrap/lib/adapters/*.sh` glob picks it up automatically.
+**Adding a new distro family** = drop a new `bootstrap.d/lib/adapters/<family>.sh` with its own `${DISTRO}` guard. No central `case` to update — `setup_basic.sh`'s `source bootstrap.d/lib/adapters/*.sh` glob picks it up automatically.
 
 ## Scripts
 
 ### `setup_basic.sh`
-Thin dispatcher: detects the distro, `source`s every `bootstrap/lib/adapters/*.sh` (self-guarded) and calls the matching `run_<distro>_install`. Package names come from `packages/manifest.yaml`.
+Thin dispatcher: detects the distro, `source`s every `bootstrap.d/lib/adapters/*.sh` (self-guarded) and calls the matching `run_<distro>_install`. Package names come from `packages/manifest.yaml`.
 
 - **arch/cachyos**: pacman adapter (packages via manifest; AUR/vscode/xxh/services stay in the adapter; `PKG_DRY_RUN=1` previews the plan)
 - **mac / debian / fedora**: adapters land in later tasks; until then the dispatch warns and skips
@@ -66,10 +66,10 @@ Creates the `fd` symlink, installs Zed via the official installer, and installs 
 Installs Zed via the official installer and VS Code (MS binary) from Microsoft's dnf repo.
 
 ### macOS packages
-`bootstrap/lib/adapters/brew.sh` installs brew formulas (manifest `common` + `macos_extra`) and casks (`macos_casks`, plus `role_personal`/aldente when `ROLE=personal`). `brew bundle` is retired — `packages/manifest.yaml` is the single source of truth.
+`bootstrap.d/lib/adapters/brew.sh` installs brew formulas (manifest `common` + `macos_extra`) and casks (`macos_casks`, plus `role_personal`/aldente when `ROLE=personal`). `brew bundle` is retired — `packages/manifest.yaml` is the single source of truth.
 
 ### `setup_mac.sh`
-macOS system **defaults** (Finder, trackpad, keyboard, screenshots). Only called on macOS. Package installs live in the brew adapter (`bootstrap/lib/adapters/brew.sh`), not here.
+macOS system **defaults** (Finder, trackpad, keyboard, screenshots). Only called on macOS. Package installs live in the brew adapter (`bootstrap.d/lib/adapters/brew.sh`), not here.
 
 ### `setup_fonts.sh`
 Symlinks font files from `dotfiles/fonts/` into the OS font directory.

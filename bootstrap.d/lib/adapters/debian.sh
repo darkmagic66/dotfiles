@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# bootstrap/lib/adapters/debian.sh — Debian/Ubuntu-family package adapter.
+# bootstrap.d/lib/adapters/debian.sh — Debian/Ubuntu-family package adapter.
 # Applies to: debian pop ubuntu
 # Sourced by setup_basic.sh (and other callers that source the lib dir first);
 # sources nothing itself — the caller must provide log/warn/die and
-# manifest_packages (bootstrap/lib/common.sh + manifest.sh). Self-guard:
+# manifest_packages (bootstrap.d/lib/common.sh + manifest.sh). Self-guard:
 # no-op (defines nothing) when sourced for another distro.
 # Content moved verbatim from the old script/setup_basic.sh install_debian
 # body (eza upstream deb repo) and the old script/setup_os/debian.sh (fd

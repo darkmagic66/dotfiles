@@ -1,0 +1,52 @@
+#!/bin/bash
+# bootstrap — dotfiles entry point (architecture-v2 spec G4).
+# Subcommands: packages | config | ai | (no args: full flow) | --update (full flow, update mode).
+# Shared libs live in bootstrap.d/lib/.
+set -euo pipefail
+
+# shellcheck source=bootstrap.d/lib/common.sh
+. "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/bootstrap.d/lib/common.sh"
+
+UPDATE="false"
+
+case "${1:-}" in
+  packages)
+    echo "==================================="
+    echo "   Installing base packages...     "
+    echo "==================================="
+    "$DOTFILES_DIR/script/setup_basic.sh"
+    ;;
+  config)
+    # shellcheck source=bootstrap.d/lib/config.sh
+    . "$DOTFILES_DIR/bootstrap.d/lib/config.sh"
+    ;;
+  ai)
+    case "${2:-}" in
+      "")
+        echo "Running AI skills setup..."
+        "$DOTFILES_DIR/script/setup_skills.sh"
+        "$DOTFILES_DIR/script/setup_rtk.sh"
+        ;;
+      list|update|status)
+        # Extension point: implemented by the Task 7 ai CLI (bootstrap.d/lib/ai.sh).
+        echo "bootstrap ai $2: not implemented yet (task 7 extension point)." >&2
+        exit 1
+        ;;
+      *)
+        echo "Usage: bootstrap ai [list|update|status]" >&2
+        exit 1
+        ;;
+    esac
+    ;;
+  "")
+    . "$DOTFILES_DIR/bootstrap.d/lib/full.sh"
+    ;;
+  --update)
+    UPDATE="true"
+    . "$DOTFILES_DIR/bootstrap.d/lib/full.sh"
+    ;;
+  *)
+    echo "Usage: bootstrap [packages|config|ai|--update]" >&2
+    exit 1
+    ;;
+esac

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# bootstrap/lib/adapters/win.sh — Windows (winget) package adapter. SKETCH ONLY.
+# bootstrap.d/lib/adapters/win.sh — Windows (winget) package adapter. SKETCH ONLY.
 # Applies to: windows (OS_TYPE MINGW*/MSYS*; no real windows machine reachable
 # yet, never executed in this project — documented limitation, spec G2).
 # Sourced by setup_basic.sh (and other callers that source the lib dir first);
 # sources nothing itself — the caller must provide log/warn/die and
-# manifest_packages (bootstrap/lib/common.sh + manifest.sh). Self-guard:
+# manifest_packages (bootstrap.d/lib/common.sh + manifest.sh). Self-guard:
 # no-op (defines nothing) when sourced elsewhere.
 # PKG_DRY_RUN=1 is an env (not a flag): print the commands that would run,
 # execute nothing — which is all this adapter ever does anyway.

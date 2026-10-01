@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# bootstrap/lib/adapters/pacman.sh — Arch-family package adapter.
+# bootstrap.d/lib/adapters/pacman.sh — Arch-family package adapter.
 # Applies to: arch cachyos archlabs endeavouros manjaro
 # Sourced by setup_basic.sh (and other callers that source the lib dir first);
 # sources nothing itself — the caller must provide log/warn/die and
-# manifest_packages (bootstrap/lib/common.sh + manifest.sh). Self-guard:
+# manifest_packages (bootstrap.d/lib/common.sh + manifest.sh). Self-guard:
 # no-op (defines nothing) when sourced for another distro.
 # Platform steps moved verbatim from the old script/setup_os/arch.sh.
 # PKG_DRY_RUN=1 is an env (not a flag): print the commands that would run,

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# bootstrap/lib/hosts.sh — machine profile & role resolution.
+# bootstrap.d/lib/hosts.sh — machine profile & role resolution.
 # Single edit point: HOST_ROLE table. Placeholders for machines not yet run
 # (fill real hostnames during first install there); the current machine uses
 # its real hostname.

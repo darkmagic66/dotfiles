@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# bootstrap/lib/common.sh — shared helpers: logging, DOTFILES_DIR, OS detection.
+# bootstrap.d/lib/common.sh — shared helpers: logging, DOTFILES_DIR, OS detection.
 # Idempotent to source. After sourcing, DOTFILES_DIR is set (env override wins,
 # else resolved script-relative) and _dotf_os_detect() has exported OS_TYPE/DISTRO.
 
@@ -7,7 +7,7 @@
 _DOTF_COMMON_SOURCED=1
 
 # --- DOTFILES_DIR: prefer existing env, else resolve from this file's location
-# (this file lives in <repo>/bootstrap/lib/, so two levels up is the repo root).
+# (this file lives in <repo>/bootstrap.d/lib/, so two levels up is the repo root).
 _DOTF_LIB_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" && pwd -P)"
 DOTFILES_DIR="${DOTFILES_DIR:-$(dirname -- "$(dirname -- "$_DOTF_LIB_DIR")")}"
 export DOTFILES_DIR

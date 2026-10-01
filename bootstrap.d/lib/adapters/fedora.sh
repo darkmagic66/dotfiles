@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# bootstrap/lib/adapters/fedora.sh — Fedora package adapter.
+# bootstrap.d/lib/adapters/fedora.sh — Fedora package adapter.
 # Applies to: fedora
 # Sourced by setup_basic.sh (and other callers that source the lib dir first);
 # sources nothing itself — the caller must provide log/warn/die and
-# manifest_packages (bootstrap/lib/common.sh + manifest.sh). Self-guard:
+# manifest_packages (bootstrap.d/lib/common.sh + manifest.sh). Self-guard:
 # no-op (defines nothing) when sourced for another distro.
 # Content moved verbatim from the old script/setup_basic.sh install_fedora
 # body and the old script/setup_os/fedora.sh (zed installer, vscode MS dnf

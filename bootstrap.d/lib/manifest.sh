@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# bootstrap/lib/manifest.sh — package manifest parser (awk-free, pure bash).
+# bootstrap.d/lib/manifest.sh — package manifest parser (awk-free, pure bash).
 # Contract (see packages/manifest.yaml): flat top-level groups `^[a-z_]+:`,
 # items are `  - <value>` (2 spaces, dash, space, value to end of line).
 # Needs log/warn from common.sh; auto-sources it when not already loaded.
