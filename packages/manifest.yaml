@@ -51,6 +51,7 @@ macos_casks:    # brew --cask
   - visual-studio-code
   - zed
   - notion
+  - raycast
 
 macos_extra:    # brew formulas beyond common
   - xxh
