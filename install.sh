@@ -97,7 +97,7 @@ if ! $UPDATE; then
     fi
     # Role packages (personal/company), only when the package holds real
     # content — stowing a gitkeep-only dir would plant a .gitkeep link in $HOME
-    if [ -n "$ROLE" ] && [ -d "roles/$ROLE" ] && [ -n "$(find "roles/$ROLE" -mindepth 1 ! -name '.gitkeep' -print -quit)" ]; then
+    if [[ -n "${ROLE:-}" ]] && [ -d "roles/$ROLE" ] && [ -n "$(find "roles/$ROLE" -mindepth 1 ! -type d ! -name '.gitkeep' -print 2>/dev/null | head -n 1)" ]; then
       stow -t "$HOME" -d roles "$ROLE"
     fi
     # mac-specific packages: none yet — add `stow -d mac <pkg>` here
