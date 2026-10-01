@@ -42,11 +42,14 @@ linux:     # pacman; arch-family only
   - notion-app-electron
   - firefox
   - brave-bin
+  - bitwarden
   - opencode2-bin
 
 macos_casks:    # brew --cask (alacritty excluded: Gatekeeper-blocked; kitty is the mac terminal)
   - kitty
   - firefox
+  - brave-browser
+  - bitwarden
   - visual-studio-code
   - zed
   - notion
@@ -73,3 +76,5 @@ windows:        # winget ids — sketch
   - sharkdp.fd
   - Neovim.Neovim
   - Notion.Notion
+  - Brave.Brave
+  - Bitwarden.Bitwarden
