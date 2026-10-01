@@ -20,6 +20,7 @@ export TMUX_PLUGIN_MANAGER_PATH=$XDG_CONFIG_HOME/tmux/plugins
 typeset -U path
 path=(
   $HOME/.local/bin
+  $HOME/.opencode/bin
   $path
 )
 
@@ -93,3 +94,6 @@ bindkey '^x^e' edit-command-line
 # --- Machine-specific overrides (not tracked in dotfiles) -------------------
 [[ -r $XDG_CONFIG_HOME/zsh/.zshrc.local ]] && source $XDG_CONFIG_HOME/zsh/.zshrc.local
 
+
+# opencode
+export PATH=/home/yuki/.opencode/bin:$PATH
