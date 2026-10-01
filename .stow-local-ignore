@@ -3,6 +3,7 @@ fonts
 script
 ai-env
 dog
+skills
 Brewfile
 README.md
 ZSH.md
@@ -11,3 +12,10 @@ HYPRSUNSET-MIRROR-CTM.md
 ^/LICENSE.*
 ^/COPYING
 .stow-local-ignore
+install.sh
+install.flow.mmd
+mise.toml
+linux
+mac
+docs
+plan.md
