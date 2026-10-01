@@ -7,11 +7,21 @@ Exact steps for the **personal M5 mac**, step by step. Architecture v2 (manifest
 ## 0. Prereqs
 - macOS on the M5, network reachable.
 - You will type the sudo/password prompts brew + zed/chsh ask for.
+- **Command Line Tools first** — on a fresh mac, `git` is only a shim that
+  asks for Xcode/CLT. Install it before anything (GUI dialog appears, takes
+  a few minutes):
+
+```bash
+xcode-select --install
+```
+
+Verify: `xcode-select -p` prints `/Library/Developer/CommandLineTools` and
+`git --version` works *without* the Xcode popup.
 
 ## 1. Clone
 
 ```bash
-git clone --recursive https://github.com/<you>/dotfiles.git ~/dotfiles
+git clone --recursive https://github.com/darkmagic66/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 ```
 
