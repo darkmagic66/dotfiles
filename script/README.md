@@ -43,17 +43,15 @@ esac
 
 The `BASH_SOURCE[0] == $0` test distinguishes "executed directly" (exit) from "sourced" (return), so each file is also runnable standalone for testing.
 
-**Adding a new distro family** = drop a new `setup_os/<family>.sh` with its own guard. No central `case` to update — `setup_basic.sh`'s `source setup_os/*.sh` glob picks it up automatically.
+**Adding a new distro family** = drop a new `bootstrap/lib/adapters/<family>.sh` with its own `${DISTRO}` guard. No central `case` to update — `setup_basic.sh`'s `source bootstrap/lib/adapters/*.sh` glob picks it up automatically.
 
 ## Scripts
 
 ### `setup_basic.sh`
-Installs `COMMON_PACKAGES` via the distro's package manager, then `source`s every `setup_os/*.sh` so the matching distro's extras fire.
+Thin dispatcher: detects the distro, `source`s every `bootstrap/lib/adapters/*.sh` (self-guarded) and calls the matching `run_<distro>_install`. Package names come from `packages/manifest.yaml`.
 
-- **mac**: brew install + extras go via `setup_os/mac.sh`'s `brew bundle`
-- **debian/pop/ubuntu**: apt install + eza upstream deb repo (inline)
-- **arch/cachyos**: pacman install (extras + services go in `setup_os/arch.sh`)
-- **fedora**: dnf install
+- **arch/cachyos**: pacman adapter (packages via manifest; AUR/vscode/xxh/services stay in the adapter; `PKG_DRY_RUN=1` previews the plan)
+- **mac / debian / fedora**: adapters land in later tasks; until then the dispatch warns and skips
 
 ### `setup_git.sh`
 Prompts interactively for `user.name` and `user.email` if not already set in global git config. Idempotent — skips a key when already configured or when given empty input.
@@ -67,11 +65,11 @@ Creates the `fd` symlink, installs Zed via the official installer, and installs 
 ### `setup_os/fedora.sh`
 Installs Zed via the official installer and VS Code (MS binary) from Microsoft's dnf repo.
 
-### `setup_os/mac.sh`
-Runs `brew bundle --file="$DOTFILES_DIR/Brewfile"` — casks (vscode, zed, firefox, alacritty, kitty, aldente) and brews (git, zsh, stow, tmux, jq, eza, gnupg). Brewfile is the single source of mac packages — `setup_basic.sh`'s mac branch only bootstraps brew.
+### macOS packages
+`bootstrap/lib/adapters/brew.sh` installs brew formulas (manifest `common` + `macos_extra`) and casks (`macos_casks`, plus `role_personal`/aldente when `ROLE=personal`). `brew bundle` is retired — `packages/manifest.yaml` is the single source of truth.
 
 ### `setup_mac.sh`
-macOS system **defaults** (Finder, trackpad, keyboard, screenshots). Only called on macOS. Distinct from `setup_os/mac.sh` which installs packages.
+macOS system **defaults** (Finder, trackpad, keyboard, screenshots). Only called on macOS. Package installs live in the brew adapter (`bootstrap/lib/adapters/brew.sh`), not here.
 
 ### `setup_fonts.sh`
 Symlinks font files from `dotfiles/fonts/` into the OS font directory.
