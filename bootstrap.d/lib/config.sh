@@ -71,6 +71,6 @@ fi
   # mac-specific packages (AeroSpace, Karabiner: mac-only; linux skips this —
   # mirror image of the linux gate above)
   if [ "$DISTRO" == "mac" ]; then
-    stow -t "$HOME" ${STOW_DRY[@]+"${STOW_DRY[@]}"} -d mac aerospace karabiner neru launchagents
+    stow -t "$HOME" ${STOW_DRY[@]+"${STOW_DRY[@]}"} -d mac aerospace karabiner neru
   fi
 )

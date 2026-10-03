@@ -111,14 +111,6 @@ dflt com.apple.dock expose-group-apps -bool true
 # Automatically adjust brightness: ON — set manually (once, persists):
 #   System Settings → Displays → Automatically adjust brightness.
 
-# GUI PATH agent: applies brew bin to GUI-launched apps at login (loaded
-# once here; RunAtLoad covers future logins). Stowed from mac/launchagents.
-_gui_path_plist="$HOME/Library/LaunchAgents/com.dotfiles.gui-path.plist"
-if [ -f "$_gui_path_plist" ]; then
-  launchctl load "$_gui_path_plist" 2>/dev/null || true
-fi
-unset _gui_path_plist
-
 killall Finder 2>/dev/null || true
 killall Dock 2>/dev/null || true
 killall SystemUIServer 2>/dev/null || true
