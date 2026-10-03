@@ -93,6 +93,11 @@ dflt com.apple.dock tilesize -int 36
 # Dock magnification (cursor-hover zoom) — off; static icons only
 dflt com.apple.dock magnification -bool false
 
+# Group windows by application in Mission Control. Required with AeroSpace:
+# it parks windows bottom-right and Mission Control shrinks them unreadably
+# small without grouping. See "A note on mission control" in AeroSpace guide.
+dflt com.apple.dock expose-group-apps -bool true
+
 # Night Shift (always on): intentionally NOT scripted. Apple exposes no
 # `defaults` key for it — the CoreBrightness daemon ignores direct plist
 # writes, so a script can only drive it via a third-party CLI. Manual steps
