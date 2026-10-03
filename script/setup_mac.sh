@@ -67,6 +67,11 @@ dflt com.apple.desktopservices DSDontWriteNetworkStores -bool true
 dflt com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
 dflt -currentHost NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 
+# Double-click speed: slowest (most forgiving interval, ~1.7s).
+# Value read live from the M5 where double-click works; higher = slower.
+# Logout/login once if a fresh install ignores it.
+dflt NSGlobalDomain com.apple.mouse.doubleClickThreshold -float 1.7
+
 # Three-finger drag (accessibility)
 dflt com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true
 
