@@ -35,37 +35,6 @@ dflt NSGlobalDomain com.apple.keyboard.fnState -bool true
 dflt NSGlobalDomain KeyRepeat -int 2
 dflt NSGlobalDomain InitialKeyRepeat -int 15
 
-# Caps Lock → Control (native hidutil: immediate + login LaunchAgent so it
-# survives reboots; no Karabiner needed for this one).
-_caps_map='{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E0}]}'
-hidutil property --set "$_caps_map" >/dev/null 2>&1 \
-  || echo "warning: hidutil caps remap failed"
-_caps_plist="$HOME/Library/LaunchAgents/com.dotfiles.caps2ctrl.plist"
-mkdir -p "$HOME/Library/LaunchAgents"
-if [ ! -f "$_caps_plist" ]; then
-  cat > "$_caps_plist" <<'PLIST_EOF'
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>Label</key>
-  <string>com.dotfiles.caps2ctrl</string>
-  <key>ProgramArguments</key>
-  <array>
-    <string>/usr/bin/hidutil</string>
-    <string>property</string>
-    <string>--set</string>
-    <string>{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E0}]}</string>
-  </array>
-  <key>RunAtLoad</key>
-  <true/>
-</dict>
-</plist>
-PLIST_EOF
-  launchctl load "$_caps_plist" 2>/dev/null || true
-fi
-unset _caps_map _caps_plist
-
 # Disable natural scrolling (uncomment if you prefer traditional scroll)
 # defaults write NSGlobalDomain com.apple.swipescrolldirection -bool false
 
