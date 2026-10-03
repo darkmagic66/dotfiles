@@ -58,7 +58,7 @@ fi
   echo "      Running Stow Process         "
   echo "==================================="
   # Common packages: stowed on every platform
-  stow -t "$HOME" ${STOW_DRY[@]+"${STOW_DRY[@]}"} zsh tmux nvim kitty alacritty ideavim opencode xxh aerospace
+  stow -t "$HOME" ${STOW_DRY[@]+"${STOW_DRY[@]}"} zsh tmux nvim kitty alacritty ideavim opencode xxh
   # Linux/Wayland-only packages; mac skips them
   if [ "$DISTRO" != "mac" ]; then
     stow -t "$HOME" ${STOW_DRY[@]+"${STOW_DRY[@]}"} -d linux hypr waybar gtk qt fontconfig
@@ -68,5 +68,9 @@ fi
   if [[ -n "${ROLE:-}" ]] && [ -d "roles/$ROLE" ] && [ -n "$(find "roles/$ROLE" -mindepth 1 ! -type d ! -name '.gitkeep' -print 2>/dev/null | head -n 1)" ]; then
     stow -t "$HOME" ${STOW_DRY[@]+"${STOW_DRY[@]}"} -d roles "$ROLE"
   fi
-  # mac-specific packages: none yet — add `stow -d mac <pkg>` here
+  # mac-specific packages (AeroSpace is mac-only; linux skips this —
+  # mirror image of the linux gate above)
+  if [ "$DISTRO" == "mac" ]; then
+    stow -t "$HOME" ${STOW_DRY[@]+"${STOW_DRY[@]}"} -d mac aerospace
+  fi
 )
