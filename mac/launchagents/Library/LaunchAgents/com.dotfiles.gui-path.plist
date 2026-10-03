@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <!-- GUI apps inherit env from launchd, not shells. Without this, GUI-
+       launched kitty (and its tmux server + tpm children) get bare system
+       PATH with no brew bin. zshrc cannot fix it: no shell runs in that
+       chain. Applied at login; see setup_mac.sh (loads once) -->
+  <key>Label</key>
+  <string>com.dotfiles.gui-path</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/launchctl</string>
+    <string>setenv</string>
+    <string>PATH</string>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+</dict>
+</plist>
