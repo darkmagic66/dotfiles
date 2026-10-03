@@ -64,8 +64,11 @@ macos_extra:    # brew formulas beyond common
 # (curl_scripts group retired — every supported OS now has a package-manager
 # route: arch = AUR opencode2-bin, mac = brew tap formula)
 
-role_personal:  # aldente moved out of macos_casks: personal only
-  - aldente
+role_personal:  # personal macs only (system-level tools; company M3 skips these)
+  - aldente                       # menu-bar battery limiter (cask)
+  - karabiner-elements            # key remapper (core cask)
+  - nikitabobko/tap/aerospace     # tiling window manager (tap cask)
+  - y3owk1n/tap/neru              # keyboard-driven mouse/hints (tap cask)
 
 role_company: []  # company mac = common + macos only, no personal extras
 
