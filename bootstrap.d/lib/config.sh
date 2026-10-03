@@ -68,9 +68,9 @@ fi
   if [[ -n "${ROLE:-}" ]] && [ -d "roles/$ROLE" ] && [ -n "$(find "roles/$ROLE" -mindepth 1 ! -type d ! -name '.gitkeep' -print 2>/dev/null | head -n 1)" ]; then
     stow -t "$HOME" ${STOW_DRY[@]+"${STOW_DRY[@]}"} -d roles "$ROLE"
   fi
-  # mac-specific packages (AeroSpace is mac-only; linux skips this —
+  # mac-specific packages (AeroSpace, Karabiner: mac-only; linux skips this —
   # mirror image of the linux gate above)
   if [ "$DISTRO" == "mac" ]; then
-    stow -t "$HOME" ${STOW_DRY[@]+"${STOW_DRY[@]}"} -d mac aerospace
+    stow -t "$HOME" ${STOW_DRY[@]+"${STOW_DRY[@]}"} -d mac aerospace karabiner
   fi
 )
