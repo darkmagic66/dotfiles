@@ -98,6 +98,25 @@ dflt com.apple.dock magnification -bool false
 # small without grouping. See "A note on mission control" in AeroSpace guide.
 dflt com.apple.dock expose-group-apps -bool true
 
+# Reduce animations (near-instant UI; all reversible via `defaults delete`).
+# Smooth scrolling deliberately untouched (NSScrollAnimationEnabled stays on).
+dflt NSGlobalDomain NSAutomaticWindowAnimationsEnabled -bool false
+dflt NSGlobalDomain NSWindowResizeTime -float 0.001
+dflt NSGlobalDomain QLPanelAnimationDuration -float 0
+dflt NSGlobalDomain NSScrollViewRubberbanding -bool false
+dflt NSGlobalDomain NSDocumentRevisionsWindowTransformAnimation -bool false
+dflt NSGlobalDomain NSToolbarFullScreenAnimationDuration -float 0
+dflt NSGlobalDomain NSBrowserColumnAnimationSpeedMultiplier -float 0
+dflt com.apple.dock autohide-time-modifier -float 0
+dflt com.apple.dock autohide-delay -float 0
+dflt com.apple.dock expose-animation-duration -float 0.1
+dflt com.apple.dock springboard-show-duration -float 0
+dflt com.apple.dock springboard-hide-duration -float 0
+dflt com.apple.dock springboard-page-duration -float 0
+dflt com.apple.finder DisableAllAnimations -bool true
+dflt com.apple.Mail DisableSendAnimations -bool true
+dflt com.apple.Mail DisableReplyAnimations -bool true
+
 # Night Shift (always on): intentionally NOT scripted. Apple exposes no
 # `defaults` key for it — the CoreBrightness daemon ignores direct plist
 # writes, so a script can only drive it via a third-party CLI. Manual steps
