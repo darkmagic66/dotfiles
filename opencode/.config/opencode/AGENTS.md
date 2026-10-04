@@ -21,7 +21,7 @@ compression would create technical ambiguity. Resume afterward.
 
 ## CLI output: use rtk
 
-`rtk` (rust-token-killer) is installed at `/usr/bin/rtk`. It proxies CLI
+`rtk` (rust-token-killer) is installed on `PATH` (e.g. `/opt/homebrew/bin/rtk`). It proxies CLI
 commands and compresses/filters their output before it enters context, saving
 tokens.
 
