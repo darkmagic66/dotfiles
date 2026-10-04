@@ -102,7 +102,7 @@ Steps:
 
 Stow packages and their gates:
 
-- Every platform: `zsh tmux nvim kitty alacritty ideavim opencode xxh git` (`git` = delta pager config at `~/.config/git/config`; machine-local identity stays in real `~/.gitconfig`)
+- Every platform: `zsh tmux nvim kitty alacritty ideavim opencode xxh git zed yazi` (`git` = delta pager config at `~/.config/git/config`; machine-local identity stays in real `~/.gitconfig`)
 - Linux only (`stow -d linux`, skipped on macOS): `hypr waybar gtk qt fontconfig`
 - Mac only (`stow -d mac`, skipped on Linux): `aerospace karabiner neru`
 - `roles/<role>/` follows the resolved machine role.
@@ -205,7 +205,7 @@ Karabiner, Fn-as-F-keys, fast repeat, substitutions off).
 ├── docs/                   # design docs, specs, handoffs, M5-RUNBOOK.md
 ├── dog/ utility/           # competitive-programming templates (not stowed)
 ├── fonts/ skills/          # fonts symlinked, agent skill submodules
-└── zsh/ tmux/ nvim/ kitty/ alacritty/ ideavim/ opencode/ xxh/ git/   # stowed everywhere
+└── zsh/ tmux/ nvim/ kitty/ alacritty/ ideavim/ opencode/ xxh/ git/ zed/ yazi/   # stowed everywhere
 ```
 
 Runbook: `docs/M5-RUNBOOK.md`. Execution order + adapter pattern:

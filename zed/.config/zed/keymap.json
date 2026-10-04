@@ -1,0 +1,35 @@
+[
+  // NvChad muscle memory. Zed vim already covers the rest natively:
+  // gd/gD/gy/gI (goto), cd (rename), g. (code actions), gA (references),
+  // ]d/[d (diagnostics), gc/gcc (comment), ys/cs/ds (surround), :w :q :bd.
+  {
+    "context": "vim_mode == insert",
+    "bindings": {
+      // NvChad `jk` escape (cf. mappings.lua, .ideavimrc)
+      "j k": "vim::NormalBefore"
+    }
+  },
+  {
+    "context": "VimControl && !menu",
+    "bindings": {
+      "space f f": "file_finder::Toggle",
+      "space f w": "pane::DeploySearch",
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-l": "workspace::ActivatePaneRight"
+    }
+  },
+  {
+    "context": "EmptyPane || SharedScreen",
+    "bindings": {
+      "space f f": "file_finder::Toggle"
+    }
+  },
+  {
+    "context": "Editor && !menu",
+    "bindings": {
+      "ctrl-s": "workspace::Save"
+    }
+  }
+]

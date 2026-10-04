@@ -1,0 +1,14 @@
+{
+  // NvChad-style Zed settings. Vim ex commands work natively:
+  // :w :q :bd :vs :sp :E (project panel) :te (terminal) :cl (diagnostics)
+  "base_keymap": "Zed",
+  "vim_mode": true,
+  "relative_line_numbers": "enabled",
+  "cursor_blink": false,
+  "vertical_scroll_margin": 5,
+  "scroll_beyond_last_line": "off",
+  "buffer_font_family": "SFMono Nerd Font",
+  "vim": {
+    "toggle_relative_line_numbers": true
+  }
+}

@@ -1,0 +1,3 @@
+# yazi — show hidden files by default (toggle live with `.` key)
+[manager]
+show_hidden = true

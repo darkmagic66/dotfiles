@@ -58,7 +58,7 @@ fi
   echo "      Running Stow Process         "
   echo "==================================="
   # Common packages: stowed on every platform
-  stow -t "$HOME" ${STOW_DRY[@]+"${STOW_DRY[@]}"} zsh tmux nvim kitty alacritty ideavim opencode xxh git
+  stow -t "$HOME" ${STOW_DRY[@]+"${STOW_DRY[@]}"} zsh tmux nvim kitty alacritty ideavim opencode xxh git zed yazi
   # Linux/Wayland-only packages; mac skips them
   if [ "$DISTRO" != "mac" ]; then
     stow -t "$HOME" ${STOW_DRY[@]+"${STOW_DRY[@]}"} -d linux hypr waybar gtk qt fontconfig
