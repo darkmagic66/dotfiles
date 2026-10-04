@@ -43,6 +43,7 @@ linux:     # pacman; arch-family only
   - firefox
   - brave-bin
   - bitwarden
+  - discord
   - opencode2-bin
 
 macos_casks:    # brew --cask (alacritty excluded: Gatekeeper-blocked; kitty is the mac terminal)
@@ -55,6 +56,9 @@ macos_casks:    # brew --cask (alacritty excluded: Gatekeeper-blocked; kitty is 
   - notion
   - raycast
   - orbstack                     # Docker Desktop replacement (cask)
+  - intellij-idea-ce             # IntelliJ IDEA Community (free)
+  - datagrip                     # JetBrains SQL IDE (free for non-commercial use, pick at launch)
+  - discord                      # chat (also in linux group: pacman)
 
 macos_extra:    # brew formulas beyond common
   - xxh
