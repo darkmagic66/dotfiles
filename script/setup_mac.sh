@@ -117,6 +117,29 @@ dflt com.apple.finder DisableAllAnimations -bool true
 dflt com.apple.Mail DisableSendAnimations -bool true
 dflt com.apple.Mail DisableReplyAnimations -bool true
 
+# Login profile picture from repo wallpaper (takes effect after logout)
+REPO_ROOT="$(cd -- "$(dirname -- "$0")/.." && pwd -P)"
+if [ -f "$REPO_ROOT/wallpaper/profile-nagato.jpg" ]; then
+  sudo dscl . -create "/Users/$USER" Picture "$REPO_ROOT/wallpaper/profile-nagato.jpg" \
+    || echo "warning: dscl login picture failed"
+fi
+
+# Desktop wallpaper after login (System Events asks for Automation permission
+# once — allow it; applies to every desktop/space)
+if [ -f "$REPO_ROOT/wallpaper/background-nagato.jpg" ]; then
+  osascript -e "tell application \"System Events\" to set picture of every desktop to \"$REPO_ROOT/wallpaper/background-nagato.jpg\"" \
+    || echo "warning: desktop wallpaper failed"
+fi
+
+# Login window wallpaper (best-effort: replaces the cached admin image the
+# loginwindow draws behind the prompt; needs sudo; verify visually at logout)
+if [ -f "$REPO_ROOT/wallpaper/lock-nagato-01.jpg" ]; then
+  sips -s format png "$REPO_ROOT/wallpaper/lock-nagato-01.jpg" --out /tmp/login-nagato.png >/dev/null 2>&1 \
+    && sudo cp /tmp/login-nagato.png /Library/Caches/com.apple.desktop.admin.png \
+    || echo "warning: login wallpaper failed"
+  rm -f /tmp/login-nagato.png
+fi
+
 # Night Shift (always on): intentionally NOT scripted. Apple exposes no
 # `defaults` key for it — the CoreBrightness daemon ignores direct plist
 # writes, so a script can only drive it via a third-party CLI. Manual steps
