@@ -54,11 +54,13 @@ macos_casks:    # brew --cask (alacritty excluded: Gatekeeper-blocked; kitty is 
   - zed
   - notion
   - raycast
+  - orbstack                     # Docker Desktop replacement (cask)
 
 macos_extra:    # brew formulas beyond common
   - xxh
   - tldr
   - asciinema
+  - yazi                          # terminal file manager (also in linux group: pacman)
   - anomalyco/tap/opencode-v2   # opencode v2 (tap formula; mac only)
 
 # (curl_scripts group retired — every supported OS now has a package-manager
