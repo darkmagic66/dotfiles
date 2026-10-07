@@ -131,14 +131,9 @@ if [ -f "$REPO_ROOT/wallpaper/background-nagato.jpg" ]; then
     || echo "warning: desktop wallpaper failed"
 fi
 
-# Login window wallpaper (best-effort: replaces the cached admin image the
-# loginwindow draws behind the prompt; needs sudo; verify visually at logout)
-if [ -f "$REPO_ROOT/wallpaper/lock-nagato-01.jpg" ]; then
-  sips -s format png "$REPO_ROOT/wallpaper/lock-nagato-01.jpg" --out /tmp/login-nagato.png >/dev/null 2>&1 \
-    && sudo cp /tmp/login-nagato.png /Library/Caches/com.apple.desktop.admin.png \
-    || echo "warning: login wallpaper failed"
-  rm -f /tmp/login-nagato.png
-fi
+# NOTE: login-window wallpaper is NOT scriptable on Tahoe (loginwindow
+# ignores the admin.png override; no supported key, no MDM). Set it by hand
+# if Apple ever exposes it. lock-nagato-01.jpg stays in wallpaper/ for that day.
 
 # Night Shift (always on): intentionally NOT scripted. Apple exposes no
 # `defaults` key for it — the CoreBrightness daemon ignores direct plist
