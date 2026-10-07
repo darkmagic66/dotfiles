@@ -27,7 +27,8 @@ run_debian_install() {
 
   # --- Base packages: manifest common → apt -----------------------------------
   # Minimal name mapping: `fd` is named fd-find on Debian; the conventional
-  # `fd` symlink is created post-install below. All other common names are
+  # `fd` symlink is created post-install below. `just` is named `rust-just`
+  # on Debian/Ubuntu (the binary is still `just`). All other common names are
   # valid apt package names as-is.
   local group group_names name
   group_names="$(manifest_packages common)" \
@@ -35,6 +36,7 @@ run_debian_install() {
   local names=""
   for name in $group_names; do
     [ "$name" = "fd" ] && name="fd-find"
+    [ "$name" = "just" ] && name="rust-just"
     names+="${names:+ }${name}"
   done
   # Debian-specific base deps (kept hardcoded, spec G2)

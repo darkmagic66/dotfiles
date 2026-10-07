@@ -25,11 +25,14 @@ run_fedora_install() {
   fi
 
   # --- Base packages: manifest common → dnf -----------------------------------
+  # Minimal name mapping: `just` is named `rust-just` on Fedora (the binary
+  # is still `just`). All other common names are valid dnf package names.
   local group_names name
   group_names="$(manifest_packages common)" \
     || die "manifest: cannot resolve package group 'common'; no packages installed"
   local names=""
   for name in $group_names; do
+    [ "$name" = "just" ] && name="rust-just"
     names+="${names:+ }${name}"
   done
   # Fedora-specific base deps (kept hardcoded, spec G2)

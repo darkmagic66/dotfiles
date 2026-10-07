@@ -24,6 +24,7 @@ common:
   - git-delta
   - tree-sitter-cli
   - lazygit
+  - just
 
 linux:     # pacman; arch-family only
   - kitty
