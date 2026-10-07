@@ -1,3 +1,4 @@
 # yazi — show hidden files by default (toggle live with `.` key)
-[manager]
+# NOTE: section is [mgr], not [manager] (renamed upstream; [manager] silently ignored)
+[mgr]
 show_hidden = true
