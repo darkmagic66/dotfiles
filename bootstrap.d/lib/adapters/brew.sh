@@ -24,10 +24,12 @@ run_mac_install() {
 
   # --- Formulas: manifest common + macos_extra ---------------------------------
   # SKIP list (explicit, per spec G2 — NEVER install from manifest via brew):
-  #   curl: macOS ships a system curl (/usr/bin/curl, SecureTransport-backed,
-  #         CA certs from the OS keychain); brew's curl would shadow it and
-  #         break TLS trust. Keep the system one.
+  #   curl:  macOS ships a system curl (/usr/bin/curl, SecureTransport-backed,
+  #          CA certs from the OS keychain); brew's curl would shadow it and
+  #          break TLS trust. Keep the system one.
+  #   steam: no brew formula; the macOS client is the 'steam' cask (macos_casks).
   local skip_curl="curl"
+  local skip_steam="steam"
 
   local group group_names name
   local names=""
@@ -36,6 +38,7 @@ run_mac_install() {
       || die "manifest: cannot resolve package group '$group'; no packages installed"
     for name in $group_names; do
       [ "$name" = "$skip_curl" ] && continue
+      [ "$name" = "$skip_steam" ] && continue
       names+="${names:+ }${name}"
     done
   done

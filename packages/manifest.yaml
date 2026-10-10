@@ -25,6 +25,7 @@ common:
   - tree-sitter-cli
   - lazygit
   - just
+  - steam
 
 linux:     # pacman; arch-family only
   - kitty
@@ -45,6 +46,7 @@ linux:     # pacman; arch-family only
   - brave-bin
   - bitwarden
   - discord
+  - obs-studio
   - opencode2-bin
 
 macos_casks:    # brew --cask (alacritty excluded: Gatekeeper-blocked; kitty is the mac terminal)
@@ -60,6 +62,9 @@ macos_casks:    # brew --cask (alacritty excluded: Gatekeeper-blocked; kitty is 
   - intellij-idea-ce             # IntelliJ IDEA Community (free)
   - datagrip                     # JetBrains SQL IDE (free for non-commercial use, pick at launch)
   - discord                      # chat (also in linux group: pacman)
+  - obs                          # OBS Studio — streaming/recording (linux group: obs-studio)
+  - steam                        # game client; in common too, but mac only has this cask (no brew formula)
+  - vorssaint                    # menu bar toolkit (volume mixer, system monitor, app switcher)
 
 macos_extra:    # brew formulas beyond common
   - xxh

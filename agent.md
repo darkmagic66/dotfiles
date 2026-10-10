@@ -136,9 +136,9 @@ AeroSpace config: `mac/aerospace/.aerospace.toml`, auto-reloads on save.
 
 ## What gets installed (from `packages/manifest.yaml`)
 
-- **common (all machines)**: git, zsh, stow, tmux, jq, eza, gnupg, neovim, mise, atuin, htop, fd, fzf, zoxide, bat, ripgrep, zip, unzip, curl, wget, git-delta, tree-sitter-cli, lazygit, just
-- **arch family**: kitty, waybar, yazi, awww, brightnessctl, wl-clipboard, powerline-fonts, ncdu, playerctl, udisks2, blueman, zed, fuzzel, bitwarden + AUR (visual-studio-code-bin, python-xxh) + services
-- **macOS**: formulas (common + yazi, xxh, tldr, asciinema, `anomalyco/tap/opencode-v2`; system curl kept) + casks (kitty, firefox, brave-browser, bitwarden, visual-studio-code, zed, notion, raycast, orbstack) + `role_personal` only (aldente, karabiner-elements, `nikitabobko/tap/aerospace`, `y3owk1n/tap/neru`)
+- **common (all machines)**: git, zsh, stow, tmux, jq, eza, gnupg, neovim, mise, atuin, htop, fd, fzf, zoxide, bat, ripgrep, zip, unzip, curl, wget, git-delta, tree-sitter-cli, lazygit, just, steam
+- **arch family**: kitty, waybar, yazi, awww, brightnessctl, wl-clipboard, powerline-fonts, ncdu, playerctl, udisks2, blueman, zed, fuzzel, bitwarden, obs-studio + AUR (visual-studio-code-bin, python-xxh) + services
+- **macOS**: formulas (common + yazi, xxh, tldr, asciinema, `anomalyco/tap/opencode-v2`; system curl kept) + casks (kitty, firefox, brave-browser, bitwarden, visual-studio-code, zed, notion, raycast, orbstack, obs, steam, vorssaint) + `role_personal` only (aldente, karabiner-elements, `nikitabobko/tap/aerospace`, `y3owk1n/tap/neru`)
 - **Debian/Fedora**: zed installer + Microsoft's apt/dnf repo for vscode; `common` name maps apply (`fd`→`fd-find`, `just`→`rust-just`)
 
 Editors: nvim (NvChad on lazy.nvim), zed, vscode.
