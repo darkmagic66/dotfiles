@@ -27,9 +27,10 @@ bootstrap / bootstrap --update
 ├── 6. setup_fonts.sh           # symlink fonts into OS font dir (skipped in --update)
 │                               #   fonts run AFTER stow, BEFORE zsh
 ├── 7. setup_zsh.sh             # clone zsh plugins + tpm + chsh -s zsh (--update mode in --update)
-├── 8. setup_programing.sh      # mise (go/java/node/rust), GitNexus, rtk — RTK LAST
+├── 8. setup_programing.sh      # mise (go/java/node/rust), GitNexus, rtk
 ├── 9. setup_skills.sh          # init skill submodules + symlink skills into agent dirs
-└── 10. setup_rtk.sh            # activate rtk for opencode (installs opencode plugin)
+├── 10. setup_graphify.sh       # graphify CLI (uv) + /graphify skill for agents
+└── 11. setup_rtk.sh            # activate rtk for opencode (installs opencode plugin) — RTK LAST
 ```
 
 Exact step order is the code of `bootstrap.d/lib/full.sh` + `bootstrap.d/lib/config.sh`.
@@ -101,6 +102,15 @@ Inits skill submodules in `dotfiles/skills/` and symlinks each skill into agent 
 - `--update`: `git submodule update --remote --merge` first, then re-symlink
 
 See `../skills/README.md` for adding/removing/pinning skills.
+
+### `setup_graphify.sh`
+Installs the [graphify](https://github.com/Graphify-Labs/graphify) knowledge-graph CLI and registers its `/graphify` skill with the AI assistants.
+- **uv**: installed via mise (`mise use -g uv@latest`) when missing; falls back to `mise exec -- uv` if its shims aren't on PATH.
+- **graphify**: `uv tool install graphifyy` (the PyPI name has a double-y; the command is `graphify`).
+- **skill**: `graphify install --platform <p>` for `opencode`, `claude`, `codex`, `agents`. Run from `$HOME` so opencode's always-on plugin lands at `~/.opencode` (a discovery ancestor of every project) instead of inside a project checkout. Idempotent; warns and continues on failure.
+- **always-on (opencode)**: `graphify opencode install` additionally writes an `AGENTS.md` instruction block + the `tool.execute.before` plugin — also from `$HOME`, so they land at `~/AGENTS.md` and `~/.opencode`.
+
+Per project: build a graph with `/graphify .`, then query it with `graphify query "<question>"`.
 
 ### `setup_rtk.sh`
 Activates rtk for opencode by running `rtk init -g --opencode --no-patch`, which installs the opencode plugin at `~/.config/opencode/plugins/rtk.ts`. The plugin auto-rewrites bash commands to their rtk equivalents for token savings. Idempotent — skips if the plugin is already up to date. Requires the rtk binary in PATH (installed by `setup_programing.sh`).

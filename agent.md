@@ -151,7 +151,8 @@ carries a guarded `set-environment -g PATH` for GUI-spawned servers;
 targets); fonts symlinked from `fonts/`; toolchains via
 `setup_programing.sh` (mise go/java/node/rust, GitNexus, rtk); skills via
 `setup_skills.sh` into `~/.config/opencode/skills/`,
-`~/.claude/skills/`, `~/.codex/skills/`, `~/.agents/skills/`.
+`~/.claude/skills/`, `~/.codex/skills/`, `~/.agents/skills/`; graphify
+knowledge-graph CLI + `/graphify` skill via `setup_graphify.sh` (uv from mise).
 `script/` holds thin `setup_*.sh` steps (see `script/README.md`).
 
 ## Keyboard map (reference — mouse optional)

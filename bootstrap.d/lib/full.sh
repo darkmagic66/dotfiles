@@ -79,6 +79,7 @@ if $UPDATE; then
 else
   "$DOTFILES_DIR/script/setup_skills.sh"
 fi
+"$DOTFILES_DIR/script/setup_graphify.sh"
 "$DOTFILES_DIR/script/setup_rtk.sh"
 
 echo "==================================="

@@ -29,6 +29,7 @@ case "${1:-}" in
       "")
         echo "Running AI skills setup..."
         "$DOTFILES_DIR/script/setup_skills.sh"
+        "$DOTFILES_DIR/script/setup_graphify.sh"
         "$DOTFILES_DIR/script/setup_rtk.sh"
         ;;
       list|update|status)

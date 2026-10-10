@@ -18,7 +18,7 @@ config:
 packages:
     ./bootstrap packages
 
-# AI layer: skills + rtk plugin
+# AI layer: skills + rtk plugin + graphify
 ai:
     ./bootstrap ai
 
