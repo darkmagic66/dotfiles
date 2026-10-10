@@ -1,4 +1,17 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "lsp": true,
+  "mcp": {
+    "servers": {
+      "designcraft": {
+        "type": "local",
+        "command": [
+          "/Users/yuki/designcraft/target/release/designcraft-cli",
+          "mcp",
+          "--connect",
+          "7979"
+        ]
+      }
+    }
+  },
 }

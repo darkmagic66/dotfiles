@@ -20,6 +20,7 @@ SKILLS_DIR="$DOTFILES_DIR/skills"
 SUPERPOWERS_SKILLS=(all)                 # obra/superpowers — take all ~14 skills
 
 MATTP0COCK_SKILLS=(
+  productivity/grilling
   productivity/grill-me
   productivity/handoff
   productivity/teach
@@ -28,6 +29,9 @@ MATTP0COCK_SKILLS=(
   engineering/code-review
   engineering/codebase-design
   engineering/diagnosing-bugs
+  engineering/domain-modeling
+  engineering/grill-with-docs
+  engineering/prototype
   engineering/research
   engineering/implement
   engineering/to-spec

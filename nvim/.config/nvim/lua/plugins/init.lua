@@ -43,6 +43,10 @@ return {
         "golines",
         -- c-fmailiy
         "clangd",
+        -- java
+        "jdtls",
+        "java-debug-adapter",
+        "java-test",
       },
     },
   },
@@ -65,6 +69,7 @@ return {
         "bash",
         "python",
         "go",
+        "java",
         "cpp",
         "html",
         "css",
