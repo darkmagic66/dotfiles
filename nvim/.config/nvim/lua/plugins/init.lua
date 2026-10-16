@@ -19,48 +19,73 @@ return {
     end,
   },
 
+  -- mason.nvim v2 dropped its own "ensure_installed" option. Installs are now
+  -- delegated to mason-lspconfig (language servers) and mason-tool-installer
+  -- (formatters / linters / debug adapters).
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
+  },
+  {
+    "mason-org/mason-lspconfig.nvim",
+    event = "VeryLazy",
+    dependencies = { "mason-org/mason.nvim" },
     opts = {
+      -- These are nvim-lspconfig server names, not mason package names.
+      -- Config + enable happens in configs/lspconfig.lua.
       ensure_installed = {
-        "lua-language-server",
-        "stylua",
-        -- Front-Family
-        "typescript-language-server",
-        "html-lsp",
-        "css-lsp",
-        "prettierd",
+        "lua_ls",
+        -- frontend
+        "ts_ls",
+        "html",
+        "cssls",
         -- python
         "pyright",
+        -- go
+        "gopls",
+        -- c-family
+        "clangd",
+        -- java
+        "jdtls",
+      },
+      automatic_enable = false,
+    },
+  },
+  {
+    "WhoIsSethDaniel/mason-tool-installer.nvim",
+    event = "VeryLazy",
+    dependencies = { "mason-org/mason.nvim" },
+    opts = {
+      ensure_installed = {
+        "stylua",
+        "prettierd",
+        -- python
         "mypy",
         "ruff",
         "black",
         "debugpy",
         -- go
-        "gopls",
         "gofumpt",
         "goimports",
         "golines",
-        -- c-fmailiy
-        "clangd",
         -- java
-        "jdtls",
         "java-debug-adapter",
         "java-test",
       },
     },
   },
-  {
-    "williamboman/mason-lspconfig.nvim",
-    event = "VeryLazy",
-    dependencies = { "williamboman/mason.nvim" },
-    opts = {
-      automatic_installation = true,
-    },
-  },
   --
   {
     "nvim-treesitter/nvim-treesitter",
+    -- NvChad (nvim-treesitter "main" branch) does not install parsers on its
+    -- own anymore; it only exposes :TSInstallAll and a "build" step. Install
+    -- the list below at startup so a fresh machine self-heals (no-op when the
+    -- parsers already exist).
+    config = function(_, opts)
+      require("nvchad.configs.treesitter")
+      if type(opts.ensure_installed) == "table" then
+        require("nvim-treesitter").install(opts.ensure_installed)
+      end
+    end,
     opts = {
       ensure_installed = {
         "vim",
