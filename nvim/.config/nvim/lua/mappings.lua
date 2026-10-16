@@ -5,7 +5,7 @@ require "nvchad.mappings"
 local map = vim.keymap.set
 
 map("n", ";", ":", { desc = "CMD enter command mode" })
-map("i", "jk", "<ESC> ", { noremap = true })
+map("i", "jk", "<ESC>", { noremap = true })
 
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 
@@ -43,13 +43,13 @@ map("n", "<leader>dgt", function()
 end, { desc = "debug-go" })
 
 map("n", "<leader>dgl", function()
-  require("dap-go").debug_test()
+  require("dap-go").debug_last_test()
 end, { desc = "debug-go-last" })
 
 map("n", "<leader>z", "<cmd>ZenMode<CR>", { desc = "Toggle Zen Mode (Centered)" })
 
 map("n", "<leader>ob", function()
-  vim.fn.jobstart { "xdg-open", vim.fn.expand "%:p" }
+  vim.ui.open(vim.fn.expand "%:p")
 end, { desc = "Open file in browser" })
 
 -------------------- Markdown --------------------
