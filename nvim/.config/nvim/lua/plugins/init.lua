@@ -2,13 +2,22 @@ local lazy = require "lazy"
 return {
   { "luarocks/hererocks", build = "rockspec", lazy = true },
 
-  -- {
-  --   "stevearc/conform.nvim",
-  --   -- event = 'BufWritePre', -- uncomment for format on save
-  --   config = function()
-  --     require "configs.conform"
-  --   end,
-  -- },
+  {
+    "stevearc/conform.nvim",
+    opts = function(_, opts)
+      -- Java: Spring's own Checkstyle-aligned formatter. It reads the file on
+      -- stdin and writes the result to stdout (the "Loading formatter from ..."
+      -- banner goes to stderr, so it is safe here).
+      opts.formatters = opts.formatters or {}
+      opts.formatters.spring_javaformat = {
+        command = "spring-javaformat",
+        args = { "format", "--stdin" },
+        stdin = true,
+      }
+      opts.formatters_by_ft = opts.formatters_by_ft or {}
+      opts.formatters_by_ft.java = { "spring_javaformat" }
+    end,
+  },
 
   -- These are some examples, uncomment them if you want to see them work!
   {
@@ -179,6 +188,9 @@ return {
   ------------------ Debugger ------------------------
   {
     "mfussenegger/nvim-dap",
+    config = function()
+      require "configs.dap"
+    end,
   },
 
   {
@@ -241,6 +253,20 @@ return {
     end,
   },
   -- GoTagAdd {json,yaml} GoMod tidy Goget {} GoTestAll
+
+  ---------------- Java / Spring Boot ----------------
+  -- Launches the STS4 Spring Boot language server installed via mason and wires
+  -- the classpath handshake jdtls needs (without it: no beans, no endpoints, no
+  -- application.properties / .yml property completion). Discovers the server jar
+  -- and the jdtls extension jars from mason on its own.
+  {
+    "JavaHello/spring-boot.nvim",
+    ft = "java",
+    dependencies = { "mason-org/mason.nvim" },
+    config = function()
+      require("spring_boot").setup {}
+    end,
+  },
 
   ---------------- Markdown rendering ----------------
   -- Inline markdown/typst/latex/html previewer.

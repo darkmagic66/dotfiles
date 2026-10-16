@@ -55,9 +55,16 @@ end
 
 local bundles = mason_jars "/java-debug-adapter/extension/server/com.microsoft.java.debug.plugin-*.jar"
 vim.list_extend(bundles, mason_jars "/java-test/extension/server/*.jar")
+-- Spring Boot / Spring Framework (STS4) jdtls extensions. The jar list comes
+-- from spring-boot.nvim so it stays in sync with the language server that
+-- plugin launches; see the Java / Spring Boot section in plugins/init.lua.
+vim.list_extend(bundles, require("spring_boot").java_extensions())
+
+-- lombok: bundled with the mason jdtls package; the agent must reach the JVM.
+local lombok_jar = mason_packages .. "/jdtls/lombok.jar"
 
 vim.lsp.config("jdtls", {
-  cmd = { "jdtls" },
+  cmd = { "jdtls", "--jvm-arg=-javaagent:" .. lombok_jar },
   filetypes = { "java" },
   root_markers = {
     "gradlew",
@@ -65,6 +72,8 @@ vim.lsp.config("jdtls", {
     "settings.gradle.kts",
     "build.gradle",
     "build.gradle.kts",
+    "mvnw",
+    "pom.xml",
     ".git",
   },
   init_options = {
@@ -86,6 +95,10 @@ vim.lsp.config("jdtls", {
       },
       configuration = { updateBuildConfiguration = "automatic" },
       signatureHelp = { enabled = true },
+      -- Lombok annotations (@Data, @Slf4j, ...) are only understood with the
+      -- agent above plus this switch.
+      lombokSupport = { enabled = true },
+      inlayHints = { parameterNames = { enabled = "literals" } },
       completion = {
         favoriteStaticMembers = {
           "org.junit.jupiter.api.Assertions.*",
@@ -98,3 +111,14 @@ vim.lsp.config("jdtls", {
 
 -- enable all configured servers
 vim.lsp.enable(servers)
+
+-- Neovim keeps inlay hints off by default; turn them on for Java only, since
+-- jdtls is the engine that reports them (see java.inlayHints above).
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client and client.name == "jdtls" then
+      vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
+    end
+  end,
+})
