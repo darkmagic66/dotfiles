@@ -59,3 +59,25 @@ map("n", "<leader>ms", "<cmd>Markview splitToggle<CR>", { desc = "Markview split
 map("n", "<leader>mh", "<cmd>Markview HybridToggle<CR>", { desc = "Markview hybrid mode" })
 map("n", "<leader>mp", "<cmd>MarkdownPreviewToggle<CR>", { desc = "Browser preview toggle" })
 
+-------------------- Paths --------------------
+local function copy_path(path)
+  if path == "" then
+    vim.notify("No file name to copy", vim.log.levels.WARN)
+    return
+  end
+  vim.fn.setreg("+", path, "v")
+  vim.notify("Copied: " .. path)
+end
+
+map("n", "<leader>n", function()
+  copy_path(vim.fn.expand "%:.")
+end, { desc = "Copy relative path" })
+
+map("n", "<leader>m", function()
+  copy_path(vim.fn.expand "%:p")
+end, { desc = "Copy absolute path" })
+
+-- NvChad's default <leader>n (toggle line number) moved here so the relative
+-- path copy above can take that key.
+map("n", "<leader>tn", "<cmd>set nu!<CR>", { desc = "Toggle line number" })
+

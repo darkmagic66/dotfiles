@@ -8,6 +8,7 @@ local servers = {
   "cssls",
   "clangd",
   "ts_ls",
+  "tsc",
   "pyright",
   "gopls",
   "jdtls",
@@ -17,6 +18,41 @@ local servers = {
 for _, lsp in ipairs(servers) do
   vim.lsp.config(lsp, {})
 end
+
+-- typescript: TypeScript 7 replaced tsserver.js with a native language server.
+-- ts_ls drives tsserver.js and, on a TypeScript 7 workspace, silently falls back
+-- to its own bundled TypeScript 6. So the two servers are split per project:
+-- nvim-lspconfig's "tsc" (native, `node_modules/.bin/tsc --lsp --stdio`) where
+-- the project has no tsserver.js, ts_ls where it still has one. Enabling both
+-- everywhere would double every diagnostic, so each root_dir is gated on the
+-- other's absence.
+local function has_native_ts(root)
+  if not root or root == "" then
+    return false
+  end
+  if vim.fn.filereadable(root .. "/node_modules/typescript/lib/tsserver.js") == 1 then
+    return false
+  end
+  return vim.fn.executable(root .. "/node_modules/.bin/tsc") == 1
+end
+
+-- nvim-lspconfig's monorepo and Deno root detection lives in root_dir, so keep
+-- it and filter only its result.
+local function gate_on_native_ts(server, want_native)
+  local upstream = assert(vim.lsp.config[server], server .. ": no config loaded").root_dir
+  vim.lsp.config(server, {
+    root_dir = function(bufnr, on_dir)
+      upstream(bufnr, function(root)
+        if has_native_ts(root) == want_native then
+          on_dir(root)
+        end
+      end)
+    end,
+  })
+end
+
+gate_on_native_ts("tsc", true)
+gate_on_native_ts("ts_ls", false)
 
 -- python: restrict to python filetype
 vim.lsp.config("pyright", {
