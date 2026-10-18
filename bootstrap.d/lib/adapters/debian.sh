@@ -28,8 +28,9 @@ run_debian_install() {
   # --- Base packages: manifest common → apt -----------------------------------
   # Minimal name mapping: `fd` is named fd-find on Debian; the conventional
   # `fd` symlink is created post-install below. `just` is named `rust-just`
-  # on Debian/Ubuntu (the binary is still `just`). All other common names are
-  # valid apt package names as-is.
+  # on Debian/Ubuntu (the binary is still `just`). `bun` has no Debian/Ubuntu
+  # package at all — it is skipped here and installed from the official
+  # installer below. All other common names are valid apt package names as-is.
   local group group_names name
   group_names="$(manifest_packages common)" \
     || die "manifest: cannot resolve package group 'common'; no packages installed"
@@ -37,10 +38,24 @@ run_debian_install() {
   for name in $group_names; do
     [ "$name" = "fd" ] && name="fd-find"
     [ "$name" = "just" ] && name="rust-just"
+    [ "$name" = "bun" ] && continue
     names+="${names:+ }${name}"
   done
   # Debian-specific base deps (kept hardcoded, spec G2)
   names+=" tldr asciinema python3 build-essential"
+
+  # PKG_MODE=missing: `apt install` upgrades in place; skip names already
+  # installed so a missing-only run stays a no-op. Local probe (dpkg db), no net.
+  if [[ "${PKG_MODE:-install}" == "missing" ]]; then
+    local keep=""
+    for name in $names; do
+      case "$(dpkg-query -W -f='${Status}' "$name" 2>/dev/null || true)" in
+        "install ok installed") continue ;;
+      esac
+      keep+="${keep:+ }${name}"
+    done
+    names="$keep"
+  fi
 
   if (( dry_run )); then
     log "[dry-run] sudo apt update"
@@ -83,6 +98,14 @@ run_debian_install() {
     sudo ln -s /usr/bin/fdfind /usr/local/bin/fd
   fi
 
+  # --- bun (no Debian/Ubuntu package; official installer → ~/.bun) ------------
+  if (( dry_run )); then
+    log "[dry-run] bun (only when 'bun' missing): curl -fsSL https://bun.sh/install | bash   (installs to ~/.bun)"
+  elif ! command -v bun >/dev/null 2>&1; then
+    echo "Installing bun..."
+    curl -fsSL https://bun.sh/install | bash
+  fi
+
   # --- Zed (official installer; not in Debian repos; ~/.local/bin/zed) --------
   if (( dry_run )); then
     log "[dry-run] zed (only when 'zed' missing): curl -f https://zed.dev/install.sh | sh   (installs zed to ~/.local/bin)"
@@ -112,4 +135,23 @@ run_debian_install() {
     sudo apt update
     sudo apt install -y code
   fi
+}
+
+# --- upgrade: whole-system `apt upgrade` (manifest-independent) --------------
+# `bootstrap upgrade` lands here.
+run_debian_upgrade() {
+  local dry_run=0
+  if [[ "${PKG_DRY_RUN:-0}" == "1" ]]; then
+    dry_run=1
+  fi
+
+  if (( dry_run )); then
+    log "[dry-run] sudo apt update"
+    log "[dry-run] sudo apt upgrade -y   (whole system)"
+    return 0
+  fi
+
+  echo "Upgrading system packages (apt)..."
+  sudo apt update
+  sudo apt upgrade -y
 }

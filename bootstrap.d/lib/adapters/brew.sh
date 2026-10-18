@@ -16,6 +16,21 @@ case "${DISTRO:-}" in
     [[ "${BASH_SOURCE[0]:-${0}}" == "${0}" ]] && exit 0 || return 0 ;;
 esac
 
+# --- brew presence + shellenv (shared by install and upgrade) ----------------
+# Installs Homebrew when missing, then evals shellenv — exact block ported from
+# the legacy install_mac.
+_brew_ensure() {
+  if ! command -v brew >/dev/null 2>&1; then
+    echo "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  fi
+  if [ -x /opt/homebrew/bin/brew ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [ -x /usr/local/bin/brew ]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+}
+
 run_mac_install() {
   local dry_run=0
   if [[ "${PKG_DRY_RUN:-0}" == "1" ]]; then
@@ -43,6 +58,19 @@ run_mac_install() {
     done
   done
 
+  # --- PKG_MODE=missing: drop names already installed -------------------------
+  # `brew install` upgrades outdated formulae/casks in place (surprise app quits
+  # and relaunches). --missing is the escape hatch: install absent names only.
+  # `brew list` is a local probe (no network), so it is safe here and in dry-run.
+  if [[ "${PKG_MODE:-install}" == "missing" ]]; then
+    local keep=""
+    for name in $names; do
+      brew list --formula "$name" >/dev/null 2>&1 && continue
+      keep+="${keep:+ }${name}"
+    done
+    names="$keep"
+  fi
+
   # --- Casks: manifest macos_casks (+ role_personal when ROLE=personal) --------
   local casks=""
   local role_groups=""
@@ -67,28 +95,31 @@ run_mac_install() {
     role_note=" + role_personal"
   fi
 
+  # Same missing-only filter for casks.
+  if [[ "${PKG_MODE:-install}" == "missing" ]]; then
+    local keep_casks=""
+    for name in $casks; do
+      brew list --cask "$name" >/dev/null 2>&1 && continue
+      keep_casks+="${keep_casks:+ }${name}"
+    done
+    casks="$keep_casks"
+  fi
+
+  local mode_note=""
+  [[ "${PKG_MODE:-install}" == "missing" ]] && mode_note="   (missing-only: installed names filtered out)"
+
   # --- Dry-run: plan only, no brew invocation ----------------------------------
   if (( dry_run )); then
     log "[dry-run] bootstrap-if-missing: brew (curl install script) when not present"
     log "[dry-run] eval \"\$(brew shellenv)\"  (/opt/homebrew, fallback /usr/local)"
     log "[dry-run] brew update"
-    log "[dry-run] brew install${names:+ $names}   (formulas: common${role_note} + macos_extra)"
-    log "[dry-run] brew install --cask${casks:+ $casks}   (casks: macos_casks${role_note})"
+    log "[dry-run] brew install${names:+ $names}   (formulas: common${role_note} + macos_extra)${mode_note}"
+    log "[dry-run] brew install --cask${casks:+ $casks}   (casks: macos_casks${role_note})${mode_note}"
     return 0
   fi
 
   # --- Brew presence: install-if-missing ---------------------------------------
-  if ! command -v brew >/dev/null 2>&1; then
-    echo "Installing Homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  fi
-
-  # shellenv eval — exact block ported from the legacy install_mac
-  if [ -x /opt/homebrew/bin/brew ]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-  elif [ -x /usr/local/bin/brew ]; then
-    eval "$(/usr/local/bin/brew shellenv)"
-  fi
+  _brew_ensure
 
   echo "Updating brew..."
   brew update || echo "warning: brew update failed; continuing with installs"
@@ -110,4 +141,31 @@ run_mac_install() {
       brew install --cask "$cask" || echo "warning: cask '$cask' failed; continuing"
     done
   fi
+}
+
+# --- upgrade: whole-system `brew upgrade` (manifest-independent) --------------
+# `bootstrap upgrade` lands here. Intentionally NOT manifest-scoped: it upgrades
+# everything brew tracks, including tools installed outside the manifest (rtk,
+# lunar, …). No --greedy: casks that self-update stay untouched.
+run_mac_upgrade() {
+  local dry_run=0
+  if [[ "${PKG_DRY_RUN:-0}" == "1" ]]; then
+    dry_run=1
+  fi
+
+  if (( dry_run )); then
+    log "[dry-run] bootstrap-if-missing: brew (curl install script) when not present"
+    log "[dry-run] eval \"\$(brew shellenv)\"  (/opt/homebrew, fallback /usr/local)"
+    log "[dry-run] brew update"
+    log "[dry-run] brew upgrade   (whole system: every outdated formula + cask)"
+    return 0
+  fi
+
+  _brew_ensure
+
+  echo "Updating brew..."
+  brew update || echo "warning: brew update failed; continuing with upgrade"
+
+  echo "Upgrading brew packages..."
+  brew upgrade || echo "warning: brew upgrade reported failures; continuing"
 }

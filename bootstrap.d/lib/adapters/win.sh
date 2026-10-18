@@ -40,3 +40,18 @@ run_windows_install() {
     log "[dry-run] windows sketch adapter complete; nothing was installed"
   fi
 }
+
+# --- upgrade: winget upgrade (sketch only) -----------------------------------
+# `bootstrap upgrade` lands here. Sketch adapter: prints the plan, never executes.
+run_windows_upgrade() {
+  local dry_run=0
+  if [[ "${PKG_DRY_RUN:-0}" == "1" ]]; then
+    dry_run=1
+  fi
+
+  if (( dry_run )); then
+    log "[dry-run] winget upgrade --all   (sketch adapter — never executes)"
+  else
+    echo "Would run: winget upgrade --all   (sketch adapter; not executed)"
+  fi
+}

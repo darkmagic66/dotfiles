@@ -51,7 +51,9 @@ Then `./bootstrap list`; expect the manifest groups for this machine + role.
 |---|---|
 | `./bootstrap` | Full install flow, in order |
 | `./bootstrap --update` | Fast re-sync: skips packages/stow/fonts, refreshes zsh plugins + skills |
-| `./bootstrap packages` | Packages only: `manifest.yaml` → per-OS adapter |
+| `./bootstrap packages` | Packages only: `manifest.yaml` → per-OS adapter (installs missing, upgrades outdated) |
+| `./bootstrap packages --missing` | Packages only, missing-only: installs absent names, never upgrades (no app restarts) |
+| `./bootstrap upgrade` | Upgrade all: repo pull + submodules, then whole-system package upgrade |
 | `./bootstrap config` | Stow only: symlinks + role resolution, no packages |
 | `./bootstrap ai` | Skills + rtk setup |
 | `./bootstrap ai list` | Installed skills (personal/external split) |
@@ -59,9 +61,10 @@ Then `./bootstrap list`; expect the manifest groups for this machine + role.
 | `./bootstrap ai status` | `git submodule status` for skills |
 | `./bootstrap list` | Manifest groups applying to this machine + role |
 
-`just` shortcuts mirror these (`justfile`): `just install`, `just update`,
-`just config`, `just packages`, `just plan`, `just skills-update`,
-`just upgrade` (pull + re-sync).
+`just` shortcuts mirror these (`justfile`): `just install`, `just update`
+(repo pull + submodules + re-sync), `just config`, `just packages`,
+`just packages-missing`, `just upgrade` (repo pull + submodules + package
+upgrade), `just plan`, `just skills-update`.
 
 ## Task 2 — add or move a package
 
@@ -136,10 +139,10 @@ AeroSpace config: `mac/aerospace/.aerospace.toml`, auto-reloads on save.
 
 ## What gets installed (from `packages/manifest.yaml`)
 
-- **common (all machines)**: git, zsh, stow, tmux, jq, eza, gnupg, neovim, mise, atuin, htop, fd, fzf, zoxide, bat, ripgrep, zip, unzip, curl, wget, git-delta, tree-sitter-cli, lazygit, just, steam
-- **arch family**: kitty, waybar, yazi, awww, brightnessctl, wl-clipboard, powerline-fonts, ncdu, playerctl, udisks2, blueman, zed, fuzzel, bitwarden, obs-studio + AUR (visual-studio-code-bin, python-xxh) + services
-- **macOS**: formulas (common + yazi, xxh, tldr, asciinema, `anomalyco/tap/opencode-v2`; system curl kept) + casks (kitty, firefox, brave-browser, bitwarden, visual-studio-code, zed, notion, raycast, orbstack, obs, steam, vorssaint) + `role_personal` only (aldente, karabiner-elements, `nikitabobko/tap/aerospace`, `y3owk1n/tap/neru`)
-- **Debian/Fedora**: zed installer + Microsoft's apt/dnf repo for vscode; `common` name maps apply (`fd`→`fd-find`, `just`→`rust-just`)
+- **common (all machines)**: git, zsh, stow, tmux, jq, eza, gnupg, neovim, mise, atuin, htop, fd, fzf, zoxide, bat, ripgrep, zip, unzip, curl, wget, git-delta, tree-sitter-cli, lazygit, just, bun, steam
+- **arch family**: kitty, ghostty, waybar, yazi, awww, brightnessctl, wl-clipboard, powerline-fonts, ncdu, playerctl, udisks2, blueman, zed, fuzzel, bitwarden, obs-studio + AUR (visual-studio-code-bin, python-xxh) + services
+- **macOS**: formulas (common + yazi, xxh, tldr, asciinema, `anomalyco/tap/opencode-v2`; system curl kept) + casks (kitty, ghostty, firefox, brave-browser, bitwarden, visual-studio-code, zed, notion, raycast, orbstack, obs, steam, vorssaint) + `role_personal` only (aldente, karabiner-elements, `nikitabobko/tap/aerospace`, `y3owk1n/tap/neru`)
+- **Debian/Fedora**: zed installer + Microsoft's apt/dnf repo for vscode; `common` name maps apply (`fd`→`fd-find`, `just`→`rust-just`); `bun` skipped from apt/dnf (no Debian/Ubuntu or Fedora package) and installed via the official bun.sh installer
 
 Editors: nvim (NvChad on lazy.nvim), zed, vscode.
 
@@ -152,7 +155,9 @@ targets); fonts symlinked from `fonts/`; toolchains via
 `setup_programing.sh` (mise go/java/node/rust, GitNexus, rtk); skills via
 `setup_skills.sh` into `~/.config/opencode/skills/`,
 `~/.claude/skills/`, `~/.codex/skills/`, `~/.agents/skills/`; graphify
-knowledge-graph CLI + `/graphify` skill via `setup_graphify.sh` (uv from mise).
+knowledge-graph CLI + `/graphify` skill via `setup_graphify.sh` (uv from mise);
+Open Code Review (`ocr`) CLI + skill via `setup_ocr.sh` (npm from mise);
+Pi coding agent CLI via `setup_pi.sh` (npm from mise).
 `script/` holds thin `setup_*.sh` steps (see `script/README.md`).
 
 ## Keyboard map (reference — mouse optional)
@@ -192,7 +197,7 @@ Karabiner, Fn-as-F-keys, fast repeat, substitutions off).
 
 ```
 ~/dotfiles/
-├── bootstrap               # entry point (packages|config|ai|--update)
+├── bootstrap               # entry point (packages [--missing]|upgrade|config|ai|--update)
 ├── bootstrap.d/lib/        # common, manifest, hosts, full, config, ai
 │   └── adapters/           # pacman.sh, brew.sh, debian.sh, fedora.sh, win.sh (sketch)
 ├── packages/

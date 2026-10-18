@@ -25,10 +25,12 @@ common:
   - tree-sitter-cli
   - lazygit
   - just
+  - bun
   - steam
 
 linux:     # pacman; arch-family only
   - kitty
+  - ghostty
   - waybar
   - yazi
   - awww
@@ -51,6 +53,7 @@ linux:     # pacman; arch-family only
 
 macos_casks:    # brew --cask (alacritty excluded: Gatekeeper-blocked; kitty is the mac terminal)
   - kitty
+  - ghostty
   - firefox
   - brave-browser
   - bitwarden

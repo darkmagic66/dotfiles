@@ -32,6 +32,12 @@ run_arch_install() {
     group_names="$(manifest_packages "$group")" \
       || die "manifest: cannot resolve package group '$group'; no packages installed"
     for name in $group_names; do
+      # PKG_MODE=missing: `pacman -S` re-installs/upgrades in place; skip names
+      # already owned so a missing-only run stays a no-op. Local probe, no net.
+      if [[ "${PKG_MODE:-install}" == "missing" ]] \
+        && pacman -Qq "$name" >/dev/null 2>&1; then
+        continue
+      fi
       if (( dry_run )); then
         # Dry-run: app-level heuristic only (no repo probing) so the printed
         # plan stays fully offline.
@@ -176,4 +182,21 @@ run_arch_install() {
   #
   # tree-sitter-cli is also available via pacman from extra:
   #   sudo pacman -S --needed tree-sitter-cli
+}
+
+# --- upgrade: whole-system `pacman -Syu` (manifest-independent) --------------
+# `bootstrap upgrade` lands here. Syncs repos and upgrades everything installed.
+run_arch_upgrade() {
+  local dry_run=0
+  if [[ "${PKG_DRY_RUN:-0}" == "1" ]]; then
+    dry_run=1
+  fi
+
+  if (( dry_run )); then
+    log "[dry-run] sudo pacman -Syu --noconfirm   (whole system: sync repos + upgrade)"
+    return 0
+  fi
+
+  echo "Upgrading system packages (pacman -Syu)..."
+  sudo pacman -Syu --noconfirm
 }

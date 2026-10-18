@@ -30,7 +30,9 @@ bootstrap / bootstrap --update
 ├── 8. setup_programing.sh      # mise (go/java/node/rust), GitNexus, rtk
 ├── 9. setup_skills.sh          # init skill submodules + symlink skills into agent dirs
 ├── 10. setup_graphify.sh       # graphify CLI (uv) + /graphify skill for agents
-└── 11. setup_rtk.sh            # activate rtk for opencode (installs opencode plugin) — RTK LAST
+├── 11. setup_ocr.sh            # Open Code Review CLI (npm) + portable skill for agents
+├── 12. setup_pi.sh             # Pi coding agent CLI (npm)
+└── 13. setup_rtk.sh            # activate rtk for opencode (installs opencode plugin) — RTK LAST
 ```
 
 Exact step order is the code of `bootstrap.d/lib/full.sh` + `bootstrap.d/lib/config.sh`.
@@ -39,13 +41,15 @@ Exact step order is the code of `bootstrap.d/lib/full.sh` + `bootstrap.d/lib/con
 
 - **`bootstrap.d/lib/adapters/<os>.sh`** = installs **packages** for that OS family, reading `packages/manifest.yaml` (single source of truth — no package lists in scripts):
 
+Each adapter also defines `run_<key>_upgrade` (whole-system upgrade, manifest-independent) for `bootstrap upgrade`. `PKG_MODE=missing` filters out names the machine already has before installing.
+
 | Adapter | OS family | What it installs |
 |---|---|---|
-| `pacman.sh` | arch/cachyos/eos/… | pacman (manifest `common` + `linux`); paru AUR helper bootstrap; VS Code (`visual-studio-code-bin`) + `python-xxh` from AUR; systemctl services; `cachyos-rate-mirrors` on CachyOS |
-| `brew.sh` | macOS | brew if missing → `shellenv` eval → `brew update` → formulas (`common` + `macos_extra`, skip `curl`) → casks (`macos_casks` + `role_personal` Aldente when personal) |
-| `debian.sh` | Debian/Ubuntu | fd-find→fd symlink, zed installer, VS Code MS apt repo |
-| `fedora.sh` | Fedora | zed installer, VS Code MS dnf repo |
-| `win.sh` | Windows | winget sketch — prints only, not wired up yet |
+| `pacman.sh` | arch/cachyos/eos/… | pacman (manifest `common` + `linux`); paru AUR helper bootstrap; VS Code (`visual-studio-code-bin`) + `python-xxh` from AUR; systemctl services; `cachyos-rate-mirrors` on CachyOS. Upgrade: `sudo pacman -Syu` |
+| `brew.sh` | macOS | brew if missing → `shellenv` eval → `brew update` → formulas (`common` + `macos_extra`, skip `curl`) → casks (`macos_casks` + `role_personal` Aldente when personal). Upgrade: `brew update` → `brew upgrade` (whole system, no `--greedy`) |
+| `debian.sh` | Debian/Ubuntu | fd-find→fd symlink, bun official installer, zed installer, VS Code MS apt repo. Upgrade: `sudo apt update` → `sudo apt upgrade -y` |
+| `fedora.sh` | Fedora | bun official installer, zed installer, VS Code MS dnf repo. Upgrade: `sudo dnf upgrade -y` |
+| `win.sh` | Windows | winget sketch — prints only, not wired up yet. Upgrade: `winget upgrade --all` (printed only) |
 
 - **Top-level `script/setup_*.sh`** = other concerns: `setup_zsh.sh` (plugins + chsh), `setup_fonts.sh` (fonts), `setup_skills.sh` (agent skill submodules), `setup_programing.sh` (toolchains), `setup_mac.sh` (macOS system **defaults** — config, not packages).
 
@@ -69,8 +73,16 @@ The `BASH_SOURCE[0] == $0` test distinguishes "executed directly" (exit) from "s
 
 ## Scripts
 
-### `setup_basic.sh`
-Thin dispatcher: sources `bootstrap.d/lib/{common,manifest,hosts}.sh`, sources every matching `bootstrap.d/lib/adapters/*.sh` (self-guarded, resolves `ROLE`), and calls the matching `run_*_install`. Package names come from `packages/manifest.yaml`. `PKG_DRY_RUN=1` previews the plan.
+### `setup_basic.sh [--missing|--upgrade]`
+Thin dispatcher: sources `bootstrap.d/lib/{common,manifest,hosts}.sh`, sources every matching `bootstrap.d/lib/adapters/*.sh` (self-guarded, resolves `ROLE`), and calls the matching adapter action. Package names come from `packages/manifest.yaml`. `PKG_DRY_RUN=1` previews the plan.
+
+Three modes via `PKG_MODE` (`install` default):
+
+| Mode | Selected by | What the adapter does |
+|---|---|---|
+| `install` | `./bootstrap packages` | install missing names **and** upgrade outdated ones in place (brew quits/relaunches affected apps) |
+| `missing` | `./bootstrap packages --missing` | install only names absent from the machine; never upgrade |
+| `upgrade` | `./bootstrap upgrade` | whole-system upgrade (`brew upgrade`, `pacman -Syu`, `apt upgrade`, `dnf upgrade`), manifest-independent |
 
 ### macOS packages
 `bootstrap.d/lib/adapters/brew.sh` installs brew formulas (manifest `common` + `macos_extra`; system `curl` is kept and skipped) and casks (`macos_casks`, plus `role_personal`/aldente when `ROLE=personal`). `brew bundle` is retired — `packages/manifest.yaml` is the single source of truth.
@@ -112,6 +124,20 @@ Installs the [graphify](https://github.com/Graphify-Labs/graphify) knowledge-gra
 
 Per project: build a graph with `/graphify .`, then query it with `graphify query "<question>"`.
 
+### `setup_ocr.sh`
+Installs [Open Code Review](https://github.com/alibaba/open-code-review) (`ocr`), Alibaba's AI code-review CLI.
+- **ocr**: `mise exec -- npm install -g @alibaba-group/open-code-review` (node comes from `mise.toml`).
+- **skill**: downloads the portable `skills/open-code-review` (+ `open-code-review-delegate`) `SKILL.md` into `~/.config/opencode/skills/`, `~/.claude/skills/`, `~/.codex/skills/`, `~/.agents/skills/`.
+
+Configure an LLM once before the first review: `ocr config provider && ocr config model && ocr llm test`. Then ask the agent to review, or run `ocr review` / `ocr scan` in a repo.
+
+### `setup_pi.sh`
+Installs the [Pi](https://github.com/earendil-works/pi) coding agent CLI (`pi`).
+- **pi**: `mise exec -- npm install -g @earendil-works/pi-coding-agent` (node comes from `mise.toml`; Pi needs Node 22.19+).
+- The npm route is the one upstream supports cross-platform: Pi is not packaged for apt/dnf, and upstream does not publish the Homebrew formula (the core formula is third-party).
+
+Authenticate on first run: `pi`, then `/login`.
+
 ### `setup_rtk.sh`
 Activates rtk for opencode by running `rtk init -g --opencode --no-patch`, which installs the opencode plugin at `~/.config/opencode/plugins/rtk.ts`. The plugin auto-rewrites bash commands to their rtk equivalents for token savings. Idempotent — skips if the plugin is already up to date. Requires the rtk binary in PATH (installed by `setup_programing.sh`).
 
@@ -122,10 +148,12 @@ Note: `setup_programing.sh` (which installs rtk itself) runs BEFORE `setup_rtk.s
 | Caller | Flag | Effect |
 |---|---|---|
 | `bootstrap` | `--update` | Full flow in update mode: forward `--update` to `setup_zsh.sh` + `setup_skills.sh`; skip the slow idempotent steps (base packages, git identity, stow, mac defaults, fonts) — designed for re-syncing plugins/skills without reinstalling the world |
+| `bootstrap packages` | `--missing` | Missing-only: install names absent from the machine, skip anything already installed (no in-place upgrades, no app quit/relaunch) |
 | `setup_zsh.sh` | `--update` | Pull latest plugin versions |
 | `setup_skills.sh` | `--update` | Pull latest skill submodule commits |
 | `setup_basic.sh` (env) | `PKG_DRY_RUN=1` | Preview what the adapter would install (nothing actually installed) |
+| `setup_basic.sh` (env) | `PKG_MODE` | `install` (default), `missing`, or `upgrade` — selects the adapter action; set by `bootstrap packages [--missing]` / `bootstrap upgrade` |
 
 ## Re-running
 
-All steps are idempotent — safe to re-run anytime. They skip already-installed items and only create/update what's missing. `./bootstrap` runs the whole thing; `./bootstrap --update` is a faster re-sync that skips package managers/git/stow/fonts and just refreshes plugins + skills.
+All steps are idempotent — safe to re-run anytime. They skip already-installed items and only create/update what's missing. `./bootstrap` runs the whole thing; `./bootstrap packages --missing` fills in only absent packages (no upgrades); `./bootstrap upgrade` refreshes the repo and upgrades every installed package; `./bootstrap --update` is a faster re-sync that skips package managers/git/stow/fonts and just refreshes plugins + skills.

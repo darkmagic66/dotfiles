@@ -1,5 +1,6 @@
 # justfile — thin wrapper around ./bootstrap
-# Run `just` to list, `just install` for full setup, `just update` for re-sync.
+# Run `just` to list, `just install` for full setup, `just update` for re-sync,
+# `just upgrade` for system package upgrades.
 
 set shell := ["bash", "-c"]
 
@@ -14,16 +15,26 @@ install:
 config:
     ./bootstrap config
 
-# packages only: manifest.yaml -> per-OS adapter
+# packages only: manifest.yaml -> per-OS adapter (installs missing, upgrades outdated)
 packages:
     ./bootstrap packages
 
-# AI layer: skills + rtk plugin + graphify
+# packages only, missing-only: install absent names, never upgrade (no app restarts)
+packages-missing:
+    ./bootstrap packages --missing
+
+# upgrade all: refresh the dotfiles repo + whole-system package upgrade
+upgrade:
+    ./bootstrap upgrade
+
+# AI layer: skills + rtk plugin + graphify + ocr
 ai:
     ./bootstrap ai
 
-# fast re-sync: refresh zsh plugins + skill submodules, skips heavy stages
+# fast dotfiles re-sync: repo pull + submodules, refresh zsh plugins + skill submodules
 update:
+    git pull --ff-only
+    git submodule update --init --recursive
     ./bootstrap --update
 
 # skills management (submodule-backed)
@@ -46,9 +57,6 @@ plan:
 sync:
     git pull --ff-only
     git submodule update --init --recursive
-
-# update repo then re-sync everything
-upgrade: sync update
 
 # run everything fresh from a clone: sync + install
 all: sync install

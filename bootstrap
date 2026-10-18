@@ -1,6 +1,7 @@
 #!/bin/bash
 # bootstrap — dotfiles entry point (architecture-v2 spec G4).
-# Subcommands: packages | config | ai | list | (no args: full flow) | --update (full flow, update mode).
+# Subcommands: packages [--missing] | upgrade | config | ai | list
+#              (no args: full flow) | --update (full flow, update mode).
 # Shared libs live in bootstrap.d/lib/.
 set -euo pipefail
 
@@ -11,14 +12,42 @@ UPDATE="false"
 
 case "${1:-}" in
   packages)
-    if [ -n "${2:-}" ]; then
-      echo "Usage: bootstrap packages" >&2
+    PKG_MODE="install"
+    case "${2:-}" in
+      "") ;;
+      --missing) PKG_MODE="missing" ;;
+      *)
+        echo "Usage: bootstrap packages [--missing]" >&2
+        exit 1
+        ;;
+    esac
+    if [ -n "${3:-}" ]; then
+      echo "Usage: bootstrap packages [--missing]" >&2
       exit 1
     fi
     echo "==================================="
     echo "   Installing base packages...     "
     echo "==================================="
-    "$DOTFILES_DIR/script/setup_basic.sh"
+    PKG_MODE="$PKG_MODE" "$DOTFILES_DIR/script/setup_basic.sh"
+    ;;
+  upgrade)
+    if [ -n "${2:-}" ]; then
+      echo "Usage: bootstrap upgrade" >&2
+      exit 1
+    fi
+    echo "==================================="
+    echo "   Upgrading packages...           "
+    echo "==================================="
+    # Repo first (same two commands `just sync` runs), then whole-system
+    # package upgrade. PKG_DRY_RUN=1 plans both without touching anything.
+    if [[ "${PKG_DRY_RUN:-0}" == "1" ]]; then
+      log "[dry-run] git pull --ff-only   (in $DOTFILES_DIR)"
+      log "[dry-run] git submodule update --init --recursive"
+    else
+      git -C "$DOTFILES_DIR" pull --ff-only
+      git -C "$DOTFILES_DIR" submodule update --init --recursive
+    fi
+    PKG_MODE="upgrade" "$DOTFILES_DIR/script/setup_basic.sh"
     ;;
   config)
     # shellcheck source=bootstrap.d/lib/config.sh
@@ -30,6 +59,8 @@ case "${1:-}" in
         echo "Running AI skills setup..."
         "$DOTFILES_DIR/script/setup_skills.sh"
         "$DOTFILES_DIR/script/setup_graphify.sh"
+        "$DOTFILES_DIR/script/setup_ocr.sh"
+        "$DOTFILES_DIR/script/setup_pi.sh"
         "$DOTFILES_DIR/script/setup_rtk.sh"
         ;;
       list|update|status)
@@ -109,7 +140,7 @@ case "${1:-}" in
     . "$DOTFILES_DIR/bootstrap.d/lib/full.sh"
     ;;
   *)
-    echo "Usage: bootstrap [packages|config|ai|list|--update]" >&2
+    echo "Usage: bootstrap [packages [--missing]|upgrade|config|ai|list|--update]" >&2
     exit 1
     ;;
 esac

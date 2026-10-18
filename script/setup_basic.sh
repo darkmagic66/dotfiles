@@ -3,6 +3,24 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# PKG_MODE selects what the adapter does: install (default — install missing +
+# upgrade outdated), missing (install absent names only), upgrade (whole-system
+# package upgrade). Flags below override the env; `bootstrap upgrade` sets it.
+PKG_MODE="${PKG_MODE:-install}"
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --missing) PKG_MODE="missing" ;;
+    --upgrade) PKG_MODE="upgrade" ;;
+    *)
+      echo "Usage: ./setup_basic.sh [--missing|--upgrade]   (or set \$DISTRO=mac|debian|arch|cachyos|fedora)" >&2
+      exit 1
+      ;;
+  esac
+  shift
+done
+export PKG_MODE
+
 # DISTRO is normally exported by install.sh; fall back to local detect when
 # run standalone.
 if [ -z "${DISTRO:-}" ]; then
@@ -46,21 +64,22 @@ for f in "${DOTFILES_DIR}"/bootstrap.d/lib/adapters/*.sh; do
 done
 
 # --- Dispatch ------------------------------------------------------------------
+# Resolve the adapter key from DISTRO, then pick install vs upgrade by PKG_MODE.
 case "$DISTRO" in
   arch|cachyos|archlabs|endeavouros|manjaro)
-    run_arch_install
+    _adapter_key="arch"
     ;;
   debian|pop|ubuntu)
-    run_debian_install
+    _adapter_key="debian"
     ;;
   fedora)
-    run_fedora_install
+    _adapter_key="fedora"
     ;;
   mac)
-    run_mac_install
+    _adapter_key="mac"
     ;;
   windows)
-    run_windows_install
+    _adapter_key="windows"
     ;;
   *)
     echo "Unsupported OS/Distro: $DISTRO"
@@ -68,8 +87,18 @@ case "$DISTRO" in
     ;;
 esac
 
+if [ "$PKG_MODE" == "upgrade" ]; then
+  "run_${_adapter_key}_upgrade"
+else
+  "run_${_adapter_key}_install"
+fi
+
 if [[ "${PKG_DRY_RUN:-0}" == "1" ]]; then
   log "[dry-run] base package plan complete; nothing was installed"
+elif [ "$PKG_MODE" == "upgrade" ]; then
+  echo "Packages upgraded successfully."
+elif [ "$PKG_MODE" == "missing" ]; then
+  echo "Missing packages installed successfully."
 else
   echo "Base packages installed successfully."
 fi
