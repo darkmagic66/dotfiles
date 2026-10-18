@@ -13,7 +13,8 @@ skills/
 ├── caveman/               (submodule: juliusbrussee/caveman)
 ├── skill-tissue-skills/   (submodule: skill-tissue/skills — backseat, cvmn)
 ├── karpathy-guidelines/   (plain folder, your single SKILL.md)
-└── explaining-concepts/   (plain folder, your single SKILL.md)
+├── explaining-concepts/   (plain folder, your single SKILL.md)
+└── review-ubiquitous-language/ (plain folder, your single SKILL.md)
 ```
 
 ## Setup on a new machine
