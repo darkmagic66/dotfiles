@@ -15,6 +15,7 @@ skills/
 ├── karpathy-guidelines/   (plain folder, your single SKILL.md)
 ├── explaining-concepts/   (plain folder, your single SKILL.md)
 ├── backseat/              (plain folder, your edited copy of skill-tissue's backseat)
+├── write-type-safe-typescript/ (plain folder, your single SKILL.md)
 └── review-ubiquitous-language/ (plain folder, your single SKILL.md)
 ```
 
