@@ -11,9 +11,10 @@ skills/
 ├── superpowers/           (submodule: obra/superpowers, pinned to release tag)
 ├── mattpocock-skills/     (submodule: mattpocock/skills)
 ├── caveman/               (submodule: juliusbrussee/caveman)
-├── skill-tissue-skills/   (submodule: skill-tissue/skills — backseat, cvmn)
+├── skill-tissue-skills/   (submodule: skill-tissue/skills — cvmn)
 ├── karpathy-guidelines/   (plain folder, your single SKILL.md)
 ├── explaining-concepts/   (plain folder, your single SKILL.md)
+├── backseat/              (plain folder, your edited copy of skill-tissue's backseat)
 └── review-ubiquitous-language/ (plain folder, your single SKILL.md)
 ```
 

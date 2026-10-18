@@ -42,10 +42,10 @@ MATTP0COCK_SKILLS=(
 
 CavEMAN_SKILLS=(all)                     # juliusbrussee/caveman — take all (caveman, cavecrew, caveman-commit, etc.)
 
-SKILL_TISSUE_SKILLS=(backseat cvmn)      # skill-tissue/skills — pick backseat + cvmn (skip artai)
+SKILL_TISSUE_SKILLS=(cvmn)               # skill-tissue/skills — cvmn only (backseat is a custom copy below)
 
 # Plain folders (always installed, no submodule)
-CUSTOM_SKILLS=(karpathy-guidelines writing-process-reports explaining-concepts review-ubiquitous-language)
+CUSTOM_SKILLS=(karpathy-guidelines writing-process-reports explaining-concepts review-ubiquitous-language backseat)
 
 # --- Agent skill discovery dirs --------------------------------------------
 # Edit this list to add/remove agents. Each agent will get symlinks to every skill.
