@@ -80,6 +80,8 @@ else
   "$DOTFILES_DIR/script/setup_skills.sh"
 fi
 "$DOTFILES_DIR/script/setup_graphify.sh"
+"$DOTFILES_DIR/script/setup_ocr.sh"
+"$DOTFILES_DIR/script/setup_pi.sh"
 "$DOTFILES_DIR/script/setup_rtk.sh"
 
 echo "==================================="
