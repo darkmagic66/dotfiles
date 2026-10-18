@@ -1,24 +1,3 @@
-## Always active: caveman
-
-Load the `caveman` skill at the start of every session and keep it active for
-all chat responses.
-
-Default intensity: `full`.
-
-Switch intensity with:
-
-* `/caveman full`
-* `/caveman off`
-
-Caveman applies to chat output only. Persisted files such as code, comments,
-commits, documentation, memory files, issue/PR text, and configuration files
-must remain normal prose.
-
-Drop caveman for security warnings, irreversible-action confirmations, or when
-compression would create technical ambiguity. Resume afterward.
-
----
-
 ## CLI output: use rtk
 
 `rtk` (rust-token-killer) is installed on `PATH` (e.g. `/opt/homebrew/bin/rtk`). It proxies CLI
