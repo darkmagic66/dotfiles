@@ -131,6 +131,27 @@ expand_source "mattpocock-skills" "${MATTP0COCK_SKILLS[@]}"
 expand_source "caveman"           "${CavEMAN_SKILLS[@]}"
 expand_source "skill-tissue-skills" "${SKILL_TISSUE_SKILLS[@]}"
 
+# understand-anything (Egonex-AI) — skills sit one level deeper, under
+# understand-anything-plugin/skills/, so expand_source can't reach them.
+expand_source_deep() {
+  local root="$1"
+  if [[ ! -d "$root/skills" ]]; then
+    echo "  warning: $root/skills not found, skipping"
+    return
+  fi
+  local d
+  for d in "$root"/skills/*/; do
+    [[ -f "$d/SKILL.md" ]] && SKILL_PATHS+=("$d")
+  done
+  # understand-dashboard resolves its dashboard app through the universal
+  # plugin-root symlink; create it once, like the official installer does.
+  if [[ ! -e "$HOME/.understand-anything-plugin" ]]; then
+    ln -s "$root" "$HOME/.understand-anything-plugin"
+    echo "  linked $HOME/.understand-anything-plugin → $root"
+  fi
+}
+expand_source_deep "$SKILLS_DIR/understand-anything/understand-anything-plugin"
+
 # Custom (plain folder) skills
 for name in "${CUSTOM_SKILLS[@]}"; do
   local_dir="$SKILLS_DIR/$name"
