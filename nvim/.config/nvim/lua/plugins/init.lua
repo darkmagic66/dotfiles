@@ -268,6 +268,25 @@ return {
     end,
   },
 
+  ---------------- Git ----------------
+  -- Diff view for the working tree, any rev, merge conflicts, and file history.
+  -- Loads on first command; the in-view keymaps are buffer-local (see
+  -- :h diffview-config-keymaps), so nothing here shadows the global maps.
+  {
+    "sindrets/diffview.nvim",
+    cmd = {
+      "DiffviewOpen",
+      "DiffviewClose",
+      "DiffviewFileHistory",
+      "DiffviewToggleFiles",
+      "DiffviewFocusFiles",
+      "DiffviewRefresh",
+    },
+    config = function()
+      require("diffview").setup {}
+    end,
+  },
+
   ---------------- Markdown rendering ----------------
   -- Inline markdown/typst/latex/html previewer.
   -- Author explicitly warns: do NOT lazy-load (causes startup lag for previews).

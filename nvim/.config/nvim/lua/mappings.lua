@@ -81,3 +81,30 @@ end, { desc = "Copy absolute path" })
 -- path copy above can take that key.
 map("n", "<leader>tn", "<cmd>set nu!<CR>", { desc = "Toggle line number" })
 
+-------------------- Git --------------------
+-- <leader>gd opens, focuses, or closes the diff view; <leader>gD shows file
+-- history for the current buffer. `require` sits inside the callbacks so
+-- diffview stays command-lazy and only loads on first use.
+local function toggle_diffview()
+  local lib = require "diffview.lib"
+
+  if lib.get_current_view() then
+    vim.cmd "DiffviewClose"
+    return
+  end
+
+  local other = lib.views[1]
+  if other then
+    vim.api.nvim_set_current_tabpage(other.tabpage)
+    return
+  end
+
+  vim.cmd "DiffviewOpen"
+end
+
+map("n", "<leader>gd", toggle_diffview, { desc = "Git diffview toggle" })
+
+map("n", "<leader>gD", function()
+  vim.cmd("DiffviewFileHistory " .. vim.fn.fnameescape(vim.fn.expand "%"))
+end, { desc = "Git file history for buffer" })
+

@@ -76,6 +76,8 @@ search, not runtime attribution.
 | `<leader>fo` | telescope find oldfiles | default |
 | `<leader>fw` | telescope live grep | default |
 | `<leader>fz` | telescope find in current buffer | default |
+| `<leader>gD` | Git file history for buffer | repo |
+| `<leader>gd` | Git diffview toggle | repo |
 | `<leader>gt` | telescope git status | default |
 | `<leader>h` | terminal new horizontal term | default |
 | `<leader>m` | Copy absolute path | repo |
@@ -215,6 +217,12 @@ search, not runtime attribution.
 <!-- END GENERATED -->
 
 ## Notes and known oddities
+
+- **Inside a Diffview tab, some keys change meaning.** diffview installs
+  buffer-local maps in its views, so `<leader>e` becomes "focus file panel"
+  (not nvimtree), `<leader>b` becomes "toggle file panel" (not buffer-new), and
+  `<tab>`/`<s-tab>` cycle diff entries instead of buffers. They return to normal
+  outside the diff view. See `:h diffview-config-keymaps`.
 
 - **`<C-h/j/k/l>` are overloaded by mode.** Insert = cursor motion, and
   `<C-j>`/`<C-k>` also drive completion selection while the menu is open.
